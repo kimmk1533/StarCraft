@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Core">
+      <UniqueIdentifier>{6bb61e12-6b4e-4a31-800b-19dea980eca1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header File">
+      <UniqueIdentifier>{e59843e5-b4dc-4e2e-b524-f7189114e605}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File">
+      <UniqueIdentifier>{e4c25033-9ebf-457a-b188-e44bd43c3c33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File\Game">
+      <UniqueIdentifier>{2e9d2bf8-53c8-4022-a68b-5a47c1b5a406}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header File\Game">
+      <UniqueIdentifier>{871f1059-aaec-4b44-9fc5-8f856c8ba2e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header File\Game\Unit">
+      <UniqueIdentifier>{be30a275-353f-4da0-91c2-80c3e98af769}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File\Game\Unit">
+      <UniqueIdentifier>{cc54854f-4ac9-46b0-bbd4-17ea51b5876a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File\Game\Unit\Terran">
+      <UniqueIdentifier>{1bfb3d10-e23a-4d2b-8159-82ef7fa387db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File\Game\Unit\Protoss">
+      <UniqueIdentifier>{6ad909f8-b1ed-4382-8c5b-12619987ad26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File\Game\Unit\Zerg">
+      <UniqueIdentifier>{a93bfb02-03ce-4f69-9775-c187a002253f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header File\Game\Unit\Zerg">
+      <UniqueIdentifier>{fd5ea04d-0c77-4ecb-bf07-363a701886b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header File\Game\Unit\Protoss">
+      <UniqueIdentifier>{045b8964-c41e-4c79-8ca6-979cc109c640}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header File\Game\Unit\Terran">
+      <UniqueIdentifier>{800137de-810c-40b4-94ba-d0ee340ac34f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header File\Engine">
+      <UniqueIdentifier>{1e99d673-f4ec-41f7-ac32-8e2813681238}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File\Engine">
+      <UniqueIdentifier>{077506ef-efc2-4ee4-9ea8-b50821513294}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header File\FrameWork">
+      <UniqueIdentifier>{7b6a178f-bb12-4412-9892-49bd76b6b029}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File\FrameWork">
+      <UniqueIdentifier>{d3c3cf1d-0157-42c4-81ba-6de59c428a8b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="FrameWork.cpp">
+      <Filter>Source File\FrameWork</Filter>
+    </ClCompile>
+    <ClCompile Include="LcInput.cpp">
+      <Filter>Source File\FrameWork</Filter>
+    </ClCompile>
+    <ClCompile Include="LcTexture.cpp">
+      <Filter>Source File\FrameWork</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitInfo.cpp">
+      <Filter>Source File\Game\Unit</Filter>
+    </ClCompile>
+    <ClCompile Include="Unit.cpp">
+      <Filter>Source File\Game\Unit</Filter>
+    </ClCompile>
+    <ClCompile Include="Marine.cpp">
+      <Filter>Source File\Game\Unit\Terran</Filter>
+    </ClCompile>
+    <ClCompile Include="LcSprite.cpp">
+      <Filter>Source File\FrameWork</Filter>
+    </ClCompile>
+    <ClCompile Include="WinMain.cpp" />
+    <ClCompile Include="Main.cpp">
+      <Filter>Source File\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Time.cpp">
+      <Filter>Source File\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Source File\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Animator.cpp">
+      <Filter>Source File\Engine</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Singleton.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameWork.h">
+      <Filter>Header File\FrameWork</Filter>
+    </ClInclude>
+    <ClInclude Include="LcInput.h">
+      <Filter>Header File\FrameWork</Filter>
+    </ClInclude>
+    <ClInclude Include="LcTexture.h">
+      <Filter>Header File\FrameWork</Filter>
+    </ClInclude>
+    <ClInclude Include="Unit.h">
+      <Filter>Header File\Game\Unit</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitInfo.h">
+      <Filter>Header File\Game\Unit</Filter>
+    </ClInclude>
+    <ClInclude Include="Marine.h">
+      <Filter>Header File\Game\Unit\Terran</Filter>
+    </ClInclude>
+    <ClInclude Include="LcSprite.h">
+      <Filter>Header File\FrameWork</Filter>
+    </ClInclude>
+    <ClInclude Include="Main.h">
+      <Filter>Header File\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Time.h">
+      <Filter>Header File\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Header File\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Animator.h">
+      <Filter>Header File\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="McUtil.h">
+      <Filter>Header File\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header File\Engine</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
