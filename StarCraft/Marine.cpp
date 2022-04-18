@@ -1,7 +1,6 @@
-#include "Unit.h"
+#include "stdafx.h"
 
 #include "Marine.h"
-#include "Animation.h"
 
 //CLcTexture* CMarine::m_pTex = nullptr;
 
@@ -19,22 +18,19 @@ CMarine::~CMarine()
 
 HRESULT CMarine::Create()
 {
-	return this->Create(g_pApp->GetDevice());
-}
-HRESULT CMarine::Create(LPDIRECT3DDEVICE9 pDev)
-{
 	if (FAILED(CUnit::Create()))
 		return E_FAIL;
 
-	if (FAILED(m_Animation->Create()))
+	if (FAILED(m_Animator->Create()))
 		return E_FAIL;
 
 	// 매니저에서 관리하도록 변경해야함
 	if (!m_pTex)
 	{
+		
 		m_pTex = std::make_shared<CLcTexture*>();
 		(*m_pTex) = new CLcTexture();
-		if (FAILED((*m_pTex)->Create(pDev, L"Marine.png")))
+		if (FAILED((*m_pTex)->Create(m_pd3dDevice, L"Marine.png")))
 		{
 			SAFE_DELETE(*m_pTex);
 
@@ -91,27 +87,27 @@ HRESULT CMarine::Create(LPDIRECT3DDEVICE9 pDev)
 
 #pragma endregion
 
-	m_Animation->AddFrame(m_pTex, RECT{ 256, 256, 320, 256 + 64 }, 1.0f / 15);
-	m_Animation->AddFrame(m_pTex, RECT{ 320, 256, 384, 256 + 64 }, 1.0f / 15);
-	m_Animation->AddFrame(m_pTex, RECT{ 384, 256, 448, 256 + 64 }, 1.0f / 15);
-	m_Animation->AddFrame(m_pTex, RECT{ 448, 256, 512, 256 + 64 }, 1.0f / 15);
-	m_Animation->AddFrame(m_pTex, RECT{ 512, 256, 576, 256 + 64 }, 1.0f / 15);
-	m_Animation->AddFrame(m_pTex, RECT{ 576, 256, 640, 256 + 64 }, 1.0f / 15);
-	m_Animation->AddFrame(m_pTex, RECT{ 640, 256, 704, 256 + 64 }, 1.0f / 15);
-	m_Animation->AddFrame(m_pTex, RECT{ 704, 256, 768, 256 + 64 }, 1.0f / 15);
-	m_Animation->AddFrame(m_pTex, RECT{ 768, 256, 832, 256 + 64 }, 1.0f / 15);
+	m_Animator->AddFrame(E_AnimState::Walking, m_pTex, RECT{ 256, 256, 320, 256 + 64 }, 1.0f / 15);
+	m_Animator->AddFrame(E_AnimState::Walking, m_pTex, RECT{ 320, 256, 384, 256 + 64 }, 1.0f / 15);
+	m_Animator->AddFrame(E_AnimState::Walking, m_pTex, RECT{ 384, 256, 448, 256 + 64 }, 1.0f / 15);
+	m_Animator->AddFrame(E_AnimState::Walking, m_pTex, RECT{ 448, 256, 512, 256 + 64 }, 1.0f / 15);
+	m_Animator->AddFrame(E_AnimState::Walking, m_pTex, RECT{ 512, 256, 576, 256 + 64 }, 1.0f / 15);
+	m_Animator->AddFrame(E_AnimState::Walking, m_pTex, RECT{ 576, 256, 640, 256 + 64 }, 1.0f / 15);
+	m_Animator->AddFrame(E_AnimState::Walking, m_pTex, RECT{ 640, 256, 704, 256 + 64 }, 1.0f / 15);
+	m_Animator->AddFrame(E_AnimState::Walking, m_pTex, RECT{ 704, 256, 768, 256 + 64 }, 1.0f / 15);
+	m_Animator->AddFrame(E_AnimState::Walking, m_pTex, RECT{ 768, 256, 832, 256 + 64 }, 1.0f / 15);
 
 	return S_OK;
 }
 HRESULT CMarine::Update(const float deltaTime)
 {
-	m_Animation->Update(deltaTime);
+	m_Animator->Update(deltaTime);
 
 	return S_OK;
 }
-HRESULT CMarine::Render(CLcSprite* drawer)
+HRESULT CMarine::Render()
 {
-	return m_Animation->Render(drawer);
+	return m_Animator->Render();
 }
 void CMarine::Destroy()
 {

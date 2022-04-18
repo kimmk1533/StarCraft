@@ -1,12 +1,13 @@
 #pragma once
 #include "UnitInfo.h"
+#include "Animator.h"
 
-class CUnit : CFrameWork
+class CUnit : public CFrameWork
 {
 protected:
 	S_UnitInfo* m_Info;
 
-	CAnimation* m_Animation;
+	CAnimator* m_Animator;
 
 public:
 	CUnit();
@@ -14,7 +15,7 @@ public:
 
 	virtual HRESULT	Create() override;
 	virtual HRESULT	Update(const float _deltaTime) override = 0;
-	virtual HRESULT	Render(CLcSprite* _drawer) override = 0;
+	virtual HRESULT	Render() override = 0;
 	virtual void	Destroy() override;
 
 	virtual CLcTexture* GetTexture() const = 0;

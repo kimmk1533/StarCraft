@@ -18,7 +18,7 @@ public:
 		const D3DXVECTOR2* pCenter,		// Rotation Center
 		FLOAT	fAngle,					// Degree.
 		const D3DXVECTOR2* pPosition,	// Translation
-		D3DCOLOR Color
+		D3DXCOLOR Color
 	);
 	HRESULT		Draw(
 		LPDIRECT3DTEXTURE9 pTex,
@@ -26,7 +26,7 @@ public:
 		const D3DXVECTOR2* pScaling,	// Scaling
 		const D3DXVECTOR3* pRotation,	// Rotation
 		const D3DXVECTOR2* pPosition,	// Translation
-		D3DCOLOR Color
+		D3DXCOLOR Color
 	);
 };
 

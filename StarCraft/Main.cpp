@@ -1,41 +1,20 @@
 #include "stdafx.h"
 
-#include "Animation.h"
 #include "Unit.h"
 #include "Marine.h"
 
-#define BG_COLOR D3DCOLOR_XRGB(0, 120, 160)
+//LPCWSTR			CMain::m_Title = LPCWSTR(L"DirectX StarCraft");
+HINSTANCE		CMain::m_hInst = nullptr;
+HWND			CMain::m_hWnd = nullptr;
+DWORD			CMain::m_dWinStyle = WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU | WS_VISIBLE;
+DWORD			CMain::m_dScnX = 800;						// Screen Width
+DWORD			CMain::m_dScnY = 600;						// Screen Height
+bool			CMain::m_bWindow = TRUE;					// WindowMode
+bool			CMain::m_bShowCusor = TRUE;				// Show Cusor
 
-D3DPRESENT_PARAMETERS	CMain::m_d3dpp = D3DPRESENT_PARAMETERS();
-LPDIRECT3D9				CMain::m_pD3D = nullptr;
-LPDIRECT3DDEVICE9		CMain::m_pd3dDevice = nullptr;
-LPD3DXSPRITE			CMain::m_pd3dSprite = nullptr;
-
-CMain::CMain()
+CMain::CMain() : m_Title(L"DirectX StarCraft")
 {
-	m_Title = { L"DirextX StarCraft" };
-	m_hInst = NULL;
-	m_hWnd = NULL;
-	m_dWinStyle = WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU | WS_VISIBLE;
-	m_dScnX = 800;						// Screen Width
-	m_dScnY = 600;						// Screen Height
-	m_bWindow = TRUE;					// WindowMode
-	m_bShowCusor = TRUE;				// Show Cusor
-
-	// 항상 포인터들은 NULL로 초기화
-	m_pD3D = NULL;						// D3D
-	m_pd3dDevice = NULL;				// Device
-	m_pd3dSprite = NULL;				// 2D Sprite
-
-	m_Time = nullptr;
-
-	/// <summary>
-	/// ////////////////////////////////////////////////
-	/// </summary>
-	
-	m_Marine = NULL;
-
-	m_pLcSprite = NULL;
+	m_Marine = nullptr;
 }
 
 HRESULT CMain::Create(HINSTANCE hInst)
@@ -187,17 +166,18 @@ HRESULT CMain::RPR()
 		return E_FAIL;
 
 	if (FAILED(Update(m_Time->DeltaTime())))
+	{
+		MessageBox(NULL, L"Error: Update()", L"Error!", MB_OK);
 		return E_FAIL;
+	}
 
 	if (FAILED(Render()))
+	{
+		MessageBox(NULL, L"Error: Render()", L"Error!", MB_OK);
 		return E_FAIL;
+	}
 
 	return S_OK;
-}
-
-LPDIRECT3DDEVICE9 CMain::GetDevice()
-{
-	return CMain::m_pd3dDevice;
 }
 
 HRESULT CMain::Create()
@@ -207,7 +187,7 @@ HRESULT CMain::Create()
 		return E_FAIL;
 
 	m_Marine = new CMarine();
-	if (FAILED(m_Marine->Create(GDEVICE)))
+	if (FAILED(m_Marine->Create()))
 		return E_FAIL;
 
 	return S_OK;
@@ -221,7 +201,8 @@ void CMain::Destroy()
 
 HRESULT CMain::Update(float deltaTime)
 {
-	m_Marine->Update(deltaTime);
+	if (FAILED(m_Marine->Update(deltaTime)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -238,7 +219,8 @@ HRESULT CMain::Render()
 	RECT				rc1 { 0, 0, 64, 64 };
 	LPDIRECT3DTEXTURE9	pTex = m_Marine->GetTexture()->GetTexture();*/
 
-	m_Marine->Render(m_pLcSprite);
+	if (FAILED(m_Marine->Render()))
+		return E_FAIL;
 
 	/*pTex = marine->GetTexture()->GetTexture();
 

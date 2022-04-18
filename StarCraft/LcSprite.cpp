@@ -28,7 +28,7 @@ HRESULT CLcSprite::Draw(
 	const D3DXVECTOR2* pCenter,			// Rotation Center
 	FLOAT	fAngle,						// Degree.
 	const D3DXVECTOR2* pPosition,		// Translation
-	D3DCOLOR Color
+	D3DXCOLOR Color
 )
 {
 	m_pDxSprite->Begin(D3DXSPRITE_ALPHABLEND);
@@ -82,7 +82,7 @@ HRESULT CLcSprite::Draw(
 	const D3DXVECTOR2* pScaling,		// Scaling
 	const D3DXVECTOR3* pRotation,		// Rotation
 	const D3DXVECTOR2* pPosition,		// Translation
-	D3DCOLOR Color
+	D3DXCOLOR Color
 )
 {
 	D3DXVECTOR2 rotation(pRotation->x, pRotation->y);

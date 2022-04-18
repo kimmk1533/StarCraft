@@ -82,9 +82,6 @@
     <ClCompile Include="Time.cpp">
       <Filter>Source File\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Animation.cpp">
-      <Filter>Source File\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Animator.cpp">
       <Filter>Source File\Engine</Filter>
     </ClCompile>
@@ -118,9 +115,6 @@
       <Filter>Header File\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Time.h">
-      <Filter>Header File\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Animation.h">
       <Filter>Header File\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Animator.h">

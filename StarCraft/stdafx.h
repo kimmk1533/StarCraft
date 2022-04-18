@@ -18,24 +18,24 @@
 #include <tchar.h>
 #include <time.h>
 #include <mmsystem.h>
+#include <iostream>
 
 #include <list>
 #include <vector>
 #include <map>
+#include <unordered_map>
 
 #define GMAIN			g_pApp
-//#define GHINST			g_pApp->m_hInst
+//#define GHINST		g_pApp->m_hInst
 //#define GHWND			g_pApp->m_hWnd
-#define GDEVICE			g_pApp->GetDevice()
 
 #include "LcInput.h"
 #include "LcTexture.h"
 #include "LcSprite.h"
 
-#include "FrameWork.h"
-#include "Time.h"
 #include "McUtil.h"
-
+#include "Time.h"
+#include "FrameWork.h"
 #include "Main.h"
 
 struct Point

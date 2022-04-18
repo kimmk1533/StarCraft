@@ -1,13 +1,12 @@
 #include "stdafx.h"
 
 #include "Unit.h"
-#include "Animation.h"
 
 CUnit::CUnit()
 {
 	m_Info = nullptr;
 
-	m_Animation = nullptr;
+	m_Animator = nullptr;
 }
 CUnit::~CUnit()
 {
@@ -18,14 +17,14 @@ HRESULT CUnit::Create()
 {
 	m_Info = new S_UnitInfo();
 
-	m_Animation = new CAnimation();
+	m_Animator = new CAnimator();
 
 	return S_OK;
 }
 
 void CUnit::Destroy()
 {
-	SAFE_DELETE(m_Animation);
+	SAFE_DELETE(m_Animator);
 
 	SAFE_DELETE(m_Info);
 }

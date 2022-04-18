@@ -1,5 +1,5 @@
 #pragma once
-#include "Animation.h"
+//#include "Animation.h"
 
 enum class E_AnimState
 {
@@ -34,25 +34,75 @@ enum class E_AnimState
 	Max
 };
 
-class CAnimator : CFrameWork
+class CAnimator : public CFrameWork
 {
 private:
+	E_AnimState m_AnimState;
+
 	D3DXVECTOR2 m_Position;
 	D3DXVECTOR3 m_Rotation; // x, y는 회전 중심점. z는 회전 각도(degree)
 	D3DXVECTOR2 m_Scale;
 	D3DXCOLOR	m_Color;
-	
+
+	// 키 프레임 방식 애니메이션
+	class CAnimation : public CFrameWork
+	{
+	public:
+		struct KeyFrame
+		{
+			std::shared_ptr<CLcTexture*> texture;
+			RECT size;
+			float time;
+
+			KeyFrame(std::shared_ptr<CLcTexture*> _texture, const RECT _size, float _time)
+			{
+				texture = _texture;
+				size = _size;
+				time = _time;
+			}
+		};
+
+	private:
+		CAnimator* m_Animator;		// 애니메이터
+
+		int m_iFrame;				// 현재 키 프레임
+		int m_iFrameCount;			// 키 프레임 갯수
+
+		float m_fTimeToNext;		// 1프레임 당 시간
+		float m_fTotalElapsed;		// 경과 시간(타이머)
+
+		bool m_bIsPlaying;			// 재생 여부
+
+		std::vector<KeyFrame*>* m_pKeyFrames; // 재생할 프레임들
+
+	public:
+		CAnimation(CAnimator* animator);
+		virtual ~CAnimation();
+
+		HRESULT	Create() override;
+		HRESULT	Update(const float _deltaTime) override;
+		HRESULT Render() override;
+		void	Destroy() override;
+
+	private:
+		KeyFrame* GetKeyFrame() const;
+
+	public:
+		void	AddFrame(std::shared_ptr<CLcTexture*>& _texture, const RECT _size = RECT{ 0, 0, 100, 100 }, float _time = 1.0f);
+		void	Play();
+		void	Pause();
+	};
 public:
 	CAnimator();
 	virtual ~CAnimator();
 
 	HRESULT	Create() override;
 	HRESULT	Update(const float _deltaTime) override;
-	HRESULT Render(CLcSprite* _drawer) override;
+	HRESULT Render() override;
 	void	Destroy() override;
 
 protected:
-	std::map<E_AnimState, CAnimation> m_AnimMap;
+	std::unordered_map<E_AnimState, CAnimation*>* m_AnimDictionary;
 
 public:
 	D3DXVECTOR2 Position() { return m_Position; }
@@ -71,5 +121,5 @@ public:
 	void Color(float _r, float _g = 1.0f, float _b = 1.0f, float _a = 1.0f);
 	void Color(D3DXCOLOR _color);
 
-	void AddFrame(std::shared_ptr<CLcTexture*>& _texture, const RECT _size, float _time);
+	HRESULT AddFrame(E_AnimState state, std::shared_ptr<CLcTexture*>& _texture, const RECT _size, float _time);
 };
