@@ -22,13 +22,14 @@ HRESULT CLcSprite::Create(LPD3DXSPRITE pSprite)
 }
 
 HRESULT CLcSprite::Draw(
-	LPDIRECT3DTEXTURE9 pTex,
-	const RECT* pSrcRect,
-	const D3DXVECTOR2* pScaling,		// Scaling
-	const D3DXVECTOR2* pCenter,			// Rotation Center
-	FLOAT	fAngle,						// Degree.
-	const D3DXVECTOR2* pPosition,		// Translation
-	D3DXCOLOR Color
+	LPDIRECT3DTEXTURE9	pTex,
+	const RECT*			pSrcRect,
+	const D3DXVECTOR2*	pScaling,		// Scaling
+	const D3DXVECTOR2*	pCenter,		// Rotation Center
+	FLOAT				fAngle,			// Degree.
+	const D3DXVECTOR2*	pPosition,		// Translation
+	const D3DXVECTOR3*	pOffset,		// Offset
+	D3DXCOLOR			Color
 )
 {
 	m_pDxSprite->Begin(D3DXSPRITE_ALPHABLEND);
@@ -67,7 +68,8 @@ HRESULT CLcSprite::Draw(
 	mtW = mtScl * mtRctI * mtRot * mtRct * mtTrn;
 
 	m_pDxSprite->SetTransform(&mtW);
-	m_pDxSprite->Draw(pTex, pSrcRect, NULL, NULL, Color);
+
+	m_pDxSprite->Draw(pTex, pSrcRect, pOffset, NULL, Color);
 
 	D3DXMatrixIdentity(&mtW);
 	m_pDxSprite->SetTransform(&mtW);
@@ -77,14 +79,18 @@ HRESULT CLcSprite::Draw(
 	return S_OK;
 }
 HRESULT CLcSprite::Draw(
-	LPDIRECT3DTEXTURE9 pTex,
-	const RECT* pSrcRect,
-	const D3DXVECTOR2* pScaling,		// Scaling
-	const D3DXVECTOR3* pRotation,		// Rotation
-	const D3DXVECTOR2* pPosition,		// Translation
-	D3DXCOLOR Color
+	LPDIRECT3DTEXTURE9	pTex,
+	const RECT*			pSrcRect,
+	const D3DXVECTOR2*	pScaling,		// Scaling
+	const D3DXVECTOR3*	pRotation,		// Rotation
+	const D3DXVECTOR2*	pPosition,		// Translation
+	const D3DXVECTOR3*	pOffset,		// Offset
+	D3DXCOLOR			Color
 )
 {
+	if (!pRotation)
+		return this->Draw(pTex, pSrcRect, pScaling, nullptr, 0.0f, pPosition, pOffset, Color);
+
 	D3DXVECTOR2 rotation(pRotation->x, pRotation->y);
-	return this->Draw(pTex, pSrcRect, pScaling, &rotation, pRotation->z, pPosition, Color);
+	return this->Draw(pTex, pSrcRect, pScaling, &rotation, pRotation->z, pPosition, pOffset, Color);
 }

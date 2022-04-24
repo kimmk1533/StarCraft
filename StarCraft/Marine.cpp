@@ -18,16 +18,13 @@ CMarine::~CMarine()
 
 HRESULT CMarine::Create()
 {
+	// 부모 클래스 Create
 	if (FAILED(CUnit::Create()))
-		return E_FAIL;
-
-	if (FAILED(m_Animator->Create()))
 		return E_FAIL;
 
 	// 매니저에서 관리하도록 변경해야함
 	if (!m_pTex)
 	{
-		
 		m_pTex = std::make_shared<CLcTexture*>();
 		(*m_pTex) = new CLcTexture();
 		if (FAILED((*m_pTex)->Create(m_pd3dDevice, L"Marine.png")))
@@ -40,6 +37,160 @@ HRESULT CMarine::Create()
 		}
 	}
 	//
+
+#pragma region Animation
+	if (FAILED(m_Animator->Create()))
+		return E_FAIL;
+
+	float fps = 1.0f / 18;
+	RECT rect{ 0, 0, 64, 64 };
+	std::pair<E_AnimState, E_Direction> animState;
+
+	/*
+	*  1: 0
+	*  2: 64
+	*  3: 128
+	*  4: 194
+	*  5: 256
+	*  6: 320
+	*  7: 384
+	*  8: 448
+	*  9: 512
+	* 10: 576
+	* 11: 640
+	* 12: 704
+	* 13: 768
+	*/
+	for (int i = 0; i < 16; ++i)
+	{
+		if (i < 9)
+		{
+			rect.top = i * 64;
+			rect.bottom = (i + 1) * 64;
+		}
+		else
+		{
+			rect.top = (16 - i) * 64;
+			rect.bottom = (16 - i + 1) * 64;
+		}
+
+		E_Direction direction;
+		animState.second = direction = static_cast<E_Direction>(i);
+
+#pragma region Init
+		animState.first = E_AnimState::Init;
+		rect.left = 256; rect.right = 320;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+#pragma endregion
+
+#pragma region Idle
+		animState.first = E_AnimState::Idle;
+		rect.left = 256; rect.right = 320;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+#pragma endregion
+
+#pragma region Other
+		m_Animator->SetAnimMode({ E_AnimState::Other1, direction }, E_AnimMode::Repeat_Back);
+		animState.first = E_AnimState::Other1;
+
+		rect.left = 0; rect.right = 64;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+
+		rect.left = 64; rect.right = 128;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+
+		rect.left = 128; rect.right = 192;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps * 4);
+
+		/*rect.top = (i + 1) * 64; rect.bottom = (i + 2) * 64;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+
+		rect.top = (i + 2) * 64; rect.bottom = (i + 3) * 64;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+
+		rect.top = (i + 2) * 64; rect.bottom = (i + 4) * 64;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps * 4);
+
+		rect.top = (i + 2) * 64; rect.bottom = (i + 3) * 64;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+
+		rect.top = (i + 1) * 64; rect.bottom = (i + 2) * 64;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+
+		rect.top = i * 64; rect.bottom = (i + 1) * 64;
+		rect.left = 128; rect.right = 192;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+
+		rect.left = 64; rect.right = 128;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+
+		rect.left = 0; rect.right = 64;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);*/
+#pragma endregion
+
+#pragma region GroundAttack
+		animState.first = E_AnimState::GroundAttackInit;
+		rect.left = 0; rect.right = 64;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+		rect.left = 64; rect.right = 128;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+
+		animState.first = E_AnimState::GroundAttackRepeat;
+		rect.left = 128; rect.right = 192;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+		rect.left = 192; rect.right = 256;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+
+		animState.first = E_AnimState::GroundAttackToIdle;
+		rect.left = 256; rect.right = 320;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+#pragma endregion
+
+#pragma region AirAttack
+		animState.first = E_AnimState::AirAttackInit;
+		rect.left = 0; rect.right = 64;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+		rect.left = 64; rect.right = 128;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+
+		animState.first = E_AnimState::AirAttackRepeat;
+		rect.left = 128; rect.right = 192;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+		rect.left = 192; rect.right = 256;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+
+		animState.first = E_AnimState::AirAttackToIdle;
+		rect.left = 256; rect.right = 320;
+		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+#pragma endregion
+
+#pragma region Walking
+		animState.first = E_AnimState::Walking;
+		for (int j = 4; j < 13; ++j)
+		{
+			rect.left = j * 64; rect.right = (j + 1) * 64;
+			m_Animator->AddFrame(animState, m_pTex, rect, fps);
+		}
+#pragma endregion
+
+#pragma region Death
+		m_Animator->SetAnimMode({ E_AnimState::Death, direction }, E_AnimMode::Once);
+		animState.first = E_AnimState::Death;
+
+		rect.top = 576; rect.bottom = 640;
+		for (int j = 0; j < 8; ++j)
+		{
+			rect.left = j * 64; rect.right = (j + 1) * 64;
+			m_Animator->AddFrame(animState, m_pTex, rect, fps);
+		}
+#pragma endregion
+	}
+
+	m_Animator->SetPosition(32, 32);
+	m_Animator->SetOffset(32, 32);
+	m_Animator->SetAnimState(E_AnimState::Other1);
+	m_Animator->SetDirection(E_Direction::Up);
+#pragma endregion
 
 #pragma region UnitInfo
 
@@ -86,16 +237,6 @@ HRESULT CMarine::Create()
 	m_Info->ptPixelSize = Point(17, 20);				// 충돌 크기
 
 #pragma endregion
-
-	m_Animator->AddFrame(E_AnimState::Walking, m_pTex, RECT{ 256, 256, 320, 256 + 64 }, 1.0f / 15);
-	m_Animator->AddFrame(E_AnimState::Walking, m_pTex, RECT{ 320, 256, 384, 256 + 64 }, 1.0f / 15);
-	m_Animator->AddFrame(E_AnimState::Walking, m_pTex, RECT{ 384, 256, 448, 256 + 64 }, 1.0f / 15);
-	m_Animator->AddFrame(E_AnimState::Walking, m_pTex, RECT{ 448, 256, 512, 256 + 64 }, 1.0f / 15);
-	m_Animator->AddFrame(E_AnimState::Walking, m_pTex, RECT{ 512, 256, 576, 256 + 64 }, 1.0f / 15);
-	m_Animator->AddFrame(E_AnimState::Walking, m_pTex, RECT{ 576, 256, 640, 256 + 64 }, 1.0f / 15);
-	m_Animator->AddFrame(E_AnimState::Walking, m_pTex, RECT{ 640, 256, 704, 256 + 64 }, 1.0f / 15);
-	m_Animator->AddFrame(E_AnimState::Walking, m_pTex, RECT{ 704, 256, 768, 256 + 64 }, 1.0f / 15);
-	m_Animator->AddFrame(E_AnimState::Walking, m_pTex, RECT{ 768, 256, 832, 256 + 64 }, 1.0f / 15);
 
 	return S_OK;
 }

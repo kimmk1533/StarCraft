@@ -19,11 +19,22 @@
 #include <time.h>
 #include <mmsystem.h>
 #include <iostream>
+#include <utility>
 
 #include <list>
 #include <vector>
 #include <map>
 #include <unordered_map>
+
+// 참고 https://www.techiedelight.com/use-std-pair-key-std-unordered_map-cpp/
+struct Pair_Hash
+{
+	template<class T1, class T2>
+	std::size_t operator() (const std::pair<T1, T2>& pair) const
+	{
+		return std::hash<T1>()(pair.first) ^ std::hash<T2>()(pair.second);
+	}
+};
 
 #define GMAIN			g_pApp
 //#define GHINST		g_pApp->m_hInst
@@ -37,6 +48,7 @@
 #include "Time.h"
 #include "FrameWork.h"
 #include "Main.h"
+
 
 struct Point
 {

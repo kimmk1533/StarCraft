@@ -1,35 +1,52 @@
 #pragma once
-//#include "Animation.h"
+
+enum class E_Direction;
+
+enum class E_AnimMode
+{
+	Once,						// 한 번만
+	Repeat,						// 처음부터 반복
+	Repeat_Back,				// 돌아가는 반복
+
+	Max
+};
 
 enum class E_AnimState
 {
-	Init,
-	Death,
+	Init,						// 첫 생성(유닛 태어남, 건물 1단계) 애니메이션
+	Death,						// 유닛 사망, 건물 파괴 애니메이션
 
-	Idle,
-	Other,
+	Idle,						// 아이들 애니메이션
+	Other1,						// 한동안 아무것도 안할 때 랜덤하게 나타나는 애니메이션1
+	Other2,						// 한동안 아무것도 안할 때 랜덤하게 나타나는 애니메이션2
 
-	GroundAttackInit,
-	AirAttackInit,
-	GroundAttackRepeat,
-	AirAttackRepeat,
-	CastSpell,
-	GroundAttackToIdle,
-	AirAttackToIdle,
+	GroundAttackInit,			// 지상 공격 시작 애니메이션
+	AirAttackInit,				// 공중 공격 시작 애니메이션
 
-	Walking,
-	WalkingToIdle,
+	GroundAttackRepeat,			// 지상 공격 반복 애니메이션
+	AirAttackRepeat,			// 공중 공격 반복 애니메이션
 
-	Built,
-	AlmostBuilt,
-	Landing,
-	LiftOff,
+	GroundAttackToIdle,			// 지상 공격 종료 애니메이션
+	AirAttackToIdle,			// 공중 공격 종료 애니메이션
 
-	IsWorking,
-	WorkingToIdle,
+	CastSpell,					// 마법 시전 애니메이션
 
-	Burrow,
-	UnBurrow,
+	Walking,					// 이동 애니메이션
+
+	// 일꾼 애니메이션
+	WorkingToIdle,				// 일꾼 작업 종료 애니메이션
+
+	// 건물 애니메이션
+	Built,						// 건물 건설 2단계 애니메이션
+	AlmostBuilt,				// 건물 건설 3단계 애니메이션
+	IsWorking,					// 생산 or 업그레이드 애니메이션
+	Landing,					// 테란 건물 랜딩 시작 애니메이션
+	LiftOff,					// 테란 건물 랜딩 종료 애니메이션
+
+	// 저그 버로우 애니메이션
+	BurrowInit,					// 버로우 할 때의 애니메이션
+	Burrow,						// 버로우 애니메이션
+	UnBurrow,					// 언버로우 애니메이션
 
 	Max
 };
@@ -37,13 +54,6 @@ enum class E_AnimState
 class CAnimator : public CFrameWork
 {
 private:
-	E_AnimState m_AnimState;
-
-	D3DXVECTOR2 m_Position;
-	D3DXVECTOR3 m_Rotation; // x, y는 회전 중심점. z는 회전 각도(degree)
-	D3DXVECTOR2 m_Scale;
-	D3DXCOLOR	m_Color;
-
 	// 키 프레임 방식 애니메이션
 	class CAnimation : public CFrameWork
 	{
@@ -63,17 +73,19 @@ private:
 		};
 
 	private:
-		CAnimator* m_Animator;		// 애니메이터
+		CAnimator* m_Animator;					// 자신을 재생할 애니메이터
+		E_AnimMode m_AnimMode;					// 애니메이션 재생 모드
 
-		int m_iFrame;				// 현재 키 프레임
-		int m_iFrameCount;			// 키 프레임 갯수
+		int m_iFrame;							// 현재 키 프레임
+		int m_iFrameCount;						// 키 프레임 갯수
 
-		float m_fTimeToNext;		// 1프레임 당 시간
-		float m_fTotalElapsed;		// 경과 시간(타이머)
+		float m_fTimeToNext;					// 1프레임 당 시간
+		float m_fTotalElapsed;					// 경과 시간(타이머)
 
-		bool m_bIsPlaying;			// 재생 여부
+		bool m_bIsPlaying;						// 재생 여부
+		bool m_bIsRepeat;						// 반복 모드용 변수
 
-		std::vector<KeyFrame*>* m_pKeyFrames; // 재생할 프레임들
+		std::vector<KeyFrame*>* m_pKeyFrames;	// 재생할 프레임들
 
 	public:
 		CAnimation(CAnimator* animator);
@@ -88,10 +100,24 @@ private:
 		KeyFrame* GetKeyFrame() const;
 
 	public:
-		void	AddFrame(std::shared_ptr<CLcTexture*>& _texture, const RECT _size = RECT{ 0, 0, 100, 100 }, float _time = 1.0f);
+		void	AddFrame(std::shared_ptr<CLcTexture*>& _texture, const RECT& _size = RECT{ 0, 0, 100, 100 }, float _time = 1.0f);
 		void	Play();
 		void	Pause();
+
+		E_AnimMode	GetAnimMode();
+		void SetAnimMode(const E_AnimMode& _animMode);
 	};
+
+private:
+	E_AnimState m_AnimState;
+	E_Direction m_Direction;
+
+	D3DXVECTOR2 m_Position;
+	D3DXVECTOR3 m_Rotation; // x, y는 회전 중심점. z는 회전 각도(degree)
+	D3DXVECTOR2 m_Scale;
+	D3DXVECTOR3 m_Offset;
+	D3DXCOLOR	m_Color;
+
 public:
 	CAnimator();
 	virtual ~CAnimator();
@@ -102,24 +128,44 @@ public:
 	void	Destroy() override;
 
 protected:
-	std::unordered_map<E_AnimState, CAnimation*>* m_AnimDictionary;
+	std::unordered_map<std::pair<E_AnimState, E_Direction>, CAnimation*, Pair_Hash>* m_AnimDictionary;
 
 public:
-	D3DXVECTOR2 Position() { return m_Position; }
-	void Position(float _x, float _y);
-	void Position(D3DXVECTOR2 _pos);
+	D3DXVECTOR2 GetPosition();
+	void SetPosition(float _x, float _y);
+	void SetPosition(D3DXVECTOR2 _pos);
+	void AddPosition(float _x, float _y);
+	void AddPosition(D3DXVECTOR2 _pos);
 
-	D3DXVECTOR3 Rotation() { return m_Rotation; }
-	void Rotation(float _x, float _y, float _degree);
-	void Rotation(D3DXVECTOR3 _rot);
+	D3DXVECTOR3 GetRotation();
+	void SetRotation(float _x, float _y, float _degree);
+	void SetRotation(D3DXVECTOR3 _rot);
 
-	D3DXVECTOR2 Scale() { return m_Scale; }
-	void Scale(float _x, float _y);
-	void Scale(D3DXVECTOR2 _scale);
+	D3DXVECTOR2 GetScale();
+	void SetScale(float _x, float _y);
+	void SetScale(D3DXVECTOR2 _scale);
 
-	D3DXCOLOR Color() { return m_Color; }
-	void Color(float _r, float _g = 1.0f, float _b = 1.0f, float _a = 1.0f);
-	void Color(D3DXCOLOR _color);
+	D3DXVECTOR3 GetOffset();
+	void SetOffset(float _x, float _y, float _z = 0.0f);
+	void SetOffset(D3DXVECTOR3 _offset);
 
-	HRESULT AddFrame(E_AnimState state, std::shared_ptr<CLcTexture*>& _texture, const RECT _size, float _time);
+	D3DXCOLOR GetColor();
+	void SetColor(float _r, float _g = 1.0f, float _b = 1.0f, float _a = 1.0f);
+	void SetColor(D3DXCOLOR _color);
+
+	HRESULT AddFrame(const E_AnimState& _state, const E_Direction& _direction, std::shared_ptr<CLcTexture*>& _texture, const RECT _size, float _time);
+	HRESULT AddFrame(const std::pair<E_AnimState, E_Direction>& _condition, std::shared_ptr<CLcTexture*>& _texture, const RECT _size, float _time);
+	BOOL HasAnimState(const E_AnimState& _state, const E_Direction& _direction);
+	BOOL HasAnimState(const std::pair<E_AnimState, E_Direction>& _condition);
+
+	E_AnimState GetAnimState();
+	void SetAnimState(const E_AnimState& _state);
+	void SetAnimState(const E_AnimState& _state, const E_Direction& _direction);
+	void SetAnimState(const std::pair<E_AnimState, E_Direction>& _condition);
+
+	E_Direction GetDirection();
+	void SetDirection(const E_Direction& _direction);
+
+	void SetAnimMode(const E_AnimState& _state, const E_Direction& _direction, const E_AnimMode& _animMode);
+	void SetAnimMode(const std::pair<E_AnimState, E_Direction>& _condition, const E_AnimMode& _animMode);
 };
