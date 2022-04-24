@@ -11,6 +11,7 @@ protected:
 
 	static CTime*					m_Time;				// System Time
 	static CLcSprite*				m_pLcSprite;		// 2D를 출력하기 위한 객체
+	static CLcInput*				m_pLcInput;			// 입력을 위한 객체
 	
 public:
 	// 게임 관련 함수들
@@ -19,6 +20,4 @@ public:
 	virtual HRESULT	Render() = 0;
 	virtual void	Destroy() = 0;
 
-public:
-	CFrameWork();
 };

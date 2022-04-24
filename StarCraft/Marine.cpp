@@ -244,6 +244,32 @@ HRESULT CMarine::Update(const float deltaTime)
 {
 	m_Animator->Update(deltaTime);
 
+	if (m_pLcInput->KeyDown(E_KeyCode::A))
+	{
+		m_Animator->SetAnimState(E_AnimState::Walking);
+	}
+	if (m_pLcInput->KeyPress(E_KeyCode::A))
+	{
+		m_Animator->AddPosition(D3DXVECTOR2(-m_Info->fMoveSpeed, 0.0f));
+	}
+	if (m_pLcInput->KeyUp(E_KeyCode::A))
+	{
+		m_Animator->SetAnimState(E_AnimState::Idle);
+	}
+
+	if (m_pLcInput->KeyDown(E_KeyCode::D))
+	{
+		m_Animator->SetAnimState(E_AnimState::Walking);
+	}
+	if (m_pLcInput->KeyPress(E_KeyCode::D))
+	{
+		m_Animator->AddPosition(D3DXVECTOR2(m_Info->fMoveSpeed, 0.0f));
+	}
+	if (m_pLcInput->KeyUp(E_KeyCode::D))
+	{
+		m_Animator->SetAnimState(E_AnimState::Idle);
+	}
+
 	return S_OK;
 }
 HRESULT CMarine::Render()

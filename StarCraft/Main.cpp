@@ -138,6 +138,9 @@ HRESULT CMain::Run()
 		{
 			m_Time->Update();
 
+			if (FAILED(m_pLcInput->Update()))
+				return E_FAIL;
+
 			if (FAILED(RPR()))
 				break;
 
@@ -166,16 +169,10 @@ HRESULT CMain::RPR()
 		return E_FAIL;
 
 	if (FAILED(Update(m_Time->DeltaTime())))
-	{
-		MessageBox(NULL, L"Error: Update()", L"Error!", MB_OK);
 		return E_FAIL;
-	}
 
 	if (FAILED(Render()))
-	{
-		MessageBox(NULL, L"Error: Render()", L"Error!", MB_OK);
 		return E_FAIL;
-	}
 
 	return S_OK;
 }
@@ -184,6 +181,10 @@ HRESULT CMain::Create()
 {
 	m_pLcSprite = new CLcSprite();
 	if (FAILED(m_pLcSprite->Create(m_pd3dSprite)))
+		return E_FAIL;
+
+	m_pLcInput = new CLcInput();
+	if (FAILED(m_pLcInput->Create(m_hWnd)))
 		return E_FAIL;
 
 	m_Marine = new CMarine();
@@ -196,6 +197,7 @@ HRESULT CMain::Create()
 void CMain::Destroy()
 {
 	SAFE_DELETE(m_Marine);
+	SAFE_DELETE(m_pLcInput);
 	SAFE_DELETE(m_pLcSprite);
 }
 

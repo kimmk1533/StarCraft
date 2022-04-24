@@ -189,7 +189,7 @@ bool CLcInput::KeyDown(E_KeyCode nKey)
 	{
 		MessageBox(m_hWnd,
 			L"키보드 입력 에러",
-			L"Err",
+			L"Error!",
 			0);
 
 		return FALSE;
@@ -203,7 +203,7 @@ bool CLcInput::KeyUp(E_KeyCode nKey)
 	{
 		MessageBox(m_hWnd,
 			L"키보드 입력 에러",
-			L"Err",
+			L"Error!",
 			0);
 
 		return FALSE;
@@ -217,7 +217,7 @@ bool CLcInput::KeyPress(E_KeyCode nKey)
 	{
 		MessageBox(m_hWnd,
 			L"키보드 입력 에러",
-			L"Err",
+			L"Error!",
 			0);
 
 		return FALSE;
@@ -231,7 +231,7 @@ CLcInput::E_InputState CLcInput::KeyState(E_KeyCode nKey)
 	{
 		MessageBox(m_hWnd,
 			L"키보드 입력 에러",
-			L"Err",
+			L"Error!",
 			0);
 
 		return E_InputState::INPUT_ERROR;
@@ -247,7 +247,7 @@ bool CLcInput::BtnDown(E_KeyCode nBtn)
 	{
 		MessageBox(m_hWnd,
 			L"마우스 입력 에러",
-			L"Err",
+			L"Error!",
 			0);
 
 		return FALSE;
@@ -261,7 +261,7 @@ bool CLcInput::BtnUp(E_KeyCode nBtn)
 	{
 		MessageBox(m_hWnd,
 			L"마우스 입력 에러",
-			L"Err",
+			L"Error!",
 			0);
 
 		return FALSE;
@@ -275,7 +275,7 @@ bool CLcInput::BtnPress(E_KeyCode nBtn)
 	{
 		MessageBox(m_hWnd,
 			L"마우스 입력 에러",
-			L"Err",
+			L"Error!",
 			0);
 
 		return FALSE;
@@ -289,7 +289,7 @@ CLcInput::E_InputState CLcInput::BtnState(E_KeyCode nBtn)
 	{
 		MessageBox(m_hWnd,
 			L"마우스 입력 에러",
-			L"Err",
+			L"Error!",
 			0);
 
 		return E_InputState::INPUT_ERROR;
