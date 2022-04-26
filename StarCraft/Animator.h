@@ -4,9 +4,9 @@ enum class E_Direction;
 
 enum class E_AnimMode
 {
-	Once,						// 한 번만
-	Repeat,						// 처음부터 반복
-	Repeat_Back,				// 돌아가는 반복
+	Once,						// 한 번만 재생
+	Repeat,						// 처음부터 반복 재생
+	Repeat_Back,				// 돌아가는 반복 재생
 
 	Max
 };
@@ -86,6 +86,7 @@ private:
 		bool m_bIsRepeat;						// 반복 모드용 변수
 
 		std::vector<KeyFrame*>* m_pKeyFrames;	// 재생할 프레임들
+		std::unordered_map<int, std::vector<std::function<void()>>>* m_pFuncs;
 
 	public:
 		CAnimation(CAnimator* animator);
@@ -101,9 +102,11 @@ private:
 
 	public:
 		void	AddFrame(std::shared_ptr<CLcTexture*>& _texture, const RECT& _size = RECT{ 0, 0, 100, 100 }, float _time = 1.0f);
+		HRESULT	AddFunc(int _frameCount, std::function<void()> _func);
 		void	Play();
 		void	Pause();
 
+		int GetFrameCount();
 		E_AnimMode	GetAnimMode();
 		void SetAnimMode(const E_AnimMode& _animMode);
 	};
@@ -155,8 +158,10 @@ public:
 
 	HRESULT AddFrame(const E_AnimState& _state, const E_Direction& _direction, std::shared_ptr<CLcTexture*>& _texture, const RECT _size, float _time);
 	HRESULT AddFrame(const std::pair<E_AnimState, E_Direction>& _condition, std::shared_ptr<CLcTexture*>& _texture, const RECT _size, float _time);
-	BOOL HasAnimState(const E_AnimState& _state, const E_Direction& _direction);
-	BOOL HasAnimState(const std::pair<E_AnimState, E_Direction>& _condition);
+	bool HasAnimState(const E_AnimState& _state, const E_Direction& _direction);
+	bool HasAnimState(const std::pair<E_AnimState, E_Direction>& _condition);
+
+	INT GetFrameCount(const E_AnimState& _state, const E_Direction& _direction);
 
 	E_AnimState GetAnimState();
 	void SetAnimState(const E_AnimState& _state);
@@ -166,6 +171,15 @@ public:
 	E_Direction GetDirection();
 	void SetDirection(const E_Direction& _direction);
 
+	// 모든 방향에 대하여 설정
+	void SetAnimMode(const E_AnimState& _state, const E_AnimMode& _animMode);
+	// 특정 방향에 대하여 설정
 	void SetAnimMode(const E_AnimState& _state, const E_Direction& _direction, const E_AnimMode& _animMode);
 	void SetAnimMode(const std::pair<E_AnimState, E_Direction>& _condition, const E_AnimMode& _animMode);
+
+	HRESULT AddFunc(const E_AnimState& _state, int _frameCount, std::function<void()> _func);
+	HRESULT AddFunc(const E_AnimState& _state, const E_Direction& _direction, std::function<void()> _func);
+	HRESULT AddFunc(const std::pair<E_AnimState, E_Direction>& _condition, std::function<void()> _func);
+	HRESULT AddFunc(const E_AnimState& _state, const E_Direction& _direction, int _frameCount, std::function<void()> _func);
+	HRESULT AddFunc(const std::pair<E_AnimState, E_Direction>& _condition, int _frameCount, std::function<void()> _func);
 };

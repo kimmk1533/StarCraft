@@ -17,6 +17,7 @@ CAnimator::CAnimation::CAnimation(CAnimator* animator)
 	m_bIsRepeat = false;
 
 	m_pKeyFrames = nullptr;
+	m_pFuncs = nullptr;
 }
 CAnimator::CAnimator::CAnimation::~CAnimation()
 {
@@ -26,6 +27,7 @@ CAnimator::CAnimator::CAnimation::~CAnimation()
 HRESULT CAnimator::CAnimation::Create()
 {
 	m_pKeyFrames = new std::vector<KeyFrame*>();
+	m_pFuncs = new std::unordered_map<int, std::vector<std::function<void()>>>();
 
 	return S_OK;
 }
@@ -67,6 +69,11 @@ HRESULT CAnimator::CAnimation::Update(const float _deltaTime)
 		default:
 			MessageBox(nullptr, L"Error: Animation Mode", L"Error!", MB_OK);
 			return E_FAIL;
+		}
+
+		for (auto item : (*m_pFuncs)[m_iFrame])
+		{
+			item();
 		}
 
 		KeyFrame* keyframe = GetKeyFrame();
@@ -115,6 +122,7 @@ void CAnimator::CAnimation::Destroy()
 		SAFE_DELETE(item);
 
 	SAFE_DELETE(m_pKeyFrames);
+	SAFE_DELETE(m_pFuncs);
 }
 
 CAnimator::CAnimation::KeyFrame* CAnimator::CAnimation::GetKeyFrame() const
@@ -134,6 +142,15 @@ void CAnimator::CAnimation::AddFrame(std::shared_ptr<CLcTexture*>& _texture, con
 	if (m_iFrameCount++ == 0)
 		m_fTimeToNext = _time;
 }
+HRESULT CAnimator::CAnimation::AddFunc(int _frameCount, std::function<void()> _func)
+{
+	if (_frameCount < 0 || _frameCount >= m_iFrameCount)
+		return E_FAIL;
+
+	(*m_pFuncs)[_frameCount].push_back(_func);
+
+	return S_OK;
+}
 void CAnimator::CAnimation::Play()
 {
 	m_bIsPlaying = true;
@@ -143,6 +160,10 @@ void CAnimator::CAnimation::Pause()
 	m_bIsPlaying = false;
 }
 
+int CAnimator::CAnimation::GetFrameCount()
+{
+	return m_iFrameCount;
+}
 E_AnimMode CAnimator::CAnimation::GetAnimMode()
 {
 	return m_AnimMode;
@@ -336,13 +357,18 @@ HRESULT CAnimator::AddFrame(const std::pair<E_AnimState, E_Direction>& _conditio
 	return S_OK;
 }
 
-BOOL CAnimator::HasAnimState(const E_AnimState& _state, const E_Direction& _direction)
+bool CAnimator::HasAnimState(const E_AnimState& _state, const E_Direction& _direction)
 {
 	return this->HasAnimState({ _state, _direction });
 }
-BOOL CAnimator::HasAnimState(const std::pair<E_AnimState, E_Direction>& _condition)
+bool CAnimator::HasAnimState(const std::pair<E_AnimState, E_Direction>& _condition)
 {
 	return m_AnimDictionary->count(_condition);
+}
+
+INT CAnimator::GetFrameCount(const E_AnimState& _state, const E_Direction& _direction)
+{
+	return (*m_AnimDictionary)[{ _state, _direction }]->GetFrameCount();
 }
 
 E_AnimState CAnimator::GetAnimState() { return m_AnimState; }
@@ -375,6 +401,15 @@ void CAnimator::SetDirection(const E_Direction& _direction)
 	m_Direction = _direction;
 }
 
+void CAnimator::SetAnimMode(const E_AnimState& _state, const E_AnimMode& _animMode)
+{
+	int max = static_cast<int>(E_Direction::Max);
+	for (int i = 0; i < max; ++i)
+	{
+		E_Direction dir = static_cast<E_Direction>(i);
+		this->SetAnimMode({ _state, dir }, _animMode);
+	}
+}
 void CAnimator::SetAnimMode(const E_AnimState& _state, const E_Direction& _direction, const E_AnimMode& _animMode)
 {
 	this->SetAnimMode({ _state, _direction }, _animMode);
@@ -382,4 +417,33 @@ void CAnimator::SetAnimMode(const E_AnimState& _state, const E_Direction& _direc
 void CAnimator::SetAnimMode(const std::pair<E_AnimState, E_Direction>& _condition, const E_AnimMode& _animMode)
 {
 	(*m_AnimDictionary)[_condition]->SetAnimMode(_animMode);
+}
+
+HRESULT CAnimator::AddFunc(const E_AnimState& _state, int _frameCount, std::function<void()> _func)
+{
+	int max = static_cast<int>(E_Direction::Max);
+	for (int i = 0; i < max; ++i)
+	{
+		E_Direction dir = static_cast<E_Direction>(i);
+		if (FAILED(this->AddFunc({ _state, dir }, _frameCount, _func)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+HRESULT CAnimator::AddFunc(const E_AnimState& _state, const E_Direction& _direction, std::function<void()> _func)
+{
+	return this->AddFunc({ _state, _direction }, (*m_AnimDictionary)[{_state, _direction}]->GetFrameCount() - 1, _func);
+}
+HRESULT CAnimator::AddFunc(const std::pair<E_AnimState, E_Direction>& _condition, std::function<void()> _func)
+{
+	return this->AddFunc(_condition, (*m_AnimDictionary)[_condition]->GetFrameCount() - 1, _func);
+}
+HRESULT CAnimator::AddFunc(const E_AnimState& _state, const E_Direction& _direction, int _frameCount, std::function<void()> _func)
+{
+	return this->AddFunc({ _state, _direction }, _frameCount, _func);
+}
+HRESULT CAnimator::AddFunc(const std::pair<E_AnimState, E_Direction>& _condition, int _frameCount, std::function<void()> _func)
+{
+	return (*m_AnimDictionary)[_condition]->AddFunc(_frameCount, _func);
 }

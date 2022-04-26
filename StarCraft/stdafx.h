@@ -20,6 +20,7 @@
 #include <mmsystem.h>
 #include <iostream>
 #include <utility>
+#include <functional>
 
 #include <list>
 #include <vector>

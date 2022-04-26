@@ -134,6 +134,9 @@ HRESULT CMarine::Create()
 		m_Animator->AddFrame(animState, m_pTex, rect, fps);
 		rect.left = 64; rect.right = 128;
 		m_Animator->AddFrame(animState, m_pTex, rect, fps);
+		m_Animator->AddFunc(animState, [&] {
+			m_Animator->SetAnimState(E_AnimState::GroundAttackRepeat);
+			});
 
 		animState.first = E_AnimState::GroundAttackRepeat;
 		rect.left = 128; rect.right = 192;
@@ -186,10 +189,16 @@ HRESULT CMarine::Create()
 #pragma endregion
 	}
 
+	/*m_Animator->AddFunc(E_AnimState::GroundAttackInit,
+		1,
+		[&] {
+			m_Animator->SetAnimState(E_AnimState::GroundAttackRepeat);
+		});*/
+
 	m_Animator->SetPosition(32, 32);
 	m_Animator->SetOffset(32, 32);
-	m_Animator->SetAnimState(E_AnimState::Other1);
-	m_Animator->SetDirection(E_Direction::Up);
+	m_Animator->SetAnimState(E_AnimState::GroundAttackInit);
+	m_Animator->SetDirection(E_Direction::Right);
 #pragma endregion
 
 #pragma region UnitInfo
