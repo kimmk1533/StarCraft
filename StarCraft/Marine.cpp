@@ -42,6 +42,7 @@ HRESULT CMarine::Create()
 	if (FAILED(m_Animator->Create()))
 		return E_FAIL;
 
+	int max = static_cast<int>(E_Direction::Max);
 	float fps = 1.0f / 18;
 	RECT rect{ 0, 0, 64, 64 };
 	std::pair<E_AnimState, E_Direction> animState;
@@ -61,7 +62,7 @@ HRESULT CMarine::Create()
 	* 12: 704
 	* 13: 768
 	*/
-	for (int i = 0; i < 16; ++i)
+	for (int i = 0; i < max; ++i)
 	{
 		if (i < 9)
 		{
@@ -195,10 +196,8 @@ HRESULT CMarine::Create()
 			m_Animator->SetAnimState(E_AnimState::GroundAttackRepeat);
 		});*/
 
-	m_Animator->SetPosition(32, 32);
 	m_Animator->SetOffset(32, 32);
 	m_Animator->SetAnimState(E_AnimState::GroundAttackInit);
-	m_Animator->SetDirection(E_Direction::Right);
 #pragma endregion
 
 #pragma region UnitInfo
@@ -215,7 +214,7 @@ HRESULT CMarine::Create()
 
 	// 이동
 	m_Info->bIsMovable = true;							// 이동 가능 여부
-	m_Info->fMoveSpeed = 1.875F;						// 이동 속도
+	m_Info->fMoveSpeed = 4.0f;							// 이동 속도
 	m_Info->bIsAir = FALSE;								// 공중 유닛인지
 
 	// 공격
@@ -249,17 +248,58 @@ HRESULT CMarine::Create()
 
 	return S_OK;
 }
-HRESULT CMarine::Update(const float deltaTime)
+HRESULT CMarine::Update(const float _deltaTime)
 {
-	m_Animator->Update(deltaTime);
+	m_Animator->Update(_deltaTime);
 
-	if (m_pLcInput->KeyDown(E_KeyCode::A))
+	if (m_pLcInput->BtnDown(E_KeyCode::MouseRightButton))
+	{
+		//m_Animator->SetPosition(32, 32);
+
+		D3DXVECTOR3 mousePos = m_pLcInput->GetMousePos();
+		m_TargetPos = D3DXVECTOR2(mousePos.x, mousePos.y);
+	}
+
+	D3DXVECTOR2 d = m_TargetPos - m_Position;
+	float length = D3DXVec2Length(&d);
+
+	if (length > 0.01f)
+	{
+		float dx = d.x;
+		float dy = d.y;
+
+		float radian = atan2f(dx, dy);
+		float speed = m_Info->fMoveSpeed * 32 * _deltaTime;
+
+		D3DXVECTOR2 vcMove(1, 1);
+
+		float move = fminf(length, speed);
+
+		vcMove.x *= move * sinf(radian);
+		vcMove.y *= move * cosf(radian);
+
+		m_Animator->AddPosition(vcMove);
+		m_Position = m_Animator->GetPosition();
+
+		static const float degree_unit = 360.0f / static_cast<int>(E_Direction::Max);
+		float theta = 180.0f - D3DXToDegree(radian);
+		std::cout << "theta:" << theta << "\n";
+		E_Direction dir = static_cast<E_Direction>(theta / degree_unit);
+
+		m_Animator->SetAnimState(E_AnimState::Walking, dir);
+	}
+	else
+	{
+		m_Animator->SetAnimState(E_AnimState::Idle);
+	}
+
+	/*if (m_pLcInput->KeyDown(E_KeyCode::A))
 	{
 		m_Animator->SetAnimState(E_AnimState::Walking);
 	}
 	if (m_pLcInput->KeyPress(E_KeyCode::A))
 	{
-		m_Animator->AddPosition(D3DXVECTOR2(-m_Info->fMoveSpeed, 0.0f));
+		m_Animator->AddPosition(D3DXVECTOR2(-m_Info->fMoveSpeed * _deltaTime, 0.0f));
 	}
 	if (m_pLcInput->KeyUp(E_KeyCode::A))
 	{
@@ -272,12 +312,12 @@ HRESULT CMarine::Update(const float deltaTime)
 	}
 	if (m_pLcInput->KeyPress(E_KeyCode::D))
 	{
-		m_Animator->AddPosition(D3DXVECTOR2(m_Info->fMoveSpeed, 0.0f));
+		m_Animator->AddPosition(D3DXVECTOR2(m_Info->fMoveSpeed * _deltaTime, 0.0f));
 	}
 	if (m_pLcInput->KeyUp(E_KeyCode::D))
 	{
 		m_Animator->SetAnimState(E_AnimState::Idle);
-	}
+	}*/
 
 	return S_OK;
 }

@@ -94,3 +94,8 @@ S_UnitInfo& S_UnitInfo::operator=(const S_UnitInfo& s)
 
 	return *this;
 }
+
+bool S_UnitInfo::IsMovable()
+{
+	return this->bIsMovable;
+}

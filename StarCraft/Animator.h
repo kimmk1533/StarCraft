@@ -1,8 +1,8 @@
 #pragma once
 
-enum class E_Direction;
+enum class E_Direction : unsigned char;
 
-enum class E_AnimMode
+enum class E_AnimMode : unsigned char
 {
 	Once,						// 한 번만 재생
 	Repeat,						// 처음부터 반복 재생
@@ -11,7 +11,7 @@ enum class E_AnimMode
 	Max
 };
 
-enum class E_AnimState
+enum class E_AnimState : unsigned char
 {
 	Init,						// 첫 생성(유닛 태어남, 건물 1단계) 애니메이션
 	Death,						// 유닛 사망, 건물 파괴 애니메이션
@@ -114,6 +114,7 @@ private:
 private:
 	E_AnimState m_AnimState;
 	E_Direction m_Direction;
+	E_Direction m_TargetDir;
 
 	D3DXVECTOR2 m_Position;
 	D3DXVECTOR3 m_Rotation; // x, y는 회전 중심점. z는 회전 각도(degree)

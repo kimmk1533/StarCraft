@@ -1,27 +1,33 @@
 #pragma once
 #include "stdafx.h"
 
-enum class E_RaceType
+enum class E_RaceType : unsigned char
 {
 	Neutral,
 	Protoss,
 	Terran,
-	Zerg
+	Zerg,
+
+	Max
 };
-enum class E_UnitAtkType
+enum class E_UnitAtkType : unsigned char
 {
 	None,
 	NormalType,
 	ExplosiveType,
 	ConcussiveType,
 	SpellType,
+
+	Max
 };
-enum class E_UnitDefType
+enum class E_UnitDefType : unsigned char
 {
 	None,
 	SmallType,
 	MediumType,
 	LargeType,
+
+	Max
 };
 
 struct S_UnitInfo
@@ -73,4 +79,6 @@ public:
 	S_UnitInfo();
 	S_UnitInfo(const S_UnitInfo& s);
 	S_UnitInfo& operator=(const S_UnitInfo& s);
+
+	bool IsMovable();
 };

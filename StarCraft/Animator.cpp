@@ -76,6 +76,30 @@ HRESULT CAnimator::CAnimation::Update(const float _deltaTime)
 			item();
 		}
 
+		if (m_Animator->m_TargetDir != m_Animator->m_Direction)
+		{
+			static const float radian_unit = D3DXToRadian(360.0f / static_cast<int>(E_Direction::Max));
+
+			int target = static_cast<int>(m_Animator->m_TargetDir);
+			int direction = static_cast<int>(m_Animator->m_Direction);
+
+			D3DXVECTOR2 target_dir(sinf(target * radian_unit), cosf(target * radian_unit));
+			D3DXVECTOR2 dir(sinf(direction * radian_unit), cosf(direction * radian_unit));
+
+			D3DXVECTOR2 target_normal, dir_normal;
+
+			D3DXVec2Normalize(&target_normal, &target_dir);
+			D3DXVec2Normalize(&dir_normal, &dir);
+
+			float ccw = D3DXVec2CCW(&dir_normal, &target_normal);
+
+			ccw < 0 ? ++direction : --direction;
+
+			direction = (static_cast<int>(E_Direction::Max) + direction) % static_cast<int>(E_Direction::Max);
+
+			m_Animator->m_Direction = static_cast<E_Direction>(direction);
+		}
+
 		KeyFrame* keyframe = GetKeyFrame();
 		if (!keyframe)
 			return E_FAIL;
@@ -181,6 +205,7 @@ CAnimator::CAnimator()
 {
 	m_AnimState = E_AnimState::Init;
 	m_Direction = E_Direction::Right_Down_Down;
+	m_TargetDir = m_Direction;
 
 	m_Position = D3DXVECTOR2(0.0f, 0.0f);
 	m_Rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -374,6 +399,9 @@ INT CAnimator::GetFrameCount(const E_AnimState& _state, const E_Direction& _dire
 E_AnimState CAnimator::GetAnimState() { return m_AnimState; }
 void CAnimator::SetAnimState(const E_AnimState& _state)
 {
+	if (m_AnimState == _state)
+		return;
+
 	if (!HasAnimState(_state, m_Direction))
 		return;
 
@@ -385,11 +413,15 @@ void CAnimator::SetAnimState(const E_AnimState& _state, const E_Direction& _dire
 }
 void CAnimator::SetAnimState(const std::pair<E_AnimState, E_Direction>& _condition)
 {
+	if (m_AnimState == _condition.first &&
+		m_TargetDir == _condition.second)
+		return;
+
 	if (!HasAnimState(_condition))
 		return;
 
 	m_AnimState = _condition.first;
-	m_Direction = _condition.second;
+	m_TargetDir = _condition.second;
 }
 
 E_Direction CAnimator::GetDirection() { return m_Direction; }
@@ -398,7 +430,7 @@ void CAnimator::SetDirection(const E_Direction& _direction)
 	if (!HasAnimState(m_AnimState, _direction))
 		return;
 
-	m_Direction = _direction;
+	m_TargetDir = _direction;
 }
 
 void CAnimator::SetAnimMode(const E_AnimState& _state, const E_AnimMode& _animMode)
