@@ -1,6 +1,4 @@
 #pragma once
-#pragma comment(linker, "/subsystem:windows")
-
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
@@ -16,7 +14,6 @@
 #include <malloc.h>
 #include <memory>
 #include <tchar.h>
-#include <time.h>
 #include <mmsystem.h>
 #include <iostream>
 #include <utility>
@@ -37,7 +34,7 @@ struct Pair_Hash
 	}
 };
 
-#define GMAIN			g_pApp
+//#define GMAIN			g_pApp
 //#define GHINST		g_pApp->m_hInst
 //#define GHWND			g_pApp->m_hWnd
 
@@ -48,7 +45,7 @@ struct Pair_Hash
 #include "McUtil.h"
 #include "Time.h"
 #include "FrameWork.h"
-#include "Main.h"
+#include "Engine.h"
 
 
 struct Point

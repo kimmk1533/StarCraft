@@ -1,6 +1,10 @@
 #pragma once
 #include "UnitInfo.h"
-#include "Animator.h"
+//#include <stdafx.h>
+#include "..\..\CoreEngine\Scripts\stdafx.h"
+
+//#include <Animator.h>
+#include "..\..\CoreEngine\Scripts\Animator.h"
 
 class CUnit : public CFrameWork
 {

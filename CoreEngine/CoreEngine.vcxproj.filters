@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Core">
+      <UniqueIdentifier>{80815e4a-6b37-4051-a5d8-02d8634f03fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header File">
+      <UniqueIdentifier>{e013dc35-a375-4d09-9bbf-f5ba3bc2fc03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File">
+      <UniqueIdentifier>{d271f095-f6f8-4f7a-bc97-0ae1f00a7654}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Scripts\Singleton.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\McUtil.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\stdafx.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Animator.h">
+      <Filter>Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Engine.h">
+      <Filter>Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\FrameWork.h">
+      <Filter>Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\LcInput.h">
+      <Filter>Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\LcSprite.h">
+      <Filter>Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\LcTexture.h">
+      <Filter>Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Time.h">
+      <Filter>Header File</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Scripts\Animator.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Engine.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\FrameWork.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\LcInput.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\LcSprite.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\LcTexture.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Time.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

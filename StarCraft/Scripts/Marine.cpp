@@ -1,8 +1,11 @@
-#include "stdafx.h"
+//#include <stdafx.h>
+#include "..\..\CoreEngine\Scripts\stdafx.h"
 
 #include "Marine.h"
 
 //CLcTexture* CMarine::m_pTex = nullptr;
+
+#define DEBUG_FPS 24
 
 CMarine::CMarine()
 {
@@ -43,7 +46,7 @@ HRESULT CMarine::Create()
 		return E_FAIL;
 
 	int max = static_cast<int>(E_Direction::Max);
-	float fps = 1.0f / 18;
+	float fps = 1.0f / DEBUG_FPS;
 	RECT rect{ 0, 0, 64, 64 };
 	std::pair<E_AnimState, E_Direction> animState;
 
@@ -250,8 +253,6 @@ HRESULT CMarine::Create()
 }
 HRESULT CMarine::Update(const float _deltaTime)
 {
-	m_Animator->Update(_deltaTime);
-
 	if (m_pLcInput->BtnDown(E_KeyCode::MouseRightButton))
 	{
 		//m_Animator->SetPosition(32, 32);
@@ -269,7 +270,11 @@ HRESULT CMarine::Update(const float _deltaTime)
 		float dy = d.y;
 
 		float radian = atan2f(dx, dy);
-		float speed = m_Info->fMoveSpeed * 32 * _deltaTime;
+		float speed = m_Info->fMoveSpeed * DEBUG_FPS / 15.0f * 32 * _deltaTime;
+
+		// 4 : 15 = x : 24
+		// 15x = 4 * 24
+		// x = (4 * 24) / 15
 
 		D3DXVECTOR2 vcMove(1, 1);
 
@@ -282,8 +287,8 @@ HRESULT CMarine::Update(const float _deltaTime)
 		m_Position = m_Animator->GetPosition();
 
 		static const float degree_unit = 360.0f / static_cast<int>(E_Direction::Max);
-		float theta = 180.0f - D3DXToDegree(radian);
-		std::cout << "theta:" << theta << "\n";
+		float theta = 180.0f + degree_unit * 0.5f - D3DXToDegree(radian);
+		//std::cout << "theta:" << theta << "\n";
 		E_Direction dir = static_cast<E_Direction>(theta / degree_unit);
 
 		m_Animator->SetAnimState(E_AnimState::Walking, dir);
@@ -292,6 +297,8 @@ HRESULT CMarine::Update(const float _deltaTime)
 	{
 		m_Animator->SetAnimState(E_AnimState::Idle);
 	}
+
+	m_Animator->Update(_deltaTime);
 
 	/*if (m_pLcInput->KeyDown(E_KeyCode::A))
 	{

@@ -82,6 +82,7 @@ HRESULT CAnimator::CAnimation::Update(const float _deltaTime)
 
 			int target = static_cast<int>(m_Animator->m_TargetDir);
 			int direction = static_cast<int>(m_Animator->m_Direction);
+			int max = static_cast<int>(E_Direction::Max);
 
 			D3DXVECTOR2 target_dir(sinf(target * radian_unit), cosf(target * radian_unit));
 			D3DXVECTOR2 dir(sinf(direction * radian_unit), cosf(direction * radian_unit));
@@ -95,7 +96,10 @@ HRESULT CAnimator::CAnimation::Update(const float _deltaTime)
 
 			ccw < 0 ? ++direction : --direction;
 
-			direction = (static_cast<int>(E_Direction::Max) + direction) % static_cast<int>(E_Direction::Max);
+			if (direction < 0 || direction >= max)
+			direction = (max + direction) % max;
+
+			std::cout << "direction: " << direction << "\n";
 
 			m_Animator->m_Direction = static_cast<E_Direction>(direction);
 		}

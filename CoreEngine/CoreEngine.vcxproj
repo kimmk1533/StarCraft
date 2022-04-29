@@ -18,37 +18,16 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Scripts\CMain.cpp" />
-    <ClCompile Include="Scripts\Marine.cpp" />
-    <ClCompile Include="Scripts\Unit.cpp" />
-    <ClCompile Include="Scripts\UnitInfo.cpp" />
-    <ClCompile Include="Scripts\UnitManager.cpp" />
-    <ClCompile Include="Scripts\WinMain.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Scripts\CMain.h" />
-    <ClInclude Include="Scripts\Marine.h" />
-    <ClInclude Include="Scripts\Unit.h" />
-    <ClInclude Include="Scripts\UnitInfo.h" />
-    <ClInclude Include="Scripts\UnitManager.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CoreEngine\CoreEngine.vcxproj">
-      <Project>{55f6299a-3e5c-4341-b491-8257e9f0efc4}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{692d6577-8c97-4cdd-b7ad-bda8262d6e7e}</ProjectGuid>
-    <RootNamespace>StarCraft</RootNamespace>
+    <ProjectGuid>{55f6299a-3e5c-4341-b491-8257e9f0efc4}</ProjectGuid>
+    <RootNamespace>CoreEngine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>StarCraft</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -163,6 +142,27 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Scripts\Animator.h" />
+    <ClInclude Include="Scripts\FrameWork.h" />
+    <ClInclude Include="Scripts\LcInput.h" />
+    <ClInclude Include="Scripts\LcSprite.h" />
+    <ClInclude Include="Scripts\LcTexture.h" />
+    <ClInclude Include="Scripts\Engine.h" />
+    <ClInclude Include="Scripts\McUtil.h" />
+    <ClInclude Include="Scripts\Singleton.h" />
+    <ClInclude Include="Scripts\stdafx.h" />
+    <ClInclude Include="Scripts\Time.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Scripts\Animator.cpp" />
+    <ClCompile Include="Scripts\FrameWork.cpp" />
+    <ClCompile Include="Scripts\LcInput.cpp" />
+    <ClCompile Include="Scripts\LcSprite.cpp" />
+    <ClCompile Include="Scripts\LcTexture.cpp" />
+    <ClCompile Include="Scripts\Engine.cpp" />
+    <ClCompile Include="Scripts\Time.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

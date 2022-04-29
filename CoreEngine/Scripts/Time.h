@@ -13,7 +13,7 @@ private:
 	static std::unique_ptr<LARGE_INTEGER>	m_CurrentTime;
 	static std::unique_ptr<LARGE_INTEGER>	m_LastTime;
 	static std::unique_ptr<float>			m_DeltaTime;
-	static std::unique_ptr<double>			m_TimeScale;
+	static std::unique_ptr<float>			m_TimeScale;
 
 public:
 	CTime();

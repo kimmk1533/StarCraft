@@ -1,5 +1,6 @@
 #pragma once
-#include "stdafx.h"
+//#include <stdafx.h>
+#include "..\..\CoreEngine\Scripts\stdafx.h"
 
 enum class E_RaceType : unsigned char
 {
@@ -68,13 +69,12 @@ public:
 	bool bCanUseEnergy;				// 에너지 사용 여부
 	FLOAT fMaxEnergy;				// 최대 에너지
 	FLOAT fEnergy;					// 에너지
-	
+
 	// 시야
 	FLOAT fVisualRange;				// 시야 거리
 
 	// 충돌 크기
 	Point ptPixelSize;		// 충돌 크기
-
 public:
 	S_UnitInfo();
 	S_UnitInfo(const S_UnitInfo& s);

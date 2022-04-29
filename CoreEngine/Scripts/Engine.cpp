@@ -1,23 +1,22 @@
 #include "stdafx.h"
 
-#include "Unit.h"
-#include "Marine.h"
+const LPCWSTR	CEngine::m_Title = LPCWSTR(L"DirectX StarCraft");
+HINSTANCE		CEngine::m_hInst = nullptr;
+HWND			CEngine::m_hWnd = nullptr;
+DWORD			CEngine::m_dWinStyle = WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU | WS_VISIBLE;
+DWORD			CEngine::m_dScnX = 800;						// Screen Width
+DWORD			CEngine::m_dScnY = 600;						// Screen Height
+bool			CEngine::m_bWindow = TRUE;					// WindowMode
+bool			CEngine::m_bShowCusor = TRUE;				// Show Cusor
 
-//LPCWSTR			CMain::m_Title = LPCWSTR(L"DirectX StarCraft");
-HINSTANCE		CMain::m_hInst = nullptr;
-HWND			CMain::m_hWnd = nullptr;
-DWORD			CMain::m_dWinStyle = WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU | WS_VISIBLE;
-DWORD			CMain::m_dScnX = 800;						// Screen Width
-DWORD			CMain::m_dScnY = 600;						// Screen Height
-bool			CMain::m_bWindow = TRUE;					// WindowMode
-bool			CMain::m_bShowCusor = TRUE;				// Show Cusor
+CEngine* g_pApp;
 
-CMain::CMain() : m_Title(L"DirectX StarCraft")
+CEngine::CEngine()
 {
-	m_Marine = nullptr;
+	
 }
 
-HRESULT CMain::Create(HINSTANCE hInst)
+HRESULT CEngine::Create(HINSTANCE hInst)
 {
 	m_hInst = hInst;
 
@@ -120,7 +119,7 @@ HRESULT CMain::Create(HINSTANCE hInst)
 
 	return S_OK;
 }
-HRESULT CMain::Run()
+HRESULT CEngine::Run()
 {
 	MSG msg;
 	memset(&msg, 0, sizeof(msg));
@@ -139,7 +138,7 @@ HRESULT CMain::Run()
 			m_Time->Update();
 
 			if (FAILED(m_pLcInput->Update()))
-				return E_FAIL;
+				break;
 
 			if (FAILED(RPR()))
 				break;
@@ -153,7 +152,7 @@ HRESULT CMain::Run()
 
 	return S_OK;
 }
-void CMain::Cleanup()
+void CEngine::Cleanup()
 {
 	// 게임 데이터 해제
 	Destroy();
@@ -163,7 +162,7 @@ void CMain::Cleanup()
 	SAFE_RELEASE(m_pd3dDevice);
 	SAFE_RELEASE(m_pD3D);
 }
-HRESULT CMain::RPR()
+HRESULT CEngine::RPR()
 {
 	if (NULL == m_pd3dDevice)
 		return E_FAIL;
@@ -177,7 +176,7 @@ HRESULT CMain::RPR()
 	return S_OK;
 }
 
-HRESULT CMain::Create()
+HRESULT CEngine::Create()
 {
 	m_pLcSprite = new CLcSprite();
 	if (FAILED(m_pLcSprite->Create(m_pd3dSprite)))
@@ -187,29 +186,21 @@ HRESULT CMain::Create()
 	if (FAILED(m_pLcInput->Create(m_hWnd)))
 		return E_FAIL;
 
-	m_Marine = new CMarine();
-	if (FAILED(m_Marine->Create()))
-		return E_FAIL;
-
 	return S_OK;
 }
 
-void CMain::Destroy()
+void CEngine::Destroy()
 {
-	SAFE_DELETE(m_Marine);
 	SAFE_DELETE(m_pLcInput);
 	SAFE_DELETE(m_pLcSprite);
 }
 
-HRESULT CMain::Update(float deltaTime)
+HRESULT CEngine::Update(float deltaTime)
 {
-	if (FAILED(m_Marine->Update(deltaTime)))
-		return E_FAIL;
-
 	return S_OK;
 }
 
-HRESULT CMain::Render()
+HRESULT CEngine::Render()
 {
 	m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 120, 160), 1.0f, 0);
 
@@ -220,9 +211,6 @@ HRESULT CMain::Render()
 	D3DXVECTOR2			vcScale(1, 1);
 	RECT				rc1 { 0, 0, 64, 64 };
 	LPDIRECT3DTEXTURE9	pTex = m_Marine->GetTexture()->GetTexture();*/
-
-	if (FAILED(m_Marine->Render()))
-		return E_FAIL;
 
 	/*pTex = marine->GetTexture()->GetTexture();
 
@@ -242,7 +230,7 @@ HRESULT CMain::Render()
 }
 
 
-LRESULT CMain::MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CEngine::MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{
@@ -270,7 +258,7 @@ LRESULT CMain::MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
-LRESULT WINAPI CMain::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT WINAPI CEngine::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	return g_pApp->MsgProc(hWnd, msg, wParam, lParam);
 }
