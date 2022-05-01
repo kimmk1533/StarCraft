@@ -1,18 +1,15 @@
 #pragma once
 #include "Unit.h"
 
-class CMarine : public CUnit
+class C_Marine : public C_Unit
 {
-private:
-	std::shared_ptr<CLcTexture*> m_pTex; // 매니저에서 관리하는 방식으로 변경해야함.
-
 public:
-	CMarine();
-	virtual ~CMarine() override;
+	C_Marine();
+	virtual ~C_Marine() override;
 
 	virtual HRESULT	Create() override;
 	virtual HRESULT	Update(const float _deltaTime) override;
 	virtual HRESULT	Render() override;
 	virtual void	Destroy() override;
-	virtual CLcTexture* GetTexture() const override;
+	virtual C_Texture* GetTexture() const override;
 };

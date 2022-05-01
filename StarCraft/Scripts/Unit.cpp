@@ -1,30 +1,33 @@
+//#include <stdafx.h>
+#include "..\..\CoreEngine\Scripts\stdafx.h"
 
 #include "Unit.h"
 
-CUnit::CUnit()
+
+C_Unit::C_Unit()
 {
 	m_Info = nullptr;
 
-	m_TargetPos = m_Position = D3DXVECTOR2(100, 100);	
+	m_TargetPos = m_Position = D3DXVECTOR2(100, 100);
 
 	m_Animator = nullptr;
 }
-CUnit::~CUnit()
+C_Unit::~C_Unit()
 {
 	Destroy();
 }
 
-HRESULT CUnit::Create()
+HRESULT C_Unit::Create()
 {
 	m_Info = new S_UnitInfo();
 
-	m_Animator = new CAnimator();
+	m_Animator = new C_Animator();
 	m_Animator->SetPosition(m_Position);
 
 	return S_OK;
 }
 
-void CUnit::Destroy()
+void C_Unit::Destroy()
 {
 	SAFE_DELETE(m_Animator);
 

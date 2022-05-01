@@ -49,7 +49,7 @@ enum class E_KeyCode
 	MAX = MAX_INPUT_KEY
 };
 
-class CLcInput
+class C_Input
 {
 public:
 	enum class E_InputState
@@ -101,7 +101,7 @@ public:
 	D3DXVECTOR3 GetMouseEps();
 
 public:
-	CLcInput();
-	virtual ~CLcInput();
+	C_Input();
+	virtual ~C_Input();
 
 };

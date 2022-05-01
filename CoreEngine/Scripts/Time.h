@@ -6,7 +6,7 @@
 // 값을 읽어도 서로다른 값을 가져올수 있으니, 주의해야 합니다.
 
 // 참고: http://www.tipssoft.com/bulletin/board.php?bo_table=FAQ&wr_id=735
-class CTime final
+class C_Time final
 {
 private:
 	static std::unique_ptr<LARGE_INTEGER>	m_PeriodFrequency;
@@ -16,7 +16,7 @@ private:
 	static std::unique_ptr<float>			m_TimeScale;
 
 public:
-	CTime();
+	C_Time();
 
 	static void Update();
 	static const float DeltaTime();

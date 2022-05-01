@@ -74,7 +74,7 @@ public:
 	FLOAT fVisualRange;				// 시야 거리
 
 	// 충돌 크기
-	Point ptPixelSize;		// 충돌 크기
+	S_Point ptPixelSize;		// 충돌 크기
 public:
 	S_UnitInfo();
 	S_UnitInfo(const S_UnitInfo& s);

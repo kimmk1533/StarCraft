@@ -1,25 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Core">
-      <UniqueIdentifier>{80815e4a-6b37-4051-a5d8-02d8634f03fa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header File">
       <UniqueIdentifier>{e013dc35-a375-4d09-9bbf-f5ba3bc2fc03}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source File">
       <UniqueIdentifier>{d271f095-f6f8-4f7a-bc97-0ae1f00a7654}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header File\Core">
+      <UniqueIdentifier>{80815e4a-6b37-4051-a5d8-02d8634f03fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File\Core">
+      <UniqueIdentifier>{cae0d3dd-d35c-422a-aa8e-781b66b4f1ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scripts\Singleton.h">
-      <Filter>Core</Filter>
+      <Filter>Header File\Core</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\McUtil.h">
-      <Filter>Core</Filter>
+      <Filter>Header File\Core</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\stdafx.h">
-      <Filter>Core</Filter>
+      <Filter>Header File\Core</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Animator.h">
       <Filter>Header File</Filter>
@@ -30,17 +33,20 @@
     <ClInclude Include="Scripts\FrameWork.h">
       <Filter>Header File</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\LcInput.h">
+    <ClInclude Include="Scripts\Input.h">
       <Filter>Header File</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\LcSprite.h">
+    <ClInclude Include="Scripts\Sprite.h">
       <Filter>Header File</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\LcTexture.h">
+    <ClInclude Include="Scripts\Texture.h">
       <Filter>Header File</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Time.h">
       <Filter>Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\MemoryPool.h">
+      <Filter>Header File\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -53,17 +59,26 @@
     <ClCompile Include="Scripts\FrameWork.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\LcInput.cpp">
+    <ClCompile Include="Scripts\Input.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\LcSprite.cpp">
+    <ClCompile Include="Scripts\Sprite.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\LcTexture.cpp">
+    <ClCompile Include="Scripts\Texture.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Time.cpp">
       <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\MemoryPool.cpp">
+      <Filter>Source File\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Singleton.cpp">
+      <Filter>Source File\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\stdafx.cpp">
+      <Filter>Source File\Core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

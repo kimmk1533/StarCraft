@@ -1,10 +1,10 @@
 #include "stdafx.h"
 
-D3DPRESENT_PARAMETERS	CFrameWork::m_d3dpp = D3DPRESENT_PARAMETERS();
-LPDIRECT3D9				CFrameWork::m_pD3D = nullptr;
-LPDIRECT3DDEVICE9		CFrameWork::m_pd3dDevice = nullptr;
-LPD3DXSPRITE			CFrameWork::m_pd3dSprite = nullptr;
+D3DPRESENT_PARAMETERS	C_FrameWork::m_d3dpp = D3DPRESENT_PARAMETERS();
+LPDIRECT3D9				C_FrameWork::m_pD3D = nullptr;
+LPDIRECT3DDEVICE9		C_FrameWork::m_pd3dDevice = nullptr;
+LPD3DXSPRITE			C_FrameWork::m_pd3dSprite = nullptr;
 
-CTime*					CFrameWork::m_Time = nullptr;
-CLcSprite*				CFrameWork::m_pLcSprite = nullptr;
-CLcInput*				CFrameWork::m_pLcInput = nullptr;
+C_Time*					C_FrameWork::m_Time = nullptr;
+C_Sprite*				C_FrameWork::m_pLcSprite = nullptr;
+C_Input*				C_FrameWork::m_pLcInput = nullptr;

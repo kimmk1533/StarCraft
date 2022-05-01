@@ -1,12 +1,9 @@
 #pragma once
 #include "UnitInfo.h"
-//#include <stdafx.h>
-#include "..\..\CoreEngine\Scripts\stdafx.h"
-
 //#include <Animator.h>
 #include "..\..\CoreEngine\Scripts\Animator.h"
 
-class CUnit : public CFrameWork
+class C_Unit : public C_FrameWork
 {
 protected:
 	S_UnitInfo* m_Info;
@@ -15,11 +12,11 @@ protected:
 	D3DXVECTOR2 m_Position;
 	D3DXVECTOR2 m_TargetPos;
 
-	CAnimator* m_Animator;
+	C_Animator* m_Animator;
 
 public:
-	CUnit();
-	virtual ~CUnit();
+	C_Unit();
+	virtual ~C_Unit();
 
 	virtual HRESULT	Create() override;
 	virtual HRESULT	Update(const float _deltaTime) override = 0;
@@ -27,6 +24,6 @@ public:
 	virtual void	Destroy() override;
 
 public:
-	virtual CLcTexture* GetTexture() const = 0;
+	virtual C_Texture* GetTexture() const = 0;
 
 };

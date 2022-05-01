@@ -1,6 +1,6 @@
 #pragma once
 
-class CLcTexture
+class C_Texture
 {
 protected:
 	LPDIRECT3DDEVICE9	m_pDev;	// Device
@@ -9,8 +9,8 @@ protected:
 	LPDIRECT3DTEXTURE9	m_pTx;	// 텍스처
 
 public:
-	CLcTexture();
-	virtual ~CLcTexture();
+	C_Texture();
+	virtual ~C_Texture();
 
 	virtual HRESULT	Create(LPDIRECT3DDEVICE9 pDev, LPCWSTR sFile);
 	virtual void	Destroy();

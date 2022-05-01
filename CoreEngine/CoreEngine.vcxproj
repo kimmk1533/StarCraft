@@ -74,6 +74,7 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -92,6 +93,8 @@
       <ConformanceMode>true</ConformanceMode>
       <DisableSpecificWarnings>4819;28251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -145,11 +148,12 @@
   <ItemGroup>
     <ClInclude Include="Scripts\Animator.h" />
     <ClInclude Include="Scripts\FrameWork.h" />
-    <ClInclude Include="Scripts\LcInput.h" />
-    <ClInclude Include="Scripts\LcSprite.h" />
-    <ClInclude Include="Scripts\LcTexture.h" />
+    <ClInclude Include="Scripts\Input.h" />
+    <ClInclude Include="Scripts\Sprite.h" />
+    <ClInclude Include="Scripts\Texture.h" />
     <ClInclude Include="Scripts\Engine.h" />
     <ClInclude Include="Scripts\McUtil.h" />
+    <ClInclude Include="Scripts\MemoryPool.h" />
     <ClInclude Include="Scripts\Singleton.h" />
     <ClInclude Include="Scripts\stdafx.h" />
     <ClInclude Include="Scripts\Time.h" />
@@ -157,10 +161,15 @@
   <ItemGroup>
     <ClCompile Include="Scripts\Animator.cpp" />
     <ClCompile Include="Scripts\FrameWork.cpp" />
-    <ClCompile Include="Scripts\LcInput.cpp" />
-    <ClCompile Include="Scripts\LcSprite.cpp" />
-    <ClCompile Include="Scripts\LcTexture.cpp" />
+    <ClCompile Include="Scripts\Input.cpp" />
+    <ClCompile Include="Scripts\Sprite.cpp" />
+    <ClCompile Include="Scripts\Texture.cpp" />
     <ClCompile Include="Scripts\Engine.cpp" />
+    <ClCompile Include="Scripts\MemoryPool.cpp" />
+    <ClCompile Include="Scripts\Singleton.cpp" />
+    <ClCompile Include="Scripts\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Scripts\Time.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -3,33 +3,33 @@
 
 #include "Marine.h"
 
-//CLcTexture* CMarine::m_pTex = nullptr;
+//C_Texture* C_Marine::m_pTex = nullptr;
 
 #define DEBUG_FPS 24
 
-CMarine::CMarine()
+C_Marine::C_Marine()
 {
 	m_Info = NULL;
 
 	m_pTex = nullptr;
 }
 
-CMarine::~CMarine()
+C_Marine::~C_Marine()
 {
 	Destroy();
 }
 
-HRESULT CMarine::Create()
+HRESULT C_Marine::Create()
 {
 	// 부모 클래스 Create
-	if (FAILED(CUnit::Create()))
+	if (FAILED(C_Unit::Create()))
 		return E_FAIL;
 
 	// 매니저에서 관리하도록 변경해야함
 	if (!m_pTex)
 	{
-		m_pTex = std::make_shared<CLcTexture*>();
-		(*m_pTex) = new CLcTexture();
+		m_pTex = std::make_shared<C_Texture*>();
+		(*m_pTex) = new C_Texture();
 		if (FAILED((*m_pTex)->Create(m_pd3dDevice, L"Marine.png")))
 		{
 			SAFE_DELETE(*m_pTex);
@@ -245,13 +245,13 @@ HRESULT CMarine::Create()
 	m_Info->fVisualRange = 7.0F;						// 시야 거리
 
 	// 충돌 크기
-	m_Info->ptPixelSize = Point(17, 20);				// 충돌 크기
+	m_Info->ptPixelSize = S_Point(17, 20);				// 충돌 크기
 
 #pragma endregion
 
 	return S_OK;
 }
-HRESULT CMarine::Update(const float _deltaTime)
+HRESULT C_Marine::Update(const float _deltaTime)
 {
 	if (m_pLcInput->BtnDown(E_KeyCode::MouseRightButton))
 	{
@@ -328,16 +328,16 @@ HRESULT CMarine::Update(const float _deltaTime)
 
 	return S_OK;
 }
-HRESULT CMarine::Render()
+HRESULT C_Marine::Render()
 {
 	return m_Animator->Render();
 }
-void CMarine::Destroy()
+void C_Marine::Destroy()
 {
 	SAFE_DELETE(*m_pTex);
 }
 
-CLcTexture* CMarine::GetTexture() const
+C_Texture* C_Marine::GetTexture() const
 {
 	return *m_pTex;
 }

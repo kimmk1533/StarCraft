@@ -8,6 +8,7 @@
 
 //#include <stdafx.h>
 #include "..\..\CoreEngine\Scripts\stdafx.h"
+
 #include "CMain.h"
 
 #ifdef UNICODE
@@ -20,9 +21,9 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, INT)
 	SetConsoleCP(65001);
 	SetConsoleOutputCP(65001);
 
-	CMain d3dApp;
+	C_Main d3dApp;
 
-	g_pApp = dynamic_cast<CEngine*>(&d3dApp);
+	g_pApp = dynamic_cast<C_Engine*>(&d3dApp);
 	if (nullptr == g_pApp)
 		return E_FAIL;
 

@@ -51,20 +51,20 @@ enum class E_AnimState : unsigned char
 	Max
 };
 
-class CAnimator : public CFrameWork
+class C_Animator : public C_FrameWork
 {
 private:
 	// 키 프레임 방식 애니메이션
-	class CAnimation : public CFrameWork
+	class C_Animation : public C_FrameWork
 	{
 	public:
-		struct KeyFrame
+		struct S_KeyFrame
 		{
-			std::shared_ptr<CLcTexture*> texture;
+			std::shared_ptr<C_Texture*> texture;
 			RECT size;
 			float time;
 
-			KeyFrame(std::shared_ptr<CLcTexture*> _texture, const RECT _size, float _time)
+			S_KeyFrame(std::shared_ptr<C_Texture*> _texture, const RECT _size, float _time)
 			{
 				texture = _texture;
 				size = _size;
@@ -73,7 +73,7 @@ private:
 		};
 
 	private:
-		CAnimator* m_Animator;					// 자신을 재생할 애니메이터
+		C_Animator* m_Animator;					// 자신을 재생할 애니메이터
 		E_AnimMode m_AnimMode;					// 애니메이션 재생 모드
 
 		int m_iFrame;							// 현재 키 프레임
@@ -85,12 +85,12 @@ private:
 		bool m_bIsPlaying;						// 재생 여부
 		bool m_bIsRepeat;						// 반복 모드용 변수
 
-		std::vector<KeyFrame*>* m_pKeyFrames;	// 재생할 프레임들
+		std::vector<S_KeyFrame*>* m_pKeyFrames;	// 재생할 프레임들
 		std::unordered_map<int, std::vector<std::function<void()>>>* m_pFuncs;
 
 	public:
-		CAnimation(CAnimator* animator);
-		virtual ~CAnimation();
+		C_Animation(C_Animator* animator);
+		virtual ~C_Animation();
 
 		HRESULT	Create() override;
 		HRESULT	Update(const float _deltaTime) override;
@@ -98,10 +98,10 @@ private:
 		void	Destroy() override;
 
 	private:
-		KeyFrame* GetKeyFrame() const;
+		S_KeyFrame* GetKeyFrame() const;
 
 	public:
-		void	AddFrame(std::shared_ptr<CLcTexture*>& _texture, const RECT& _size = RECT{ 0, 0, 100, 100 }, float _time = 1.0f);
+		void	AddFrame(std::shared_ptr<C_Texture*>& _texture, const RECT& _size = RECT{ 0, 0, 100, 100 }, float _time = 1.0f);
 		HRESULT	AddFunc(int _frameCount, std::function<void()> _func);
 		void	Play();
 		void	Pause();
@@ -123,8 +123,8 @@ private:
 	D3DXCOLOR	m_Color;
 
 public:
-	CAnimator();
-	virtual ~CAnimator();
+	C_Animator();
+	virtual ~C_Animator();
 
 	HRESULT	Create() override;
 	HRESULT	Update(const float _deltaTime) override;
@@ -132,7 +132,7 @@ public:
 	void	Destroy() override;
 
 protected:
-	std::unordered_map<std::pair<E_AnimState, E_Direction>, CAnimation*, Pair_Hash>* m_AnimDictionary;
+	std::unordered_map<std::pair<E_AnimState, E_Direction>, C_Animation*, Pair_Hash>* m_AnimDictionary;
 
 public:
 	D3DXVECTOR2 GetPosition();
@@ -157,8 +157,8 @@ public:
 	void SetColor(float _r, float _g = 1.0f, float _b = 1.0f, float _a = 1.0f);
 	void SetColor(D3DXCOLOR _color);
 
-	HRESULT AddFrame(const E_AnimState& _state, const E_Direction& _direction, std::shared_ptr<CLcTexture*>& _texture, const RECT _size, float _time);
-	HRESULT AddFrame(const std::pair<E_AnimState, E_Direction>& _condition, std::shared_ptr<CLcTexture*>& _texture, const RECT _size, float _time);
+	HRESULT AddFrame(const E_AnimState& _state, const E_Direction& _direction, std::shared_ptr<C_Texture*>& _texture, const RECT _size, float _time);
+	HRESULT AddFrame(const std::pair<E_AnimState, E_Direction>& _condition, std::shared_ptr<C_Texture*>& _texture, const RECT _size, float _time);
 	bool HasAnimState(const E_AnimState& _state, const E_Direction& _direction);
 	bool HasAnimState(const std::pair<E_AnimState, E_Direction>& _condition);
 

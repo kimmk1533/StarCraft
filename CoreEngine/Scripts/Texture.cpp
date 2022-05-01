@@ -1,24 +1,18 @@
-#include <windows.h>
-#include <d3d9.h>
-#include <d3dx9.h>
+#include "stdafx.h"
 
-#include "LcTexture.h"
-#include "McUtil.h"
-#include <string>
-
-CLcTexture::CLcTexture()
+C_Texture::C_Texture()
 {
 	m_pDev = NULL;
 
 	m_pTx = NULL;
 	ZeroMemory(&m_Img, sizeof(m_Img));
 }
-CLcTexture::~CLcTexture()
+C_Texture::~C_Texture()
 {
 	Destroy();
 }
 
-HRESULT CLcTexture::Create(LPDIRECT3DDEVICE9 pDev, LPCWSTR sFile)
+HRESULT C_Texture::Create(LPDIRECT3DDEVICE9 pDev, LPCWSTR sFile)
 {
 	m_pDev = pDev;
 
@@ -80,20 +74,20 @@ HRESULT CLcTexture::Create(LPDIRECT3DDEVICE9 pDev, LPCWSTR sFile)
 
 	return S_OK;
 }
-void CLcTexture::Destroy()
+void C_Texture::Destroy()
 {
 	SAFE_RELEASE(m_pTx);
 }
 
-INT CLcTexture::GetImageWidth()
+INT C_Texture::GetImageWidth()
 {
 	return m_Img.Width;
 }
-INT CLcTexture::GetImageHeight()
+INT C_Texture::GetImageHeight()
 {
 	return m_Img.Height;
 }
-void CLcTexture::GetImageRect(RECT* pRc)
+void C_Texture::GetImageRect(RECT* pRc)
 {
 	pRc->left = 0;
 	pRc->top = 0;
@@ -101,7 +95,7 @@ void CLcTexture::GetImageRect(RECT* pRc)
 	pRc->bottom = m_Img.Height;
 }
 
-LPDIRECT3DTEXTURE9 CLcTexture::GetTexture()
+LPDIRECT3DTEXTURE9 C_Texture::GetTexture()
 {
 	return m_pTx;
 }

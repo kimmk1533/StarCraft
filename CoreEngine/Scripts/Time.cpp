@@ -1,15 +1,15 @@
-#include <Windows.h>
-#include <memory>
-#include "Time.h"
+#include "stdafx.h"
+
+//#include "Time.h"
 
 // 멤버 초기화
-std::unique_ptr<LARGE_INTEGER>	CTime::m_PeriodFrequency = std::make_unique<LARGE_INTEGER>();
-std::unique_ptr<LARGE_INTEGER>	CTime::m_CurrentTime = std::make_unique<LARGE_INTEGER>();
-std::unique_ptr<LARGE_INTEGER>	CTime::m_LastTime = std::make_unique<LARGE_INTEGER>();
-std::unique_ptr<float>			CTime::m_DeltaTime = std::make_unique<float>();
-std::unique_ptr<float>			CTime::m_TimeScale = std::make_unique<float>();
+std::unique_ptr<LARGE_INTEGER>	C_Time::m_PeriodFrequency = std::make_unique<LARGE_INTEGER>();
+std::unique_ptr<LARGE_INTEGER>	C_Time::m_CurrentTime = std::make_unique<LARGE_INTEGER>();
+std::unique_ptr<LARGE_INTEGER>	C_Time::m_LastTime = std::make_unique<LARGE_INTEGER>();
+std::unique_ptr<float>			C_Time::m_DeltaTime = std::make_unique<float>();
+std::unique_ptr<float>			C_Time::m_TimeScale = std::make_unique<float>();
 
-CTime::CTime()
+C_Time::C_Time()
 {
 	// 고해상도 타이머의 주파수를 얻는다.
 	QueryPerformanceFrequency(&(*m_PeriodFrequency));
@@ -22,7 +22,7 @@ CTime::CTime()
 	// 역수로 만들어놓고 실제 계산때 곱셈하게 만들어놓는게 좋다.
 	*m_TimeScale = 1.0f / ((*m_PeriodFrequency).QuadPart);
 }
-void CTime::Update()
+void C_Time::Update()
 {
 	// 현재 프레임 진동수 저장.
 	QueryPerformanceCounter(&(*m_CurrentTime));
@@ -33,7 +33,7 @@ void CTime::Update()
 	// 현재 프레임을 이전 프레임으로 저장. 이후 계속 반복.
 	*m_LastTime = *m_CurrentTime;
 }
-const float CTime::DeltaTime()
+const float C_Time::DeltaTime()
 {
 	return *m_DeltaTime;
 }

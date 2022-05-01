@@ -1,33 +1,35 @@
+#include "..\..\CoreEngine\Scripts\stdafx.h"
+
 #include "CMain.h"
 #include "Marine.h"
 
-HRESULT CMain::Create(HINSTANCE hInst)
+HRESULT C_Main::Create(HINSTANCE hInst)
 {
-	if (FAILED(CEngine::Create(hInst)))
+	if (FAILED(C_Engine::Create(hInst)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CMain::Create()
+HRESULT C_Main::Create()
 {
-	if (FAILED(CEngine::Create()))
+	if (FAILED(C_Engine::Create()))
 		return E_FAIL;
 
-	m_Marine = new CMarine();
+	m_Marine = new C_Marine();
 	if (FAILED(m_Marine->Create()))
 		return E_FAIL;
 
 	return S_OK;
 }
-void CMain::Destroy()
+void C_Main::Destroy()
 {
 	SAFE_DELETE(m_Marine);
 }
 
-HRESULT CMain::Update(const float deltaTime)
+HRESULT C_Main::Update(const float deltaTime)
 {
-	if (FAILED(CEngine::Update(deltaTime)))
+	if (FAILED(C_Engine::Update(deltaTime)))
 		return E_FAIL;
 
 	if (FAILED(m_Marine->Update(deltaTime)))
@@ -36,9 +38,9 @@ HRESULT CMain::Update(const float deltaTime)
 	return S_OK;
 }
 
-HRESULT CMain::Render()
+HRESULT C_Main::Render()
 {
-	if (FAILED(CEngine::Render()))
+	if (FAILED(C_Engine::Render()))
 		return E_FAIL;
 
 	if (FAILED(m_pd3dDevice->BeginScene()))

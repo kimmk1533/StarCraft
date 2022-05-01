@@ -1,22 +1,22 @@
 #include "stdafx.h"
 
-const LPCWSTR	CEngine::m_Title = LPCWSTR(L"DirectX StarCraft");
-HINSTANCE		CEngine::m_hInst = nullptr;
-HWND			CEngine::m_hWnd = nullptr;
-DWORD			CEngine::m_dWinStyle = WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU | WS_VISIBLE;
-DWORD			CEngine::m_dScnX = 800;						// Screen Width
-DWORD			CEngine::m_dScnY = 600;						// Screen Height
-bool			CEngine::m_bWindow = TRUE;					// WindowMode
-bool			CEngine::m_bShowCusor = TRUE;				// Show Cusor
+const LPCWSTR	C_Engine::m_Title = LPCWSTR(L"DirectX StarCraft");
+HINSTANCE		C_Engine::m_hInst = nullptr;
+HWND			C_Engine::m_hWnd = nullptr;
+DWORD			C_Engine::m_dWinStyle = WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU | WS_VISIBLE;
+DWORD			C_Engine::m_dScnX = 800;						// Screen Width
+DWORD			C_Engine::m_dScnY = 600;						// Screen Height
+bool			C_Engine::m_bWindow = TRUE;					// WindowMode
+bool			C_Engine::m_bShowCusor = TRUE;				// Show Cusor
 
-CEngine* g_pApp;
+C_Engine* g_pApp;
 
-CEngine::CEngine()
+C_Engine::C_Engine()
 {
 	
 }
 
-HRESULT CEngine::Create(HINSTANCE hInst)
+HRESULT C_Engine::Create(HINSTANCE hInst)
 {
 	m_hInst = hInst;
 
@@ -119,12 +119,12 @@ HRESULT CEngine::Create(HINSTANCE hInst)
 
 	return S_OK;
 }
-HRESULT CEngine::Run()
+HRESULT C_Engine::Run()
 {
 	MSG msg;
 	memset(&msg, 0, sizeof(msg));
 
-	m_Time = new CTime();
+	m_Time = new C_Time();
 
 	while (msg.message != WM_QUIT)
 	{
@@ -152,7 +152,7 @@ HRESULT CEngine::Run()
 
 	return S_OK;
 }
-void CEngine::Cleanup()
+void C_Engine::Cleanup()
 {
 	// 게임 데이터 해제
 	Destroy();
@@ -162,7 +162,7 @@ void CEngine::Cleanup()
 	SAFE_RELEASE(m_pd3dDevice);
 	SAFE_RELEASE(m_pD3D);
 }
-HRESULT CEngine::RPR()
+HRESULT C_Engine::RPR()
 {
 	if (NULL == m_pd3dDevice)
 		return E_FAIL;
@@ -176,31 +176,31 @@ HRESULT CEngine::RPR()
 	return S_OK;
 }
 
-HRESULT CEngine::Create()
+HRESULT C_Engine::Create()
 {
-	m_pLcSprite = new CLcSprite();
+	m_pLcSprite = new C_Sprite();
 	if (FAILED(m_pLcSprite->Create(m_pd3dSprite)))
 		return E_FAIL;
 
-	m_pLcInput = new CLcInput();
+	m_pLcInput = new C_Input();
 	if (FAILED(m_pLcInput->Create(m_hWnd)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-void CEngine::Destroy()
+void C_Engine::Destroy()
 {
 	SAFE_DELETE(m_pLcInput);
 	SAFE_DELETE(m_pLcSprite);
 }
 
-HRESULT CEngine::Update(float deltaTime)
+HRESULT C_Engine::Update(float deltaTime)
 {
 	return S_OK;
 }
 
-HRESULT CEngine::Render()
+HRESULT C_Engine::Render()
 {
 	m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 120, 160), 1.0f, 0);
 
@@ -230,7 +230,7 @@ HRESULT CEngine::Render()
 }
 
 
-LRESULT CEngine::MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT C_Engine::MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{
@@ -258,7 +258,7 @@ LRESULT CEngine::MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
-LRESULT WINAPI CEngine::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT WINAPI C_Engine::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	return g_pApp->MsgProc(hWnd, msg, wParam, lParam);
 }

@@ -1,9 +1,11 @@
 #pragma once
 #include "FrameWork.h"
 
-class CMarine;
+class C_Engine;
 
-class CEngine : public CFrameWork
+extern C_Engine* g_pApp;
+
+class C_Engine : public C_FrameWork
 {
 private:
 	static const LPCWSTR			m_Title;
@@ -33,7 +35,5 @@ public:
 	virtual void	Destroy() override;
 
 public:
-	CEngine();
+	C_Engine();
 };
-
-extern CEngine* g_pApp;

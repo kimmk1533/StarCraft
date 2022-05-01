@@ -1,16 +1,18 @@
 #pragma once
 
 template <class T>
-class Singleton
+class C_Singleton
 {
-private:
-	Singleton() { }
-	~Singleton() { }
+protected:
+	C_Singleton() = default;
+
+	C_Singleton(const C_Singleton& other) = delete;
 
 public:
-	T& GetI()
-	{
+	static T& GetI()
+		;
+	/*{
 		static T Instance;
 		return Instance;
-	}
+	}*/
 };

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-CLcInput::CLcInput()
+C_Input::C_Input()
 {
 	m_hWnd = NULL; // for Mouse
 
@@ -22,12 +22,12 @@ CLcInput::CLcInput()
 
 	SetKeyboardState(m_KeyCur);
 }
-CLcInput::~CLcInput()
+C_Input::~C_Input()
 {
 
 }
 
-HRESULT	CLcInput::Create(HWND hWnd)
+HRESULT	C_Input::Create(HWND hWnd)
 {
 	m_hWnd = hWnd;
 
@@ -63,7 +63,7 @@ HRESULT	CLcInput::Create(HWND hWnd)
 
 	return S_OK;
 }
-HRESULT CLcInput::Update()	// Mouse
+HRESULT C_Input::Update()	// Mouse
 {
 	INT i = 0;
 
@@ -79,7 +79,8 @@ HRESULT CLcInput::Update()	// Mouse
 	ZeroMemory(m_BtnMap, sizeof(m_BtnMap));
 
 	// 3. current 이벤트 를 가져옴
-	GetKeyboardState(m_KeyCur);
+	if (!GetKeyboardState(m_KeyCur))
+		return E_FAIL;
 
 	// Keyboard
 	for (i = 0; i < MAX_INPUT_KEY; ++i)
@@ -183,7 +184,7 @@ HRESULT CLcInput::Update()	// Mouse
 	return S_OK;
 }
 
-bool CLcInput::KeyDown(E_KeyCode nKey)
+bool C_Input::KeyDown(E_KeyCode nKey)
 {
 	if (nKey < E_KeyCode::Backspace || nKey >= E_KeyCode::MAX)
 	{
@@ -197,7 +198,7 @@ bool CLcInput::KeyDown(E_KeyCode nKey)
 
 	return m_KeyMap[static_cast<INT>(nKey)] == E_InputState::INPUT_DOWN;
 }
-bool CLcInput::KeyUp(E_KeyCode nKey)
+bool C_Input::KeyUp(E_KeyCode nKey)
 {
 	if (nKey < E_KeyCode::Backspace || nKey >= E_KeyCode::MAX)
 	{
@@ -211,7 +212,7 @@ bool CLcInput::KeyUp(E_KeyCode nKey)
 
 	return m_KeyMap[static_cast<INT>(nKey)] == E_InputState::INPUT_UP;
 }
-bool CLcInput::KeyPress(E_KeyCode nKey)
+bool C_Input::KeyPress(E_KeyCode nKey)
 {
 	if (nKey < E_KeyCode::Backspace || nKey >= E_KeyCode::MAX)
 	{
@@ -225,7 +226,7 @@ bool CLcInput::KeyPress(E_KeyCode nKey)
 
 	return m_KeyMap[static_cast<INT>(nKey)] == E_InputState::INPUT_PRESS;
 }
-CLcInput::E_InputState CLcInput::KeyState(E_KeyCode nKey)
+C_Input::E_InputState C_Input::KeyState(E_KeyCode nKey)
 {
 	if (nKey < E_KeyCode::Backspace || nKey >= E_KeyCode::MAX)
 	{
@@ -241,7 +242,7 @@ CLcInput::E_InputState CLcInput::KeyState(E_KeyCode nKey)
 }
 
 // Mouse
-bool CLcInput::BtnDown(E_KeyCode nBtn)
+bool C_Input::BtnDown(E_KeyCode nBtn)
 {
 	if (nBtn <= E_KeyCode::None || nBtn >= E_KeyCode::Backspace)
 	{
@@ -255,7 +256,7 @@ bool CLcInput::BtnDown(E_KeyCode nBtn)
 
 	return m_BtnMap[static_cast<INT>(nBtn)] == E_InputState::INPUT_DOWN;
 }
-bool CLcInput::BtnUp(E_KeyCode nBtn)
+bool C_Input::BtnUp(E_KeyCode nBtn)
 {
 	if (nBtn <= E_KeyCode::None || nBtn >= E_KeyCode::Backspace)
 	{
@@ -269,7 +270,7 @@ bool CLcInput::BtnUp(E_KeyCode nBtn)
 
 	return m_BtnMap[static_cast<INT>(nBtn)] == E_InputState::INPUT_UP;
 }
-bool CLcInput::BtnPress(E_KeyCode nBtn)
+bool C_Input::BtnPress(E_KeyCode nBtn)
 {
 	if (nBtn <= E_KeyCode::None || nBtn >= E_KeyCode::Backspace)
 	{
@@ -283,7 +284,7 @@ bool CLcInput::BtnPress(E_KeyCode nBtn)
 
 	return m_BtnMap[static_cast<INT>(nBtn)] == E_InputState::INPUT_PRESS;
 }
-CLcInput::E_InputState CLcInput::BtnState(E_KeyCode nBtn)
+C_Input::E_InputState C_Input::BtnState(E_KeyCode nBtn)
 {
 	if (nBtn <= E_KeyCode::None || nBtn >= E_KeyCode::Backspace)
 	{
@@ -298,15 +299,15 @@ CLcInput::E_InputState CLcInput::BtnState(E_KeyCode nBtn)
 	return m_BtnMap[static_cast<INT>(nBtn)];
 }
 
-D3DXVECTOR3 CLcInput::GetMousePos()
+D3DXVECTOR3 C_Input::GetMousePos()
 {
 	return m_vcCur;
 }
-D3DXVECTOR3 CLcInput::GetMouseEps()
+D3DXVECTOR3 C_Input::GetMouseEps()
 {
 	return m_vcEps;
 }
-LRESULT CLcInput::MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT C_Input::MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{

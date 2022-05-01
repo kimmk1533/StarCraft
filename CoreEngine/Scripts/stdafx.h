@@ -21,6 +21,7 @@
 
 #include <list>
 #include <vector>
+#include <queue>
 #include <map>
 #include <unordered_map>
 
@@ -38,27 +39,26 @@ struct Pair_Hash
 //#define GHINST		g_pApp->m_hInst
 //#define GHWND			g_pApp->m_hWnd
 
-#include "LcInput.h"
-#include "LcTexture.h"
-#include "LcSprite.h"
+#include "Input.h"
+#include "Texture.h"
+#include "Sprite.h"
 
 #include "McUtil.h"
 #include "Time.h"
 #include "FrameWork.h"
 #include "Engine.h"
 
-
-struct Point
+struct S_Point
 {
 	int x;
 	int y;
 
-	Point()
+	S_Point()
 	{
 		x = 0;
 		y = 0;
 	}
-	Point(int _x, int _y)
+	S_Point(int _x, int _y)
 	{
 		x = _x;
 		y = _y;

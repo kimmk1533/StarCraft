@@ -2,7 +2,7 @@
 
 #include "Animator.h"
 
-CAnimator::CAnimation::CAnimation(CAnimator* animator)
+C_Animator::C_Animation::C_Animation(C_Animator* animator)
 {
 	m_Animator = animator;
 	m_AnimMode = E_AnimMode::Repeat;
@@ -19,19 +19,19 @@ CAnimator::CAnimation::CAnimation(CAnimator* animator)
 	m_pKeyFrames = nullptr;
 	m_pFuncs = nullptr;
 }
-CAnimator::CAnimator::CAnimation::~CAnimation()
+C_Animator::C_Animator::C_Animation::~C_Animation()
 {
 	Destroy();
 }
 
-HRESULT CAnimator::CAnimation::Create()
+HRESULT C_Animator::C_Animation::Create()
 {
-	m_pKeyFrames = new std::vector<KeyFrame*>();
+	m_pKeyFrames = new std::vector<S_KeyFrame*>();
 	m_pFuncs = new std::unordered_map<int, std::vector<std::function<void()>>>();
 
 	return S_OK;
 }
-HRESULT CAnimator::CAnimation::Update(const float _deltaTime)
+HRESULT C_Animator::C_Animation::Update(const float _deltaTime)
 {
 	if (m_pKeyFrames->size() == 0)
 		return E_FAIL;
@@ -104,7 +104,7 @@ HRESULT CAnimator::CAnimation::Update(const float _deltaTime)
 			m_Animator->m_Direction = static_cast<E_Direction>(direction);
 		}
 
-		KeyFrame* keyframe = GetKeyFrame();
+		S_KeyFrame* keyframe = GetKeyFrame();
 		if (!keyframe)
 			return E_FAIL;
 
@@ -113,18 +113,18 @@ HRESULT CAnimator::CAnimation::Update(const float _deltaTime)
 
 	return S_OK;
 }
-HRESULT CAnimator::CAnimation::Render()
+HRESULT C_Animator::C_Animation::Render()
 {
 	if (m_iFrameCount == 0)
 	{
-		MessageBox(nullptr, L"Error: CAnimation::m_iFrameCount == 0", L"Error!", MB_OK);
+		MessageBox(nullptr, L"Error: C_Animation::m_iFrameCount == 0", L"Error!", MB_OK);
 		return E_FAIL;
 	}
 
-	KeyFrame* keyframe = GetKeyFrame();
+	S_KeyFrame* keyframe = GetKeyFrame();
 	if (!keyframe)
 	{
-		MessageBox(nullptr, L"Error: CAnimation::keyframe is nullptr", L"Error!", MB_OK);
+		MessageBox(nullptr, L"Error: C_Animation::keyframe is nullptr", L"Error!", MB_OK);
 		return E_FAIL;
 	}
 
@@ -144,7 +144,7 @@ HRESULT CAnimator::CAnimation::Render()
 
 	return S_OK;
 }
-void CAnimator::CAnimation::Destroy()
+void C_Animator::C_Animation::Destroy()
 {
 	for (auto item : (*m_pKeyFrames))
 		SAFE_DELETE(item);
@@ -153,7 +153,7 @@ void CAnimator::CAnimation::Destroy()
 	SAFE_DELETE(m_pFuncs);
 }
 
-CAnimator::CAnimation::KeyFrame* CAnimator::CAnimation::GetKeyFrame() const
+C_Animator::C_Animation::S_KeyFrame* C_Animator::C_Animation::GetKeyFrame() const
 {
 	if (m_iFrameCount == 0)
 		return nullptr;
@@ -163,14 +163,14 @@ CAnimator::CAnimation::KeyFrame* CAnimator::CAnimation::GetKeyFrame() const
 
 	return (*m_pKeyFrames)[m_iFrame];
 }
-void CAnimator::CAnimation::AddFrame(std::shared_ptr<CLcTexture*>& _texture, const RECT& _size, float _time)
+void C_Animator::C_Animation::AddFrame(std::shared_ptr<C_Texture*>& _texture, const RECT& _size, float _time)
 {
-	std::shared_ptr<CLcTexture*> texture = _texture;
-	m_pKeyFrames->push_back(new KeyFrame(_texture, _size, _time));
+	std::shared_ptr<C_Texture*> texture = _texture;
+	m_pKeyFrames->push_back(new S_KeyFrame(_texture, _size, _time));
 	if (m_iFrameCount++ == 0)
 		m_fTimeToNext = _time;
 }
-HRESULT CAnimator::CAnimation::AddFunc(int _frameCount, std::function<void()> _func)
+HRESULT C_Animator::C_Animation::AddFunc(int _frameCount, std::function<void()> _func)
 {
 	if (_frameCount < 0 || _frameCount >= m_iFrameCount)
 		return E_FAIL;
@@ -179,24 +179,24 @@ HRESULT CAnimator::CAnimation::AddFunc(int _frameCount, std::function<void()> _f
 
 	return S_OK;
 }
-void CAnimator::CAnimation::Play()
+void C_Animator::C_Animation::Play()
 {
 	m_bIsPlaying = true;
 }
-void CAnimator::CAnimation::Pause()
+void C_Animator::C_Animation::Pause()
 {
 	m_bIsPlaying = false;
 }
 
-int CAnimator::CAnimation::GetFrameCount()
+int C_Animator::C_Animation::GetFrameCount()
 {
 	return m_iFrameCount;
 }
-E_AnimMode CAnimator::CAnimation::GetAnimMode()
+E_AnimMode C_Animator::C_Animation::GetAnimMode()
 {
 	return m_AnimMode;
 }
-void CAnimator::CAnimation::SetAnimMode(const E_AnimMode& _animMode)
+void C_Animator::C_Animation::SetAnimMode(const E_AnimMode& _animMode)
 {
 	m_AnimMode = _animMode;
 }
@@ -205,7 +205,7 @@ void CAnimator::CAnimation::SetAnimMode(const E_AnimMode& _animMode)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// </summary>
 
-CAnimator::CAnimator()
+C_Animator::C_Animator()
 {
 	m_AnimState = E_AnimState::Init;
 	m_Direction = E_Direction::Right_Down_Down;
@@ -219,21 +219,21 @@ CAnimator::CAnimator()
 
 	m_AnimDictionary = nullptr;
 }
-CAnimator::~CAnimator()
+C_Animator::~C_Animator()
 {
 	Destroy();
 }
 
-HRESULT CAnimator::Create()
+HRESULT C_Animator::Create()
 {
-	m_AnimDictionary = new std::unordered_map<std::pair<E_AnimState, E_Direction>, CAnimation*, Pair_Hash>();
+	m_AnimDictionary = new std::unordered_map<std::pair<E_AnimState, E_Direction>, C_Animation*, Pair_Hash>();
 	for (int i = 0; i < static_cast<int>(E_AnimState::Max); ++i)
 	{
 		for (int j = 0; j < static_cast<int>(E_Direction::Max); ++j)
 		{
 			//std::pair<E_AnimState, E_Direction> state = std::make_pair<E_AnimState, E_Direction>(static_cast<E_AnimState>(i), static_cast<E_Direction>(j));
-			//(*m_AnimDictionary)[state] = new CAnimation(this);
-			(*m_AnimDictionary)[{ static_cast<E_AnimState>(i), static_cast<E_Direction>(j) }] = new CAnimation(this);
+			//(*m_AnimDictionary)[state] = new C_Animation(this);
+			(*m_AnimDictionary)[{ static_cast<E_AnimState>(i), static_cast<E_Direction>(j) }] = new C_Animation(this);
 			if (FAILED(((*m_AnimDictionary)[{ static_cast<E_AnimState>(i), static_cast<E_Direction>(j) }])->Create()))
 				return E_FAIL;
 		}
@@ -241,10 +241,10 @@ HRESULT CAnimator::Create()
 
 	return S_OK;
 }
-HRESULT CAnimator::Update(const float _deltaTime)
+HRESULT C_Animator::Update(const float _deltaTime)
 {
-	CAnimation* animation = m_AnimDictionary->at({ m_AnimState, m_Direction });
-	/*CAnimation* animation = nullptr;
+	C_Animation* animation = m_AnimDictionary->at({ m_AnimState, m_Direction });
+	/*C_Animation* animation = nullptr;
 	try
 	{
 		animation = m_AnimDictionary->at(std::pair<E_AnimState, E_Direction>(m_AnimState, m_Direction));
@@ -253,7 +253,7 @@ HRESULT CAnimator::Update(const float _deltaTime)
 	{
 		if (nullptr == animation)
 		{
-			MessageBox(NULL, L"Error: CAnimator::Update", L"Error!", MB_OK);
+			MessageBox(NULL, L"Error: C_Animator::Update", L"Error!", MB_OK);
 			return E_FAIL;
 		}
 	}*/
@@ -263,10 +263,10 @@ HRESULT CAnimator::Update(const float _deltaTime)
 
 	return S_OK;
 }
-HRESULT CAnimator::Render()
+HRESULT C_Animator::Render()
 {
-	CAnimation* animation = m_AnimDictionary->at({ m_AnimState, m_Direction });
-	/*CAnimation* animation = nullptr;
+	C_Animation* animation = m_AnimDictionary->at({ m_AnimState, m_Direction });
+	/*C_Animation* animation = nullptr;
 	try
 	{
 		animation = m_AnimDictionary->at(std::pair<E_AnimState, E_Direction>(m_AnimState, m_Direction));
@@ -275,7 +275,7 @@ HRESULT CAnimator::Render()
 	{
 		if (nullptr == animation)
 		{
-			MessageBox(NULL, L"Error: CAnimator::Render", L"Error!", MB_OK);
+			MessageBox(NULL, L"Error: C_Animator::Render", L"Error!", MB_OK);
 			return E_FAIL;
 		}
 	}*/
@@ -285,7 +285,7 @@ HRESULT CAnimator::Render()
 
 	return S_OK;
 }
-void CAnimator::Destroy()
+void C_Animator::Destroy()
 {
 	for (auto item : (*m_AnimDictionary))
 		SAFE_DELETE(item.second);
@@ -294,90 +294,90 @@ void CAnimator::Destroy()
 }
 
 // Position
-D3DXVECTOR2 CAnimator::GetPosition() { return m_Position; }
-void CAnimator::SetPosition(float _x, float _y)
+D3DXVECTOR2 C_Animator::GetPosition() { return m_Position; }
+void C_Animator::SetPosition(float _x, float _y)
 {
 	this->SetPosition(D3DXVECTOR2(_x, _y));
 }
-void CAnimator::SetPosition(D3DXVECTOR2 _pos)
+void C_Animator::SetPosition(D3DXVECTOR2 _pos)
 {
 	m_Position = _pos;
 }
-void CAnimator::AddPosition(float _x, float _y)
+void C_Animator::AddPosition(float _x, float _y)
 {
 	this->AddPosition(D3DXVECTOR2(_x, _y));
 }
-void CAnimator::AddPosition(D3DXVECTOR2 _pos)
+void C_Animator::AddPosition(D3DXVECTOR2 _pos)
 {
 	m_Position += _pos;
 }
 
 // Rotation
-D3DXVECTOR3 CAnimator::GetRotation() { return m_Rotation; }
-void CAnimator::SetRotation(float _x, float _y, float _degree)
+D3DXVECTOR3 C_Animator::GetRotation() { return m_Rotation; }
+void C_Animator::SetRotation(float _x, float _y, float _degree)
 {
 	this->SetRotation(D3DXVECTOR3(_x, _y, _degree));
 }
-void CAnimator::SetRotation(D3DXVECTOR3 _rot)
+void C_Animator::SetRotation(D3DXVECTOR3 _rot)
 {
 	m_Rotation = _rot;
 }
 
 // Scale
-D3DXVECTOR2 CAnimator::GetScale() { return m_Scale; }
-void CAnimator::SetScale(float _x, float _y)
+D3DXVECTOR2 C_Animator::GetScale() { return m_Scale; }
+void C_Animator::SetScale(float _x, float _y)
 {
 	this->SetScale(D3DXVECTOR2(_x, _y));
 }
-void CAnimator::SetScale(D3DXVECTOR2 _scale)
+void C_Animator::SetScale(D3DXVECTOR2 _scale)
 {
 	m_Scale = _scale;
 }
 
 // Offset
-D3DXVECTOR3 CAnimator::GetOffset() { return m_Offset; }
-void CAnimator::SetOffset(float _x, float _y, float _z)
+D3DXVECTOR3 C_Animator::GetOffset() { return m_Offset; }
+void C_Animator::SetOffset(float _x, float _y, float _z)
 {
 	this->SetOffset(D3DXVECTOR3(_x, _y, _z));
 }
-void CAnimator::SetOffset(D3DXVECTOR3 _offset)
+void C_Animator::SetOffset(D3DXVECTOR3 _offset)
 {
 	m_Offset = _offset;
 }
 
 // Color
-D3DXCOLOR CAnimator::GetColor() { return m_Color; }
-void CAnimator::SetColor(float _r, float _g, float _b, float _a)
+D3DXCOLOR C_Animator::GetColor() { return m_Color; }
+void C_Animator::SetColor(float _r, float _g, float _b, float _a)
 {
 	this->SetColor(D3DXCOLOR(_r, _g, _b, _a));
 }
-void CAnimator::SetColor(D3DXCOLOR _color)
+void C_Animator::SetColor(D3DXCOLOR _color)
 {
 	m_Color = _color;
 }
 
 // Animation Frame
-HRESULT CAnimator::AddFrame(const E_AnimState& _state, const E_Direction& _direction, std::shared_ptr<CLcTexture*>& _texture, const RECT _size, float _time)
+HRESULT C_Animator::AddFrame(const E_AnimState& _state, const E_Direction& _direction, std::shared_ptr<C_Texture*>& _texture, const RECT _size, float _time)
 {
 	return this->AddFrame({ _state, _direction }, _texture, _size, _time);
 }
-HRESULT CAnimator::AddFrame(const std::pair<E_AnimState, E_Direction>& _condition, std::shared_ptr<CLcTexture*>& _texture, const RECT _size, float _time)
+HRESULT C_Animator::AddFrame(const std::pair<E_AnimState, E_Direction>& _condition, std::shared_ptr<C_Texture*>& _texture, const RECT _size, float _time)
 {
-	CAnimation* animation = m_AnimDictionary->at(_condition);
+	C_Animation* animation = m_AnimDictionary->at(_condition);
 	/*try
 	{
 		animation = m_AnimDictionary->at(state);
 	}
 	catch (const std::exception& e)
 	{
-		animation = (*m_AnimDictionary)[state] = new CAnimation(this);
+		animation = (*m_AnimDictionary)[state] = new C_Animation(this);
 		if (FAILED(animation->Create()))
 			return E_FAIL;
 	}
 
 	if (nullptr == animation)
 	{
-		MessageBox(NULL, L"Error: CAnimator::AddFrame", L"Error!", MB_OK);
+		MessageBox(NULL, L"Error: C_Animator::AddFrame", L"Error!", MB_OK);
 		return E_FAIL;
 	}*/
 
@@ -386,22 +386,22 @@ HRESULT CAnimator::AddFrame(const std::pair<E_AnimState, E_Direction>& _conditio
 	return S_OK;
 }
 
-bool CAnimator::HasAnimState(const E_AnimState& _state, const E_Direction& _direction)
+bool C_Animator::HasAnimState(const E_AnimState& _state, const E_Direction& _direction)
 {
 	return this->HasAnimState({ _state, _direction });
 }
-bool CAnimator::HasAnimState(const std::pair<E_AnimState, E_Direction>& _condition)
+bool C_Animator::HasAnimState(const std::pair<E_AnimState, E_Direction>& _condition)
 {
 	return m_AnimDictionary->count(_condition);
 }
 
-INT CAnimator::GetFrameCount(const E_AnimState& _state, const E_Direction& _direction)
+INT C_Animator::GetFrameCount(const E_AnimState& _state, const E_Direction& _direction)
 {
 	return (*m_AnimDictionary)[{ _state, _direction }]->GetFrameCount();
 }
 
-E_AnimState CAnimator::GetAnimState() { return m_AnimState; }
-void CAnimator::SetAnimState(const E_AnimState& _state)
+E_AnimState C_Animator::GetAnimState() { return m_AnimState; }
+void C_Animator::SetAnimState(const E_AnimState& _state)
 {
 	if (m_AnimState == _state)
 		return;
@@ -411,11 +411,11 @@ void CAnimator::SetAnimState(const E_AnimState& _state)
 
 	m_AnimState = _state;
 }
-void CAnimator::SetAnimState(const E_AnimState& _state, const E_Direction& _direction)
+void C_Animator::SetAnimState(const E_AnimState& _state, const E_Direction& _direction)
 {
 	this->SetAnimState({ _state, _direction });
 }
-void CAnimator::SetAnimState(const std::pair<E_AnimState, E_Direction>& _condition)
+void C_Animator::SetAnimState(const std::pair<E_AnimState, E_Direction>& _condition)
 {
 	if (m_AnimState == _condition.first &&
 		m_TargetDir == _condition.second)
@@ -428,8 +428,8 @@ void CAnimator::SetAnimState(const std::pair<E_AnimState, E_Direction>& _conditi
 	m_TargetDir = _condition.second;
 }
 
-E_Direction CAnimator::GetDirection() { return m_Direction; }
-void CAnimator::SetDirection(const E_Direction& _direction)
+E_Direction C_Animator::GetDirection() { return m_Direction; }
+void C_Animator::SetDirection(const E_Direction& _direction)
 {
 	if (!HasAnimState(m_AnimState, _direction))
 		return;
@@ -437,7 +437,7 @@ void CAnimator::SetDirection(const E_Direction& _direction)
 	m_TargetDir = _direction;
 }
 
-void CAnimator::SetAnimMode(const E_AnimState& _state, const E_AnimMode& _animMode)
+void C_Animator::SetAnimMode(const E_AnimState& _state, const E_AnimMode& _animMode)
 {
 	int max = static_cast<int>(E_Direction::Max);
 	for (int i = 0; i < max; ++i)
@@ -446,16 +446,16 @@ void CAnimator::SetAnimMode(const E_AnimState& _state, const E_AnimMode& _animMo
 		this->SetAnimMode({ _state, dir }, _animMode);
 	}
 }
-void CAnimator::SetAnimMode(const E_AnimState& _state, const E_Direction& _direction, const E_AnimMode& _animMode)
+void C_Animator::SetAnimMode(const E_AnimState& _state, const E_Direction& _direction, const E_AnimMode& _animMode)
 {
 	this->SetAnimMode({ _state, _direction }, _animMode);
 }
-void CAnimator::SetAnimMode(const std::pair<E_AnimState, E_Direction>& _condition, const E_AnimMode& _animMode)
+void C_Animator::SetAnimMode(const std::pair<E_AnimState, E_Direction>& _condition, const E_AnimMode& _animMode)
 {
 	(*m_AnimDictionary)[_condition]->SetAnimMode(_animMode);
 }
 
-HRESULT CAnimator::AddFunc(const E_AnimState& _state, int _frameCount, std::function<void()> _func)
+HRESULT C_Animator::AddFunc(const E_AnimState& _state, int _frameCount, std::function<void()> _func)
 {
 	int max = static_cast<int>(E_Direction::Max);
 	for (int i = 0; i < max; ++i)
@@ -467,19 +467,19 @@ HRESULT CAnimator::AddFunc(const E_AnimState& _state, int _frameCount, std::func
 
 	return S_OK;
 }
-HRESULT CAnimator::AddFunc(const E_AnimState& _state, const E_Direction& _direction, std::function<void()> _func)
+HRESULT C_Animator::AddFunc(const E_AnimState& _state, const E_Direction& _direction, std::function<void()> _func)
 {
 	return this->AddFunc({ _state, _direction }, (*m_AnimDictionary)[{_state, _direction}]->GetFrameCount() - 1, _func);
 }
-HRESULT CAnimator::AddFunc(const std::pair<E_AnimState, E_Direction>& _condition, std::function<void()> _func)
+HRESULT C_Animator::AddFunc(const std::pair<E_AnimState, E_Direction>& _condition, std::function<void()> _func)
 {
 	return this->AddFunc(_condition, (*m_AnimDictionary)[_condition]->GetFrameCount() - 1, _func);
 }
-HRESULT CAnimator::AddFunc(const E_AnimState& _state, const E_Direction& _direction, int _frameCount, std::function<void()> _func)
+HRESULT C_Animator::AddFunc(const E_AnimState& _state, const E_Direction& _direction, int _frameCount, std::function<void()> _func)
 {
 	return this->AddFunc({ _state, _direction }, _frameCount, _func);
 }
-HRESULT CAnimator::AddFunc(const std::pair<E_AnimState, E_Direction>& _condition, int _frameCount, std::function<void()> _func)
+HRESULT C_Animator::AddFunc(const std::pair<E_AnimState, E_Direction>& _condition, int _frameCount, std::function<void()> _func)
 {
 	return (*m_AnimDictionary)[_condition]->AddFunc(_frameCount, _func);
 }

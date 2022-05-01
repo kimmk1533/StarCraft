@@ -43,7 +43,7 @@ S_UnitInfo::S_UnitInfo()
 	fVisualRange = 0.0F;					// 시야 거리
 
 	// 충돌 크기
-	ptPixelSize = Point(0, 0);				// 충돌 크기
+	ptPixelSize = S_Point(0, 0);				// 충돌 크기
 }
 S_UnitInfo::S_UnitInfo(const S_UnitInfo& s)
 {

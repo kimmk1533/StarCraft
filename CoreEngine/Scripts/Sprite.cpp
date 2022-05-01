@@ -1,27 +1,23 @@
-#include <windows.h>
-#include <d3d9.h>
-#include <d3dx9.h>
+#include "stdafx.h"
 
-#include "LcSprite.h"
-
-CLcSprite::CLcSprite()
+C_Sprite::C_Sprite()
 {
 	m_pDxSprite = NULL;
 }
 
-CLcSprite::~CLcSprite()
+C_Sprite::~C_Sprite()
 {
 
 }
 
-HRESULT CLcSprite::Create(LPD3DXSPRITE pSprite)
+HRESULT C_Sprite::Create(LPD3DXSPRITE pSprite)
 {
 	m_pDxSprite = pSprite;
 
 	return S_OK;
 }
 
-HRESULT CLcSprite::Draw(
+HRESULT C_Sprite::Draw(
 	LPDIRECT3DTEXTURE9	pTex,
 	const RECT*			pSrcRect,
 	const D3DXVECTOR2*	pScaling,		// Scaling
@@ -78,7 +74,7 @@ HRESULT CLcSprite::Draw(
 
 	return S_OK;
 }
-HRESULT CLcSprite::Draw(
+HRESULT C_Sprite::Draw(
 	LPDIRECT3DTEXTURE9	pTex,
 	const RECT*			pSrcRect,
 	const D3DXVECTOR2*	pScaling,		// Scaling

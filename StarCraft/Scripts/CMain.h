@@ -1,11 +1,11 @@
 #pragma once
-#include "..\..\CoreEngine\Scripts\stdafx.h"
-#include "..\..\CoreEngine\Scripts\Engine.h"
 
-class CMain : public CEngine
+class C_Marine;
+
+class C_Main : public C_Engine
 {
-
-	CMarine* m_Marine;
+private:
+	C_Marine* m_Marine;
 
 public:
 	// Window+Device 관련 함수들

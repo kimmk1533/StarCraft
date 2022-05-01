@@ -1,13 +1,13 @@
 #pragma once
 
-class CLcSprite
+class C_Sprite
 {
 protected:
 	LPD3DXSPRITE	m_pDxSprite;		// 2D DX Sprite
 
 public:
-	CLcSprite();
-	virtual ~CLcSprite();
+	C_Sprite();
+	virtual ~C_Sprite();
 
 	HRESULT		Create(LPD3DXSPRITE);
 
