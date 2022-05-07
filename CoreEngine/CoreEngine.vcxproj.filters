@@ -7,26 +7,8 @@
     <Filter Include="Source File">
       <UniqueIdentifier>{d271f095-f6f8-4f7a-bc97-0ae1f00a7654}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header File\Core">
-      <UniqueIdentifier>{80815e4a-6b37-4051-a5d8-02d8634f03fa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source File\Core">
-      <UniqueIdentifier>{cae0d3dd-d35c-422a-aa8e-781b66b4f1ff}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Scripts\Singleton.h">
-      <Filter>Header File\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\McUtil.h">
-      <Filter>Header File\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\stdafx.h">
-      <Filter>Header File\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Animator.h">
-      <Filter>Header File</Filter>
-    </ClInclude>
     <ClInclude Include="Scripts\Engine.h">
       <Filter>Header File</Filter>
     </ClInclude>
@@ -45,18 +27,21 @@
     <ClInclude Include="Scripts\Time.h">
       <Filter>Header File</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\MemoryPool.h">
-      <Filter>Header File\Core</Filter>
+    <ClInclude Include="Scripts\CoreUtil.h">
+      <Filter>Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\ObjectPool.h">
+      <Filter>Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Singleton.h">
+      <Filter>Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\stdafx.h">
+      <Filter>Header File</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Scripts\Animator.cpp">
-      <Filter>Source File</Filter>
-    </ClCompile>
     <ClCompile Include="Scripts\Engine.cpp">
-      <Filter>Source File</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\FrameWork.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Input.cpp">
@@ -71,14 +56,17 @@
     <ClCompile Include="Scripts\Time.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\MemoryPool.cpp">
-      <Filter>Source File\Core</Filter>
+    <ClCompile Include="Scripts\stdafx.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\ObjectPool.cpp">
+      <Filter>Source File</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Singleton.cpp">
-      <Filter>Source File\Core</Filter>
+      <Filter>Source File</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\stdafx.cpp">
-      <Filter>Source File\Core</Filter>
+    <ClCompile Include="Scripts\FrameWork.cpp">
+      <Filter>Source File</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

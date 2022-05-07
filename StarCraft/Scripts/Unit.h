@@ -1,29 +1,31 @@
 #pragma once
 #include "UnitInfo.h"
-//#include <Animator.h>
-#include "..\..\CoreEngine\Scripts\Animator.h"
 
-class C_Unit : public C_FrameWork
+#include "Animator.h"
+
+namespace Game
 {
-protected:
-	S_UnitInfo* m_Info;
+	using namespace CoreEngine;
 
-protected:
-	D3DXVECTOR2 m_Position;
-	D3DXVECTOR2 m_TargetPos;
+	class C_Unit : public C_FrameWork, public IUpdatable, public IRenderable
+	{
+	protected:
+		S_UnitInfo* m_Info;
 
-	C_Animator* m_Animator;
+	protected:
+		D3DXVECTOR2 m_Position;
+		D3DXVECTOR2 m_TargetPos;
 
-public:
-	C_Unit();
-	virtual ~C_Unit();
+		C_Animator* m_Animator;
 
-	virtual HRESULT	Create() override;
-	virtual HRESULT	Update(const float _deltaTime) override = 0;
-	virtual HRESULT	Render() override = 0;
-	virtual void	Destroy() override;
+	public:
+		C_Unit();
+		virtual ~C_Unit();
 
-public:
-	virtual C_Texture* GetTexture() const = 0;
+		virtual HRESULT	Create() override;
+		virtual HRESULT	Update(const float _deltaTime) override = 0;
+		virtual HRESULT	Render() override = 0;
+		virtual void	Destroy() override;
 
-};
+	};
+}

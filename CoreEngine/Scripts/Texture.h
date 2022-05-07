@@ -1,24 +1,44 @@
 #pragma once
+#include "FrameWork.h"
 
-class C_Texture
+namespace CoreEngine
 {
-protected:
-	LPDIRECT3DDEVICE9	m_pDev;	// Device
+	class C_Texture : public C_FrameWork
+	{
+	public:
+		C_Texture();
+		virtual ~C_Texture();
 
-	D3DXIMAGE_INFO		m_Img;	// 이미지 정보
-	LPDIRECT3DTEXTURE9	m_pTx;	// 텍스처
+#ifdef UNICODE
+	protected:
+		LPCWSTR	m_pFileName;			// 파일 이름
 
-public:
-	C_Texture();
-	virtual ~C_Texture();
+	public:
+		HRESULT	Init(LPCWSTR sFile);
 
-	virtual HRESULT	Create(LPDIRECT3DDEVICE9 pDev, LPCWSTR sFile);
-	virtual void	Destroy();
+#else
+	protected:
+		LPCSTR	m_pFileName;			// 파일 이름
 
-public:
-	INT		GetImageWidth();
-	INT		GetImageHeight();
-	void	GetImageRect(RECT* pRc);
+	public:
+		HRESULT	Init(LPCSTR sFile);
 
-	LPDIRECT3DTEXTURE9	GetTexture();
-};
+#endif // UNICODE
+
+
+	protected:
+		D3DXIMAGE_INFO		m_Img;		// 이미지 정보
+		LPDIRECT3DTEXTURE9	m_pTex;		// 텍스처
+
+	public:
+		virtual HRESULT Create() override;
+		virtual void	Destroy() override;
+
+	public:
+		INT		GetImageWidth();
+		INT		GetImageHeight();
+		void	GetImageRect(RECT* pRc);
+
+		LPDIRECT3DTEXTURE9	GetTexture();
+	};
+}

@@ -92,9 +92,9 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <DisableSpecificWarnings>4819;28251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -146,26 +146,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Scripts\Animator.h" />
     <ClInclude Include="Scripts\FrameWork.h" />
     <ClInclude Include="Scripts\Input.h" />
     <ClInclude Include="Scripts\Sprite.h" />
     <ClInclude Include="Scripts\Texture.h" />
     <ClInclude Include="Scripts\Engine.h" />
-    <ClInclude Include="Scripts\McUtil.h" />
-    <ClInclude Include="Scripts\MemoryPool.h" />
+    <ClInclude Include="Scripts\CoreUtil.h" />
+    <ClInclude Include="Scripts\ObjectPool.h" />
     <ClInclude Include="Scripts\Singleton.h" />
     <ClInclude Include="Scripts\stdafx.h" />
     <ClInclude Include="Scripts\Time.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Scripts\Animator.cpp" />
     <ClCompile Include="Scripts\FrameWork.cpp" />
     <ClCompile Include="Scripts\Input.cpp" />
     <ClCompile Include="Scripts\Sprite.cpp" />
     <ClCompile Include="Scripts\Texture.cpp" />
     <ClCompile Include="Scripts\Engine.cpp" />
-    <ClCompile Include="Scripts\MemoryPool.cpp" />
+    <ClCompile Include="Scripts\ObjectPool.cpp" />
     <ClCompile Include="Scripts\Singleton.cpp" />
     <ClCompile Include="Scripts\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -1,18 +1,31 @@
 #pragma once
 
-template <class T>
-class C_Singleton
+namespace CoreEngine
 {
-protected:
-	C_Singleton() = default;
+	template <class T>
+	class C_Singleton
+	{
+	private:
+		static T* m_Instance;
 
-	C_Singleton(const C_Singleton& other) = delete;
+	protected:
+		C_Singleton();
+		virtual ~C_Singleton();
 
-public:
-	static T& GetI()
-		;
-	/*{
-		static T Instance;
-		return Instance;
-	}*/
-};
+		C_Singleton(const C_Singleton& _other) = delete;
+
+	public:
+		static T& GetI();
+	};
+
+	/*template <class T>
+	__interface ISingleton
+	{
+	protected:
+		T();
+		T(const T& _other) = delete;
+
+	public:
+		static virtual T& GetInstance() = 0;
+	};*/
+}

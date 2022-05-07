@@ -1,15 +1,17 @@
 #pragma comment(linker, "/subsystem:windows")
 
+#ifdef DEBUG
 #ifdef UNICODE
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #else
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")   
 #endif
+#endif // DEBUG
 
 //#include <stdafx.h>
 #include "..\..\CoreEngine\Scripts\stdafx.h"
 
-#include "CMain.h"
+#include "Main.h"
 
 #ifdef UNICODE
 INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
@@ -21,10 +23,10 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, INT)
 	SetConsoleCP(65001);
 	SetConsoleOutputCP(65001);
 
-	C_Main d3dApp;
+	Game::C_Main d3dApp;
 
-	g_pApp = dynamic_cast<C_Engine*>(&d3dApp);
-	if (nullptr == g_pApp)
+	CoreEngine::g_pApp = dynamic_cast<CoreEngine::C_Engine*>(&d3dApp);
+	if (nullptr == CoreEngine::g_pApp)
 		return E_FAIL;
 
 	if (FAILED(d3dApp.Create(hInst)))

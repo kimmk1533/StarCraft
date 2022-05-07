@@ -1,39 +1,48 @@
 #pragma once
 #include "FrameWork.h"
 
-class C_Engine;
-
-extern C_Engine* g_pApp;
-
-class C_Engine : public C_FrameWork
+namespace CoreEngine
 {
-private:
-	static const LPCWSTR			m_Title;
+	class C_Engine;
 
-	static HINSTANCE				m_hInst;
-	static HWND						m_hWnd;
-	static DWORD					m_dWinStyle;
-	static DWORD					m_dScnX;			// Screen Width
-	static DWORD					m_dScnY;			// Screen Height
-	static bool						m_bWindow;			// WindowMode
-	static bool						m_bShowCusor;		// Show Cusor
+	extern C_Engine* g_pApp;
 
-public:
-	// Window+Device관련 함수들
-	virtual HRESULT	Create(HINSTANCE hInst);
-	HRESULT	Run();
-	void	Cleanup();
-	HRESULT RPR();						// 렌더링 파이프라인
+	class C_Engine : public C_FrameWork, public IUpdatable, public IRenderable
+	{
+	private:
+#ifdef UNICODE
+		const LPCWSTR			m_Title;
+#else
+		const LPCSTR			m_Title;
+#endif // UNICODE
 
-	virtual LRESULT MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-	static LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+		HINSTANCE				m_hInst;
+		HWND					m_hWnd;
+		DWORD					m_dWinStyle;
+		DWORD					m_dScnX;			// Screen Width
+		DWORD					m_dScnY;			// Screen Height
+		bool					m_bWindow;			// WindowMode
+		bool					m_bShowCusor;		// Show Cusor
 
-public:
-	virtual HRESULT	Create() override;
-	virtual HRESULT	Update(const float deltaTime) override;
-	virtual HRESULT	Render() override;
-	virtual void	Destroy() override;
+		LPD3DXSPRITE			m_pd3dSprite;		// 2D Sprite
 
-public:
-	C_Engine();
-};
+	public:
+		// Window+Device관련 함수들
+		virtual HRESULT	Create(HINSTANCE hInst);
+		HRESULT	Run();
+		void	Cleanup();
+		HRESULT RPR();						// 렌더링 파이프라인
+
+		virtual LRESULT MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+		static LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+	public:
+		virtual HRESULT	Create() override;
+		virtual HRESULT	Update(const float deltaTime) override;
+		virtual HRESULT	Render() override;
+		virtual void	Destroy() override;
+
+	public:
+		C_Engine();
+	};
+}

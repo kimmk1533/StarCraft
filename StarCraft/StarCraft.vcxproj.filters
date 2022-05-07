@@ -10,20 +10,8 @@
     <Filter Include="Game\Unit\Zerg">
       <UniqueIdentifier>{4695b609-b45e-4c14-a860-649fccba04c1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Unit\Zerg\Header">
-      <UniqueIdentifier>{fe439dbf-6531-4bdc-89ec-147bdcd81034}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Unit\Zerg\Source">
-      <UniqueIdentifier>{0a54c54e-f97e-4865-8032-1dbb41dd8252}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Unit\Protoss">
       <UniqueIdentifier>{43aba6b4-4d5a-4873-a938-f01a5aa5b6dd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Unit\Protoss\Header">
-      <UniqueIdentifier>{efea4ea4-143b-416c-9263-fcdc5c8f3941}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Unit\Protoss\Source">
-      <UniqueIdentifier>{c5dcbbbf-b83b-4f26-8ae9-b0435c83538e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Unit\Terran">
       <UniqueIdentifier>{ee78600d-02de-40f9-a26d-3c4bae62d608}</UniqueIdentifier>
@@ -31,36 +19,69 @@
     <Filter Include="Game\Unit\Terran\Marine">
       <UniqueIdentifier>{9b4003e0-ce4b-42a2-8fd4-6f8e99ad0e80}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{974c2c5f-063c-4b91-acb1-bc7e2f759c76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\UnitManager">
+      <UniqueIdentifier>{7019a3a9-58c3-424b-a733-26a9ff90804e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\UnitManager\Zerg">
+      <UniqueIdentifier>{3f3256b4-63ea-43d2-9932-895cfb2f5226}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\UnitManager\Terran">
+      <UniqueIdentifier>{d7264886-f309-4085-9dd4-41f6542f7bc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\UnitManager\Protoss">
+      <UniqueIdentifier>{07da9d9c-8f5a-4f2f-9b4e-af65ebae0984}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\UnitAnimation">
+      <UniqueIdentifier>{0dff158f-7fce-4288-82c8-dfe6d4f6ce90}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scripts\WinMain.cpp" />
-    <ClCompile Include="Scripts\CMain.cpp" />
+    <ClCompile Include="Scripts\Main.cpp" />
     <ClCompile Include="Scripts\Unit.cpp">
       <Filter>Game\Unit</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\UnitInfo.cpp">
       <Filter>Game\Unit</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\UnitManager.cpp">
-      <Filter>Game\Unit</Filter>
-    </ClCompile>
     <ClCompile Include="Scripts\Marine.cpp">
       <Filter>Game\Unit\Terran\Marine</Filter>
     </ClCompile>
+    <ClCompile Include="Scripts\UnitManager.cpp">
+      <Filter>Game\UnitManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\MarineManager.cpp">
+      <Filter>Game\UnitManager\Terran</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Animator.cpp">
+      <Filter>Game\UnitAnimation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Scripts\CMain.h" />
+    <ClInclude Include="Scripts\Main.h" />
     <ClInclude Include="Scripts\Unit.h">
       <Filter>Game\Unit</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\UnitInfo.h">
       <Filter>Game\Unit</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\UnitManager.h">
-      <Filter>Game\Unit</Filter>
-    </ClInclude>
     <ClInclude Include="Scripts\Marine.h">
       <Filter>Game\Unit\Terran\Marine</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Utility.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\UnitManager.h">
+      <Filter>Game\UnitManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\MarineManager.h">
+      <Filter>Game\UnitManager\Terran</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Animator.h">
+      <Filter>Game\UnitAnimation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

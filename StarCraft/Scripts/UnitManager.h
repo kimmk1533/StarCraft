@@ -1,17 +1,28 @@
 #pragma once
 #include "..\..\CoreEngine\Scripts\Singleton.cpp"
 
-class C_UnitManager :  public C_Singleton<C_UnitManager>
+namespace Game
 {
-private:
-	std::shared_ptr<C_Texture*> m_pUnitTexture;
+	using namespace CoreEngine;
 
-protected:
-	C_UnitManager();
+	template <class T>
+	class C_UnitManager : public C_Singleton<T>, public IFrameWork
+	{
+	protected:
+		C_UnitManager();
+		virtual ~C_UnitManager();
 
-	C_UnitManager(const C_UnitManager& other) = delete;
+		C_UnitManager(const C_UnitManager& _other) = delete;
 
-public:
-	const std::shared_ptr<C_Texture*>& GetUnitTexture();
+	protected:
+		std::shared_ptr<C_Texture> m_pUnitTexture;
 
-};
+	public:
+		virtual HRESULT Create() override = 0;
+		virtual void	Destroy() override = 0;
+
+	public:
+		std::shared_ptr<C_Texture> GetUnitTexture();
+
+	};
+}

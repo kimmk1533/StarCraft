@@ -39,12 +39,13 @@ struct Pair_Hash
 //#define GHINST		g_pApp->m_hInst
 //#define GHWND			g_pApp->m_hWnd
 
+#include "CoreUtil.h"
+
 #include "Input.h"
 #include "Texture.h"
 #include "Sprite.h"
-
-#include "McUtil.h"
 #include "Time.h"
+
 #include "FrameWork.h"
 #include "Engine.h"
 

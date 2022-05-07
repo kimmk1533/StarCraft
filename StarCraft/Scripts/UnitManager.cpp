@@ -1,11 +1,21 @@
 #include "UnitManager.h"
 
-C_UnitManager::C_UnitManager()
+namespace Game
 {
+	template <class T>
+	C_UnitManager<T>::C_UnitManager()
+	{
+		m_pUnitTexture = nullptr;
+	}
+	template<class T>
+	C_UnitManager<T>::~C_UnitManager()
+	{
+		
+	}
 
-}
-
-const std::shared_ptr<C_Texture*>& C_UnitManager::GetUnitTexture()
-{
-	return m_pUnitTexture;
+	template <class T>
+	std::shared_ptr<C_Texture> C_UnitManager<T>::GetUnitTexture()
+	{
+		return m_pUnitTexture;
+	}
 }

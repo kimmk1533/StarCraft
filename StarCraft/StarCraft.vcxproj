@@ -19,19 +19,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Scripts\CMain.cpp" />
+    <ClCompile Include="Scripts\Animator.cpp" />
+    <ClCompile Include="Scripts\Main.cpp" />
     <ClCompile Include="Scripts\Marine.cpp" />
+    <ClCompile Include="Scripts\MarineManager.cpp" />
     <ClCompile Include="Scripts\Unit.cpp" />
     <ClCompile Include="Scripts\UnitInfo.cpp" />
     <ClCompile Include="Scripts\UnitManager.cpp" />
     <ClCompile Include="Scripts\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Scripts\CMain.h" />
+    <ClInclude Include="Scripts\Animator.h" />
+    <ClInclude Include="Scripts\Main.h" />
     <ClInclude Include="Scripts\Marine.h" />
+    <ClInclude Include="Scripts\MarineManager.h" />
     <ClInclude Include="Scripts\Unit.h" />
     <ClInclude Include="Scripts\UnitInfo.h" />
     <ClInclude Include="Scripts\UnitManager.h" />
+    <ClInclude Include="Scripts\Utility.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CoreEngine\CoreEngine.vcxproj">
