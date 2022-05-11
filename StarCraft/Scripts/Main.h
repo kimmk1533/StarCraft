@@ -13,11 +13,11 @@ namespace Game
 
 	public:
 		// Window+Device 관련 함수들
-		virtual HRESULT	Create(HINSTANCE hInst) override;
+		virtual HRESULT	Init(HINSTANCE _hInst) override;
 
 	public:
 		virtual HRESULT	Create() override;
-		virtual HRESULT	Update(const float deltaTime) override;
+		virtual HRESULT	Update(const float _deltaTime) override;
 		virtual HRESULT	Render() override;
 		virtual void	Destroy() override;
 

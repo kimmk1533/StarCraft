@@ -10,9 +10,15 @@ namespace Game
 	{
 		m_Info = nullptr;
 
-		m_TargetPos = m_Position = D3DXVECTOR2(100, 100);
+		m_pPosition = nullptr;
+		m_pTargetPos = nullptr;
+		m_pScale = nullptr;
 
-		m_Animator = nullptr;
+		m_AnimIndex = 0;
+		m_AnimIndexTimer = 0.0f;
+		m_UnitState = E_UnitState::Init;
+		m_Direction = E_Direction::Right_Down_Down;
+		m_TargetDir = E_Direction::Right_Down_Down;
 	}
 	C_Unit::~C_Unit()
 	{
@@ -23,15 +29,18 @@ namespace Game
 	{
 		m_Info = new S_UnitInfo();
 
-		m_Animator = new C_Animator();
-		m_Animator->SetPosition(m_Position);
+		m_pPosition = new D3DXVECTOR2(100.0f, 100.0f);
+		m_pTargetPos = new D3DXVECTOR2(100.0f, 100.0f);
+		m_pScale = new D3DXVECTOR2(1.0f, 1.0f);
 
 		return S_OK;
 	}
 
 	void C_Unit::Destroy()
 	{
-		SAFE_DELETE(m_Animator);
+		SAFE_DELETE(m_pScale);
+		SAFE_DELETE(m_pTargetPos);
+		SAFE_DELETE(m_pPosition);
 
 		SAFE_DELETE(m_Info);
 	}

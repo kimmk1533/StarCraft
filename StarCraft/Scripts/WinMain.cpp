@@ -1,5 +1,8 @@
 #pragma comment(linker, "/subsystem:windows")
 
+//#include <stdafx.h>
+#include "..\..\CoreEngine\Scripts\stdafx.h"
+
 #ifdef DEBUG
 #ifdef UNICODE
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
@@ -8,13 +11,10 @@
 #endif
 #endif // DEBUG
 
-//#include <stdafx.h>
-#include "..\..\CoreEngine\Scripts\stdafx.h"
-
 #include "Main.h"
 
 #ifdef UNICODE
-INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
+INT WINAPI wWinMain(HINSTANCE _hInst, HINSTANCE, LPWSTR, INT)
 #else
 INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, INT)
 #endif
@@ -29,7 +29,7 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, INT)
 	if (nullptr == CoreEngine::g_pApp)
 		return E_FAIL;
 
-	if (FAILED(d3dApp.Create(hInst)))
+	if (FAILED(d3dApp.Init(_hInst)))
 		return E_FAIL;
 
 	return d3dApp.Run();

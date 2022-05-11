@@ -15,36 +15,37 @@ namespace Game
 		ShortcutKey = E_KeyCode::None;			// 생산 단축키
 
 		// 이동
-		bIsMovable = FALSE;						// 이동 가능 여부
-		fMoveSpeed = 0.0F;						// 이동 속도
-		bIsAir = FALSE;							// 공중 유닛인지
+		bIsMovable = false;						// 이동 가능 여부
+		fMoveSpeed = 0.0f;						// 이동 속도
+		bIsAir = false;							// 공중 유닛인지
 
 		// 공격
-		bIsAttackable = FALSE;					// 공격 가능 여부
+		bIsAttackable = false;					// 공격 가능 여부
 		AttackType = E_UnitAtkType::None;		// 공격 타입(일반형, 폭발형, 진동형, 방어무시형)
 		iAttackPoint = 0;						// 공격력
-		fAttackSpeed = 0.0F;					// 공격 속도
-		fAttackRange = 0.0F;					// 공격 사거리
+		fAttackSpeed = 0.0f;					// 공격 속도
+		fAttackRange = 0.0f;					// 공격 사거리
 
 		// 방어
-		bIsDefensible = FALSE;					// 방어 가능 여부(타겟팅 가능 여부)
+		bIsDefensible = false;					// 방어 가능 여부(타겟팅 가능 여부)
 		DeffenseType = E_UnitDefType::None;		// 방어 타입(소형, 중형, 대형)
-		fMaxHP = 0.0F;							// 최대 체력
-		fHP = 0.0F;								// 체력
-		fMaxShield = 0.0F;						// 최대 쉴드
-		fShield = 0.0F;							// 쉴드
+		fMaxHP = 0.0f;							// 최대 체력
+		fHP = 0.0f;								// 체력
+		fMaxShield = 0.0f;						// 최대 쉴드
+		fShield = 0.0f;							// 쉴드
 		iDeffensePoint = 0;						// 방어력
 
 		// 에너지(마나)
-		bCanUseEnergy = FALSE;					// 에너지 사용 여부
-		fMaxEnergy = 0.0F;						// 최대 에너지
-		fEnergy = 0.0F;							// 에너지
+		bCanUseEnergy = false;					// 에너지 사용 여부
+		fMaxEnergy = 0.0f;						// 최대 에너지
+		fEnergy = 0.0f;							// 에너지
 
 		// 시야
-		fVisualRange = 0.0F;					// 시야 거리
+		fVisualRange = 0.0f;					// 시야 거리
 
 		// 충돌 크기
-		ptPixelSize = S_Point(0, 0);				// 충돌 크기
+		ptPixelSize.x = 17;						// 충돌 크기 x
+		ptPixelSize.y = 20;						// 충돌 크기 y
 	}
 	S_UnitInfo::S_UnitInfo(const S_UnitInfo& s)
 	{
@@ -65,7 +66,7 @@ namespace Game
 		// 이동
 		bIsMovable = s.bIsMovable;				// 이동 가능 여부
 		fMoveSpeed = s.fMoveSpeed;				// 이동 속도
-		bIsAir = FALSE;							// 공중 유닛인지
+		bIsAir = false;							// 공중 유닛인지
 
 		// 공격
 		bIsAttackable = s.bIsAttackable;		// 공격 가능 여부

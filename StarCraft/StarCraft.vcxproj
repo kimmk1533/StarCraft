@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Scripts\Animator.cpp" />
     <ClCompile Include="Scripts\Main.cpp" />
     <ClCompile Include="Scripts\Marine.cpp" />
     <ClCompile Include="Scripts\MarineManager.cpp" />
@@ -29,7 +28,6 @@
     <ClCompile Include="Scripts\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Scripts\Animator.h" />
     <ClInclude Include="Scripts\Main.h" />
     <ClInclude Include="Scripts\Marine.h" />
     <ClInclude Include="Scripts\MarineManager.h" />

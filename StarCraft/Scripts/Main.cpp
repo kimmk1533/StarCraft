@@ -7,16 +7,15 @@ namespace Game
 {
 	using namespace CoreEngine;
 
-	HRESULT C_Main::Create(HINSTANCE hInst)
+	const int Count = 1;
+
+	HRESULT C_Main::Init(HINSTANCE _hInst)
 	{
-		if (FAILED(C_Engine::Create(hInst)))
+		if (FAILED(C_Engine::Init(_hInst)))
 			return E_FAIL;
 
 		return S_OK;
 	}
-
-	const int Count = 1000;
-
 	HRESULT C_Main::Create()
 	{
 		if (FAILED(C_Engine::Create()))
@@ -42,14 +41,14 @@ namespace Game
 		SAFE_DELETE_ARRAY(m_Marine);
 	}
 
-	HRESULT C_Main::Update(const float deltaTime)
+	HRESULT C_Main::Update(const float _deltaTime)
 	{
-		if (FAILED(C_Engine::Update(deltaTime)))
+		if (FAILED(C_Engine::Update(_deltaTime)))
 			return E_FAIL;
 
 		for (int i = 0; i < Count; ++i)
 		{
-			if (FAILED(m_Marine[i]->Update(deltaTime)))
+			if (FAILED(m_Marine[i]->Update(_deltaTime)))
 				return E_FAIL;
 		}
 

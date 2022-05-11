@@ -34,9 +34,6 @@
     <Filter Include="Game\UnitManager\Protoss">
       <UniqueIdentifier>{07da9d9c-8f5a-4f2f-9b4e-af65ebae0984}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\UnitAnimation">
-      <UniqueIdentifier>{0dff158f-7fce-4288-82c8-dfe6d4f6ce90}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scripts\WinMain.cpp" />
@@ -55,9 +52,6 @@
     </ClCompile>
     <ClCompile Include="Scripts\MarineManager.cpp">
       <Filter>Game\UnitManager\Terran</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\Animator.cpp">
-      <Filter>Game\UnitAnimation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -79,9 +73,6 @@
     </ClInclude>
     <ClInclude Include="Scripts\MarineManager.h">
       <Filter>Game\UnitManager\Terran</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Animator.h">
-      <Filter>Game\UnitAnimation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

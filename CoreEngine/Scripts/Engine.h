@@ -28,13 +28,13 @@ namespace CoreEngine
 
 	public:
 		// Window+Device관련 함수들
-		virtual HRESULT	Create(HINSTANCE hInst);
+		virtual HRESULT	Init(HINSTANCE _hInst);
 		HRESULT	Run();
 		void	Cleanup();
 		HRESULT RPR();						// 렌더링 파이프라인
 
-		virtual LRESULT MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-		static LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+		virtual LRESULT MsgProc(HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam);
+		static LRESULT WINAPI WndProc(HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam);
 
 	public:
 		virtual HRESULT	Create() override;

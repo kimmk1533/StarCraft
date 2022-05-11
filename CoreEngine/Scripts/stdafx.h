@@ -3,6 +3,8 @@
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
 
+#define DEBUG
+
 #include <Windows.h>
 // d3d 다음 x는 Extended의 의미로 Direct3D의 기본에 대한 확장을 의미
 #include <d3d9.h>

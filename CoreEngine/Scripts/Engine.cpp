@@ -24,9 +24,9 @@ namespace CoreEngine
 		m_bShowCusor = TRUE;				// Show Cusor
 	}
 
-	HRESULT C_Engine::Create(HINSTANCE hInst)
+	HRESULT C_Engine::Init(HINSTANCE _hInst)
 	{
-		m_hInst = hInst;
+		m_hInst = _hInst;
 
 		WNDCLASS wc =								// Register the window class
 		{
@@ -152,7 +152,7 @@ namespace CoreEngine
 					break;
 
 				// 후면버퍼 전면버퍼 교체( flipping)
-				m_pd3dDevice->Present(0, 0, 0, 0);
+				m_pd3dDevice->Present(nullptr, nullptr, nullptr, nullptr);
 			}
 		}
 
@@ -238,17 +238,17 @@ namespace CoreEngine
 	}
 
 
-	LRESULT C_Engine::MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+	LRESULT C_Engine::MsgProc(HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)
 	{
-		switch (msg)
+		switch (_msg)
 		{
 		case WM_KEYDOWN:
 		{
-			switch (wParam)
+			switch (_wParam)
 			{
 			case VK_ESCAPE:
 			{
-				SendMessage(hWnd, WM_DESTROY, 0, 0);
+				SendMessage(_hWnd, WM_DESTROY, 0, 0);
 				break;
 			}
 			}
@@ -264,7 +264,7 @@ namespace CoreEngine
 		}
 		}
 
-		return DefWindowProc(hWnd, msg, wParam, lParam);
+		return DefWindowProc(_hWnd, _msg, _wParam, _lParam);
 	}
 	LRESULT WINAPI C_Engine::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
