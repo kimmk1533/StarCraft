@@ -5,8 +5,6 @@
 #include "MarineManager.h"
 #include "Utility.h"
 
-#define DEBUG_FPS 24
-
 namespace Game
 {
 	C_Marine::C_Marine()
@@ -74,7 +72,6 @@ namespace Game
 	HRESULT C_Marine::Update(const float _deltaTime)
 	{
 #pragma region 추후 수정
-		static const float fps = 1.0f / DEBUG_FPS;
 		if (m_pInput->BtnDown(E_KeyCode::MouseRightButton))
 		{
 			D3DXVECTOR3 mousePos = m_pInput->GetMousePos();
@@ -113,9 +110,9 @@ namespace Game
 		m_AnimIndexTimer += _deltaTime;
 
 		// 1 게임 프레임 진행
-		if (m_AnimIndexTimer >= fps)
+		if (m_AnimIndexTimer >= InGame_FPS)
 		{
-			m_AnimIndexTimer -= fps;
+			m_AnimIndexTimer -= InGame_FPS;
 
 #pragma region AnimIndex
 			++m_AnimIndex;
@@ -155,7 +152,7 @@ namespace Game
 			if (m_Info->bIsMovable && length > 0.01f)
 			{
 				// 최종 속도 = 이동 속도 * 1 게임 프레임 * 델타타임(1 게임 프레임이 진행되는 동안 지난 시간) 
-				float speed = m_Info->fMoveSpeed * DEBUG_FPS * (m_AnimIndexTimer + fps);
+				float speed = m_Info->fMoveSpeed * DEBUG_GAME_SPEED * (m_AnimIndexTimer + InGame_FPS);
 
 				D3DXVECTOR2 vcMove;
 

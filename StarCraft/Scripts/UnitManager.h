@@ -1,5 +1,4 @@
 #pragma once
-#include "..\..\CoreEngine\Scripts\Singleton.cpp"
 
 namespace Game
 {
@@ -9,6 +8,7 @@ namespace Game
 	enum class E_UnitState : unsigned char;
 	enum class E_Direction : unsigned char;
 	struct S_UnitInfo;
+	class CoreEngine::C_Texture;
 #pragma endregion
 
 	template <class T>
@@ -19,6 +19,7 @@ namespace Game
 		virtual ~C_UnitManager();
 
 		C_UnitManager(const C_UnitManager& _other) = delete;
+		void operator=(const C_UnitManager& _other) = delete;
 
 	protected:
 		S_UnitInfo* m_pUnitInfo;

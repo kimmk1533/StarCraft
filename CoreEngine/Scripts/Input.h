@@ -101,6 +101,7 @@ namespace CoreEngine
 		E_InputState	BtnState(E_KeyCode nBtn);
 
 		D3DXVECTOR3 GetMousePos();
+		D3DXVECTOR2 GetMousePos2();
 		D3DXVECTOR3 GetMouseEps();
 
 	public:

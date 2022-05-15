@@ -1,6 +1,5 @@
 #include "MarineManager.h"
 
-#include "..\..\CoreEngine\Scripts\Texture.h"
 #include "Marine.h"
 #include "Utility.h"
 
@@ -10,7 +9,7 @@ namespace Game
 
 	C_MarineManager::C_MarineManager()
 	{
-		Create();
+		
 	}
 	C_MarineManager::~C_MarineManager()
 	{

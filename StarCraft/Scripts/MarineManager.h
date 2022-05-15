@@ -7,13 +7,14 @@ namespace Game
 
 	class C_MarineManager final : public C_UnitManager<C_MarineManager>
 	{
-		friend class C_Singleton;
+		friend class C_Singleton<C_MarineManager>;
 
 	private:
 		C_MarineManager();
 		virtual ~C_MarineManager();
 		
 		C_MarineManager(const C_MarineManager& _other) = delete;
+		void operator=(const C_MarineManager& _other) = delete;
 
 	public:
 		virtual HRESULT Create() override;

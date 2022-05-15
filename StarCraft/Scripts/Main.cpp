@@ -1,7 +1,10 @@
 #include "..\..\CoreEngine\Scripts\stdafx.h"
 
 #include "Main.h"
+#include "Cursor.h"
 #include "Marine.h"
+#include "MarineManager.h"
+#include "SelectManager.h"
 
 namespace Game
 {
@@ -16,18 +19,41 @@ namespace Game
 
 		return S_OK;
 	}
+	LRESULT C_Main::MsgProc(HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)
+	{
+		switch (_msg)
+		{
+		case WM_CREATE:
+			ShowCursor(false);
+			break;
+		case WM_SETCURSOR:
+			ShowCursor(false);
+			break;
+		case WM_DESTROY:
+			ShowCursor(true);
+			break;
+		}
+
+		return C_Engine::MsgProc(_hWnd, _msg, _wParam, _lParam);
+	}
 	HRESULT C_Main::Create()
 	{
 		if (FAILED(C_Engine::Create()))
 			return E_FAIL;
+
+		SAFE_CREATE(C_SelectManager::GetI());
+
+		m_pCursor = new C_Cursor();
+		SAFE_CREATE_POINTER(m_pCursor);
+
+		SAFE_CREATE(C_MarineManager::GetI());
 
 		m_Marine = new C_Marine * [Count];
 		for (int i = 0; i < Count; ++i)
 		{
 			m_Marine[i] = new C_Marine();
 
-			if (FAILED(m_Marine[i]->Create()))
-				return E_FAIL;
+			SAFE_CREATE_POINTER(m_Marine[i]);
 		}
 
 		return S_OK;
@@ -46,10 +72,11 @@ namespace Game
 		if (FAILED(C_Engine::Update(_deltaTime)))
 			return E_FAIL;
 
+		SAFE_UPDATE_POINTER(m_pCursor);
+
 		for (int i = 0; i < Count; ++i)
 		{
-			if (FAILED(m_Marine[i]->Update(_deltaTime)))
-				return E_FAIL;
+			SAFE_UPDATE_POINTER(m_Marine[i]);
 		}
 
 		return S_OK;
@@ -65,9 +92,10 @@ namespace Game
 
 		for (int i = 0; i < Count; ++i)
 		{
-			if (FAILED(m_Marine[i]->Render()))
-				return E_FAIL;
+			SAFE_RENDER_POINTER(m_Marine[i]);
 		}
+
+		SAFE_RENDER_POINTER(m_pCursor);
 
 		// EndScene
 		m_pd3dDevice->EndScene();

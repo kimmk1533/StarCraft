@@ -305,6 +305,10 @@ namespace CoreEngine
 	{
 		return m_vcCur;
 	}
+	D3DXVECTOR2 C_Input::GetMousePos2()
+	{
+		return D3DXVECTOR2(m_vcCur.x, m_vcCur.y);
+	}
 	D3DXVECTOR3 C_Input::GetMouseEps()
 	{
 		return m_vcEps;

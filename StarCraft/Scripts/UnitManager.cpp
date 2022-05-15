@@ -1,5 +1,8 @@
+#include "..\..\CoreEngine\Scripts\Singleton.cpp"
+
 #include "UnitManager.h"
 #include "UnitInfo.h"
+#include "..\..\CoreEngine\Scripts\Texture.h"
 
 namespace Game
 {
@@ -98,6 +101,7 @@ namespace Game
 	void C_UnitManager<T>::Destroy()
 	{
 		SAFE_DELETE(m_pUnitTextureRect);
+		m_pUnitTexture.reset();
 	}
 
 	template <class T>

@@ -15,7 +15,7 @@ namespace CoreEngine
 	template <class T>
 	C_Singleton<T>::~C_Singleton()
 	{
-		SAFE_DELETE(m_Instance);
+
 	}
 
 	template <class T>

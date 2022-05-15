@@ -12,20 +12,10 @@ namespace CoreEngine
 		C_Singleton();
 		virtual ~C_Singleton();
 
-		C_Singleton(const C_Singleton& _other) = delete;
+		C_Singleton(const C_Singleton<T>& _other) = delete;
+		void operator=(const C_Singleton<T>& _other) = delete;
 
 	public:
 		static T& GetI();
 	};
-
-	/*template <class T>
-	__interface ISingleton
-	{
-	protected:
-		T();
-		T(const T& _other) = delete;
-
-	public:
-		static virtual T& GetInstance() = 0;
-	};*/
 }

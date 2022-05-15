@@ -34,6 +34,12 @@
     <Filter Include="Game\UnitManager\Protoss">
       <UniqueIdentifier>{07da9d9c-8f5a-4f2f-9b4e-af65ebae0984}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\SelectManager">
+      <UniqueIdentifier>{e47b2a93-acb7-4fbf-a661-eb12b6399fbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Cursor">
+      <UniqueIdentifier>{aa15dcf4-e177-4815-94bf-45527df41e7c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scripts\WinMain.cpp" />
@@ -52,6 +58,12 @@
     </ClCompile>
     <ClCompile Include="Scripts\MarineManager.cpp">
       <Filter>Game\UnitManager\Terran</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\SelectManager.cpp">
+      <Filter>Game\SelectManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Cursor.cpp">
+      <Filter>Game\Cursor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +85,12 @@
     </ClInclude>
     <ClInclude Include="Scripts\MarineManager.h">
       <Filter>Game\UnitManager\Terran</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\SelectManager.h">
+      <Filter>Game\SelectManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Cursor.h">
+      <Filter>Game\Cursor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
