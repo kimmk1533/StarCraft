@@ -4,15 +4,17 @@ namespace CoreEngine
 {
 	class C_Sprite
 	{
-	protected:
-		LPD3DXSPRITE	m_pDxSprite;		// 2D DX Sprite
-
 	public:
 		C_Sprite();
 		virtual ~C_Sprite();
 
+	public:
 		HRESULT		Create(LPD3DXSPRITE);
 
+	protected:
+		LPD3DXSPRITE	m_pDxSprite;		// 2D DX Sprite
+
+	public:
 		HRESULT		Draw(
 			LPDIRECT3DTEXTURE9	pTex,
 			const RECT* pSrcRect,
@@ -32,5 +34,6 @@ namespace CoreEngine
 			const D3DXVECTOR3* pOffset,	// Offset
 			D3DXCOLOR			Color
 		);
+
 	};
 }

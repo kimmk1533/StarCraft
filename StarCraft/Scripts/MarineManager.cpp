@@ -40,7 +40,7 @@ namespace Game
 		int max = static_cast<int>(E_Direction::Max);
 		E_UnitState state;
 		E_Direction direction;
-		RECT rect{ 0, 0, 64, 64 };
+		RECT rect;
 
 		/* 0, 64, 128, 194, 256, 320, 384, 448, 512, 576, 640, 704, 768 */
 		for (int i = 0; i < max; ++i)

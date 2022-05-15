@@ -2,26 +2,30 @@
 
 namespace CoreEngine
 {
-	//const LPCWSTR	C_Engine::m_Title = LPCWSTR(L"DirectX StarCraft");
-	//HINSTANCE		C_Engine::m_hInst = nullptr;
-	//HWND			C_Engine::m_hWnd = nullptr;
-	//DWORD			C_Engine::m_dWinStyle = WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU | WS_VISIBLE;
-	//DWORD			C_Engine::m_dScnX = 800;						// Screen Width
-	//DWORD			C_Engine::m_dScnY = 600;						// Screen Height
-	//bool			C_Engine::m_bWindow = TRUE;					// WindowMode
-	//bool			C_Engine::m_bShowCusor = TRUE;				// Show Cusor
+	const LPCWSTR	C_Engine::m_Title = LPCWSTR(L"DirectX StarCraft");
+	HINSTANCE		C_Engine::m_hInst = nullptr;
+	HWND			C_Engine::m_hWnd = nullptr;
+	DWORD			C_Engine::m_dWinStyle = WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU | WS_VISIBLE;
+	DWORD			C_Engine::m_dScnX = 800;						// Screen Width
+	DWORD			C_Engine::m_dScnY = 600;						// Screen Height
+	bool			C_Engine::m_bWindow = TRUE;						// WindowMode
+	bool			C_Engine::m_bShowCusor = TRUE;					// Show Cusor
+	LPD3DXSPRITE	C_Engine::m_pd3dSprite = nullptr;				// 2D Sprite
+	C_Time*			C_Engine::m_pTime = nullptr;					// System Time
 
 	C_Engine* g_pApp;
 
-	C_Engine::C_Engine() : m_Title(LPCWSTR(L"DirectX StarCraft"))
+	C_Engine::C_Engine()// : m_Title(LPCWSTR(L"DirectX StarCraft"))
 	{
-		m_hInst = nullptr;
-		m_hWnd = nullptr;
-		m_dWinStyle = WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU | WS_VISIBLE;
-		m_dScnX = 800;						// Screen Width
-		m_dScnY = 600;						// Screen Height
-		m_bWindow = TRUE;					// WindowMode
-		m_bShowCusor = TRUE;				// Show Cusor
+		//m_hInst = nullptr;
+		//m_hWnd = nullptr;
+		//m_dWinStyle = WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU | WS_VISIBLE;
+		//m_dScnX = 800;					// Screen Width
+		//m_dScnY = 600;					// Screen Height
+		//m_bWindow = true;					// WindowMode
+		//m_bShowCusor = true;				// Show Cusor
+		//m_pd3dSprite = nullptr;			// 2D Sprite
+		//m_pTime = nullptr;				// System Time
 	}
 
 	HRESULT C_Engine::Init(HINSTANCE _hInst)
@@ -203,7 +207,7 @@ namespace CoreEngine
 		SAFE_DELETE(m_pSprite);
 	}
 
-	HRESULT C_Engine::Update(float deltaTime)
+	HRESULT C_Engine::Update(const FLOAT& deltaTime)
 	{
 		return S_OK;
 	}

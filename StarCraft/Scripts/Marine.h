@@ -11,10 +11,12 @@ namespace Game
 		C_Marine();
 		virtual ~C_Marine() override;
 
+	public:
 		virtual HRESULT	Create() override;
-		virtual HRESULT	Update(const float _deltaTime) override;
-		virtual HRESULT	Render() override;
 		virtual void	Destroy() override;
+
+		virtual HRESULT	Update(const FLOAT& _deltaTime) override;
+		virtual HRESULT	Render() override;
 
 	};
 }

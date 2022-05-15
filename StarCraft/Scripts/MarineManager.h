@@ -19,5 +19,6 @@ namespace Game
 	public:
 		virtual HRESULT Create() override;
 		virtual void Destroy() override;
+
 	};
 }

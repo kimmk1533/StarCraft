@@ -4,6 +4,8 @@ namespace Game
 {
 	using namespace CoreEngine;
 
+	class C_Timer;
+
 	enum class E_CursorState : unsigned char
 	{
 		Idle,
@@ -33,21 +35,22 @@ namespace Game
 	{
 	public:
 		C_Cursor();
-		~C_Cursor();
-
-	private: // Animation
-		unsigned short m_AnimIndex;
-		float m_AnimIndexTimer;
-		E_CursorState m_CursorState;
-		E_CursorDir m_CursorDir;
-		D3DXVECTOR3* m_Hotspot;
-		D3DXVECTOR2* m_Position;
+		virtual ~C_Cursor();
 
 	public:
 		virtual HRESULT	Create() override;
-		virtual HRESULT Update(float _deltaTime) override;
-		virtual HRESULT	Render() override;
 		virtual void	Destroy() override;
+
+		virtual HRESULT Update(const FLOAT& _deltaTime) override;
+		virtual HRESULT	Render() override;
+
+	private: // Animation
+		WORD m_AnimIndex;
+		C_Timer* m_pGameFrameTimer;
+		E_CursorState m_CursorState;
+		E_CursorDir m_CursorDir;
+		D3DXVECTOR3* m_pHotspot;
+		D3DXVECTOR2* m_pPosition;
 
 	public:
 		void SetCursorState(E_CursorState _state);

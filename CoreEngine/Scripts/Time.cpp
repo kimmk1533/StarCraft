@@ -6,8 +6,8 @@ namespace CoreEngine
 	std::unique_ptr<LARGE_INTEGER>	C_Time::m_PeriodFrequency = std::make_unique<LARGE_INTEGER>();
 	std::unique_ptr<LARGE_INTEGER>	C_Time::m_CurrentTime = std::make_unique<LARGE_INTEGER>();
 	std::unique_ptr<LARGE_INTEGER>	C_Time::m_LastTime = std::make_unique<LARGE_INTEGER>();
-	std::unique_ptr<float>			C_Time::m_DeltaTime = std::make_unique<float>();
-	std::unique_ptr<float>			C_Time::m_TimeScale = std::make_unique<float>();
+	std::unique_ptr<FLOAT>			C_Time::m_DeltaTime = std::make_unique<FLOAT>();
+	std::unique_ptr<FLOAT>			C_Time::m_TimeScale = std::make_unique<FLOAT>();
 
 	C_Time::C_Time()
 	{
@@ -33,7 +33,7 @@ namespace CoreEngine
 		// 현재 프레임을 이전 프레임으로 저장. 이후 계속 반복.
 		*m_LastTime = *m_CurrentTime;
 	}
-	const float C_Time::DeltaTime()
+	const FLOAT C_Time::DeltaTime()
 	{
 		return *m_DeltaTime;
 	}

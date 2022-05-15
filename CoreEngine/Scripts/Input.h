@@ -65,6 +65,18 @@ namespace CoreEngine
 			INPUT_DBCLC = 4,					// 더블클릭한 상태
 		};
 
+	public:
+		C_Input();
+		virtual ~C_Input();
+
+	public:
+		HRESULT		Create(HWND	hWnd);
+
+		HRESULT		Update();
+
+	public:
+		LRESULT		MsgProc(HWND, UINT, WPARAM, LPARAM);
+
 	protected:
 		HWND								m_hWnd;
 
@@ -85,11 +97,6 @@ namespace CoreEngine
 		INT									m_dBtnCnt[MAX_INPUT_BTN];	// Double Click Count
 
 	public:
-		HRESULT		Create(HWND	hWnd);
-		HRESULT		Update();
-		LRESULT		MsgProc(HWND, UINT, WPARAM, LPARAM);
-
-	public:
 		bool			KeyDown(E_KeyCode nKey);
 		bool			KeyUp(E_KeyCode nKey);
 		bool			KeyPress(E_KeyCode nKey);
@@ -103,10 +110,6 @@ namespace CoreEngine
 		D3DXVECTOR3 GetMousePos();
 		D3DXVECTOR2 GetMousePos2();
 		D3DXVECTOR3 GetMouseEps();
-
-	public:
-		C_Input();
-		virtual ~C_Input();
 
 	};
 }

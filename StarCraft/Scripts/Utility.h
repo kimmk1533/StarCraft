@@ -3,8 +3,8 @@
 namespace Game
 {
 #define DEBUG_GAME_SPEED 24
-	static const float InGame_FPS = 1.0f / DEBUG_GAME_SPEED;
-	static const float FPS = 1.0f / 20;
+	static const FLOAT InGame_FPS = 1.0f / DEBUG_GAME_SPEED;
+	static const FLOAT FPS = 1.0f / 20;
 
 	enum class E_Direction : unsigned char
 	{

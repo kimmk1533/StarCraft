@@ -40,6 +40,9 @@
     <Filter Include="Game\Cursor">
       <UniqueIdentifier>{aa15dcf4-e177-4815-94bf-45527df41e7c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Timer">
+      <UniqueIdentifier>{3febf028-72e9-49f3-8686-ea084e0a23c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scripts\WinMain.cpp" />
@@ -64,6 +67,9 @@
     </ClCompile>
     <ClCompile Include="Scripts\Cursor.cpp">
       <Filter>Game\Cursor</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Timer.cpp">
+      <Filter>Game\Timer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -91,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="Scripts\Cursor.h">
       <Filter>Game\Cursor</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Timer.h">
+      <Filter>Game\Timer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

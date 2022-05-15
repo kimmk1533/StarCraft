@@ -35,7 +35,7 @@ namespace Game
 
 		m_rcCursorSize = RECT{ 0, 0, 41, 41 };
 
-		m_pCursorTextrueRect = new std::unordered_map<E_CursorState, std::pair<unsigned short, RECT>>();
+		m_pCursorTextrueRect = new std::unordered_map<E_CursorState, std::pair<WORD, RECT>>();
 		{
 			E_CursorState state = E_CursorState::Idle;
 			RECT rect = RECT{ 0, 0, 41 * 5, 41 };
@@ -92,11 +92,11 @@ namespace Game
 
 		this->SetTextureRect(_state, width / size, _rect);
 	}
-	void C_SelectManager::SetTextureRect(const E_CursorState& _state, const unsigned short& _maxIndex, const RECT& _rect)
+	void C_SelectManager::SetTextureRect(const E_CursorState& _state, const WORD& _maxIndex, const RECT& _rect)
 	{
 		this->SetTextureRect(_state, { _maxIndex, _rect });
 	}
-	void C_SelectManager::SetTextureRect(const E_CursorState& _state, const std::pair<unsigned short, RECT>& _condition)
+	void C_SelectManager::SetTextureRect(const E_CursorState& _state, const std::pair<WORD, RECT>& _condition)
 	{
 		(*m_pCursorTextrueRect)[_state] = _condition;
 	}
@@ -105,9 +105,9 @@ namespace Game
 	{
 		return m_pCursorTexture;
 	}
-	RECT C_SelectManager::GetTextureRect(const E_CursorState& _state, unsigned short& _index)
+	RECT C_SelectManager::GetTextureRect(const E_CursorState& _state, WORD& _index)
 	{
-		std::pair<unsigned short, RECT> index_rect = (*m_pCursorTextrueRect)[_state];
+		std::pair<WORD, RECT> index_rect = (*m_pCursorTextrueRect)[_state];
 		RECT rect = index_rect.second;
 
 		if (index_rect.first <= _index)
@@ -115,19 +115,19 @@ namespace Game
 			_index = 0;
 		}
 
-		int size = m_rcCursorSize.right - m_rcCursorSize.left;
-
 		if (index_rect.first > 1)
 		{
+			int size = m_rcCursorSize.right - m_rcCursorSize.left;
+
 			rect.left += _index * size;
 			rect.right = rect.left + size;
 		}
 
 		return rect;
 	}
-	RECT C_SelectManager::GetTextureRect(const E_CursorDir& _state, unsigned short& _index)
+	RECT C_SelectManager::GetTextureRect(const E_CursorDir& _state, WORD& _index)
 	{
-		std::pair<unsigned short, RECT> index_rect = (*m_pCursorTextrueRect)[E_CursorState::Move];
+		std::pair<WORD, RECT> index_rect = (*m_pCursorTextrueRect)[E_CursorState::Move];
 		RECT rect = index_rect.second;
 
 		if (2 <= _index)
@@ -136,7 +136,7 @@ namespace Game
 		}
 
 		int size = m_rcCursorSize.right - m_rcCursorSize.left;
-		unsigned short dir = static_cast<unsigned short>(_state) * 2;
+		WORD dir = static_cast<WORD>(_state) * 2;
 
 		rect.left += (_index + dir) * size;
 		rect.right = rect.left + size;

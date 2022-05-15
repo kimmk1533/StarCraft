@@ -4,7 +4,7 @@ namespace CoreEngine
 {
 	__interface IUpdatable
 	{
-		virtual HRESULT Update(const float _deltaTime) = 0;
+		virtual HRESULT Update(const FLOAT& _deltaTime) = 0;
 	};
 
 	__interface IRenderable
@@ -30,7 +30,6 @@ namespace CoreEngine
 		static LPDIRECT3D9				m_pD3D;				// D3D
 		static LPDIRECT3DDEVICE9		m_pd3dDevice;		// Device
 
-		static C_Time*					m_pTime;			// System Time
 		static C_Sprite*				m_pSprite;			// 2D를 출력하기 위한 객체
 		static C_Input*					m_pInput;			// 입력을 위한 객체
 

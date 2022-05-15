@@ -69,9 +69,14 @@ namespace Game
 
 		return S_OK;
 	}
-	HRESULT C_Marine::Update(const float _deltaTime)
+	void C_Marine::Destroy()
 	{
-#pragma region 추후 수정
+
+	}
+
+	HRESULT C_Marine::Update(const FLOAT& _deltaTime)
+	{
+#pragma region 1 프레임
 		if (m_pInput->BtnDown(E_KeyCode::MouseRightButton))
 		{
 			D3DXVECTOR3 mousePos = m_pInput->GetMousePos();
@@ -79,23 +84,23 @@ namespace Game
 			m_pTargetPos->y = mousePos.y;
 		}
 
-		static const float degree_unit = 360.0f / static_cast<int>(E_Direction::Max);
-		static const float radian_unit = D3DXToRadian(degree_unit);
+		static const FLOAT degree_unit = 360.0f / static_cast<int>(E_Direction::Max);
+		static const FLOAT radian_unit = D3DXToRadian(degree_unit);
 
 		D3DXVECTOR2 d = (*m_pTargetPos) - (*m_pPosition);
-		float length = D3DXVec2Length(&d);
+		FLOAT length = D3DXVec2Length(&d);
 
-		float dx = d.x;
-		float dy = d.y;
+		FLOAT dx = d.x;
+		FLOAT dy = d.y;
 
-		float radian = atan2f(dx, dy);
-		float theta = 180.0f + degree_unit * 0.5f - D3DXToDegree(radian);
+		FLOAT radian = atan2f(dx, dy);
+		FLOAT theta = 180.0f + degree_unit * 0.5f - D3DXToDegree(radian);
 
 		// % 연산자는 성능을 많이 잡아 먹으니 비교 연산이 더 나을 것.
 		if (theta >= 360.0f)
 			theta -= 360.0f;
 
-		float target = theta / degree_unit;
+		FLOAT target = theta / degree_unit;
 		if (m_pInput->BtnDown(E_KeyCode::MouseRightButton))
 		{
 			m_TargetDir = static_cast<E_Direction>(target);
@@ -104,83 +109,69 @@ namespace Game
 		}
 #pragma endregion
 
-		int maxIndex = C_MarineManager::GetI().GetTextureMaxIndex({ m_UnitState, m_Direction });
-
+#pragma region 1 게임 프레임 (Normal 기준 15프레임)
 		// 1 게임 프레임 대기
-		m_AnimIndexTimer += _deltaTime;
-
-		// 1 게임 프레임 진행
-		if (m_AnimIndexTimer >= InGame_FPS)
-		{
-			m_AnimIndexTimer -= InGame_FPS;
+		if (FAILED(m_pGameFrameTimer->Update(_deltaTime)))
+			return S_OK;
 
 #pragma region AnimIndex
-			++m_AnimIndex;
+		++m_AnimIndex;
 #pragma endregion
 
 #pragma region Rotation
-			if (m_Direction != m_TargetDir)
-			{
-				int direction = static_cast<int>(m_Direction);
+		if (m_Direction != m_TargetDir)
+		{
+			int direction = static_cast<int>(m_Direction);
 
-				D3DXVECTOR2 target_dir(sinf(target * radian_unit), cosf(target * radian_unit));
-				D3DXVECTOR2 dir(sinf(direction * radian_unit), cosf(direction * radian_unit));
+			D3DXVECTOR2 target_dir(sinf(target * radian_unit), cosf(target * radian_unit));
+			D3DXVECTOR2 dir(sinf(direction * radian_unit), cosf(direction * radian_unit));
 
-				D3DXVECTOR2 target_normal, dir_normal;
+			D3DXVECTOR2 target_normal, dir_normal;
 
-				D3DXVec2Normalize(&target_normal, &target_dir);
-				D3DXVec2Normalize(&dir_normal, &dir);
+			D3DXVec2Normalize(&target_normal, &target_dir);
+			D3DXVec2Normalize(&dir_normal, &dir);
 
-				float ccw = D3DXVec2CCW(&dir_normal, &target_normal);
+			FLOAT ccw = D3DXVec2CCW(&dir_normal, &target_normal);
 
-				if (abs((int)target - direction) == 1)
-					ccw < 0 ? ++direction : --direction;
-				else
-					ccw < 0 ? direction += 2 : direction -= 2;
+			if (abs((int)target - direction) == 1)
+				ccw < 0 ? ++direction : --direction;
+			else
+				ccw < 0 ? direction += 2 : direction -= 2;
 
-				direction = (static_cast<int>(E_Direction::Max) + direction) % static_cast<int>(E_Direction::Max);
-				m_Direction = static_cast<E_Direction>(direction);
-			}
+			direction = (static_cast<int>(E_Direction::Max) + direction) % static_cast<int>(E_Direction::Max);
+			m_Direction = static_cast<E_Direction>(direction);
+		}
 #pragma endregion
 
 #pragma region Move
-			if (m_Direction == m_TargetDir)
-			{
-				m_Info->bIsMovable = true;
-			}
-
-			if (m_Info->bIsMovable && length > 0.01f)
-			{
-				// 최종 속도 = 이동 속도 * 1 게임 프레임 * 델타타임(1 게임 프레임이 진행되는 동안 지난 시간) 
-				float speed = m_Info->fMoveSpeed * DEBUG_GAME_SPEED * (m_AnimIndexTimer + InGame_FPS);
-
-				D3DXVECTOR2 vcMove;
-
-				float move = fminf(length, speed);
-
-				vcMove.x = move * sinf(radian);
-				vcMove.y = move * cosf(radian);
-
-				(*m_pPosition) += vcMove;
-
-#ifdef DEBUG
-				//std::cout << "theta:" << theta << "\n";
-#endif
-
-				m_UnitState = E_UnitState::Walking;
-			}
-#pragma endregion
+		if (m_Direction == m_TargetDir)
+		{
+			m_Info->bIsMovable = true;
 		}
+
+		if (m_Info->bIsMovable && length > 0.01f)
+		{
+			// 최종 속도 = 이동 속도 * 1 게임 프레임 * 델타타임(1 게임 프레임이 진행되는 동안 지난 시간) 
+			FLOAT speed = m_Info->fMoveSpeed * DEBUG_GAME_SPEED * InGame_FPS;
+
+			D3DXVECTOR2 vcMove;
+
+			FLOAT move = fminf(length, speed);
+
+			vcMove.x = move * sinf(radian);
+			vcMove.y = move * cosf(radian);
+
+			(*m_pPosition) += vcMove;
+
+			m_UnitState = E_UnitState::Walking;
+		}
+#pragma endregion
+
+#pragma endregion
 
 		if (length <= 0.0f)
 		{
 			m_UnitState = E_UnitState::Idle;
-		}
-
-		maxIndex = C_MarineManager::GetI().GetTextureMaxIndex({ m_UnitState, m_Direction });
-		if (m_AnimIndex >= maxIndex)
-		{
-			m_AnimIndex = 0;
 		}
 
 		return S_OK;
@@ -198,9 +189,5 @@ namespace Game
 			m_pScale->x = 1.0f;
 
 		return m_pSprite->Draw(texture->GetTexture(), &rect, m_pScale, nullptr, m_pPosition, &Offset, D3DXCOLOR(1, 1, 1, 1));
-	}
-	void C_Marine::Destroy()
-	{
-
 	}
 }

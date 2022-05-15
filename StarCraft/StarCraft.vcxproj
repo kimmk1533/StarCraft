@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Scripts\Timer.cpp" />
     <ClCompile Include="Scripts\Cursor.cpp" />
     <ClCompile Include="Scripts\Main.cpp" />
     <ClCompile Include="Scripts\Marine.cpp" />
@@ -30,6 +31,7 @@
     <ClCompile Include="Scripts\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Scripts\Timer.h" />
     <ClInclude Include="Scripts\Cursor.h" />
     <ClInclude Include="Scripts\Main.h" />
     <ClInclude Include="Scripts\Marine.h" />

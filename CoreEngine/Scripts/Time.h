@@ -10,17 +10,21 @@ namespace CoreEngine
 	// 참고: http://www.tipssoft.com/bulletin/board.php?bo_table=FAQ&wr_id=735
 	class C_Time final
 	{
+	public:
+		C_Time();
+
+	public:
+		static void Update();
+
 	private:
 		static std::unique_ptr<LARGE_INTEGER>	m_PeriodFrequency;
 		static std::unique_ptr<LARGE_INTEGER>	m_CurrentTime;
 		static std::unique_ptr<LARGE_INTEGER>	m_LastTime;
-		static std::unique_ptr<float>			m_DeltaTime;
-		static std::unique_ptr<float>			m_TimeScale;
+		static std::unique_ptr<FLOAT>			m_DeltaTime;
+		static std::unique_ptr<FLOAT>			m_TimeScale;
 
 	public:
-		C_Time();
+		static const FLOAT DeltaTime();
 
-		static void Update();
-		static const float DeltaTime();
 	};
 }

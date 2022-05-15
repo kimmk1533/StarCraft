@@ -67,7 +67,7 @@ namespace Game
 		SAFE_DELETE_ARRAY(m_Marine);
 	}
 
-	HRESULT C_Main::Update(const float _deltaTime)
+	HRESULT C_Main::Update(const FLOAT& _deltaTime)
 	{
 		if (FAILED(C_Engine::Update(_deltaTime)))
 			return E_FAIL;
