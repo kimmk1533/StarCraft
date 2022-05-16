@@ -4,11 +4,12 @@
 namespace CoreEngine
 {
 	template<class T>
-	class C_ObjectPool final
+	class C_ObjectPool final : public IFrameWork
 	{
 	private:
 		int m_Capacity;
-		std::queue<T*>* m_Queue;
+		std::queue<std::shared_ptr<T>>* m_pQueue;
+		std::vector<std::shared_ptr<T>>* m_pSpawnedObjList;
 
 	private:
 		void ExpandPool();
@@ -18,12 +19,13 @@ namespace CoreEngine
 		virtual ~C_ObjectPool();
 
 	public:
-		HRESULT Create();
-		void	Destroy();
+		HRESULT Create() override;
+		void	Destroy() override;
 
 	public:
-		T Spawn();
-		void Despawn(T _item);
+		const std::vector<std::shared_ptr<T>>* GetSpawnedObjList();
+		std::shared_ptr<T> Spawn();
+		void Despawn(const std::shared_ptr<T>& _item);
 
 	};
 }

@@ -10,7 +10,7 @@ namespace Game
 {
 	using namespace CoreEngine;
 
-	const int Count = 1;
+	const int Count = 0;
 
 	HRESULT C_Main::Init(HINSTANCE _hInst)
 	{
@@ -47,24 +47,13 @@ namespace Game
 		SAFE_CREATE_POINTER(m_pCursor);
 
 		SAFE_CREATE(C_MarineManager::GetI());
-
-		m_Marine = new C_Marine * [Count];
-		for (int i = 0; i < Count; ++i)
-		{
-			m_Marine[i] = new C_Marine();
-
-			SAFE_CREATE_POINTER(m_Marine[i]);
-		}
+		C_MarineManager::GetI().SpawnUnit();
 
 		return S_OK;
 	}
 	void C_Main::Destroy()
 	{
-		for (int i = 0; i < Count; ++i)
-		{
-			SAFE_DELETE(m_Marine[i]);
-		}
-		SAFE_DELETE_ARRAY(m_Marine);
+		
 	}
 
 	HRESULT C_Main::Update(const FLOAT& _deltaTime)
@@ -74,10 +63,7 @@ namespace Game
 
 		SAFE_UPDATE_POINTER(m_pCursor);
 
-		for (int i = 0; i < Count; ++i)
-		{
-			SAFE_UPDATE_POINTER(m_Marine[i]);
-		}
+		SAFE_UPDATE(C_MarineManager::GetI());
 
 		return S_OK;
 	}
@@ -90,10 +76,7 @@ namespace Game
 		if (FAILED(m_pd3dDevice->BeginScene()))
 			return E_FAIL;
 
-		for (int i = 0; i < Count; ++i)
-		{
-			SAFE_RENDER_POINTER(m_Marine[i]);
-		}
+		SAFE_RENDER(C_MarineManager::GetI());
 
 		SAFE_RENDER_POINTER(m_pCursor);
 

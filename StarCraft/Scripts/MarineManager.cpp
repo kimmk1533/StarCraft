@@ -9,7 +9,7 @@ namespace Game
 
 	C_MarineManager::C_MarineManager()
 	{
-		
+
 	}
 	C_MarineManager::~C_MarineManager()
 	{
@@ -125,6 +125,21 @@ namespace Game
 	}
 	void C_MarineManager::Destroy()
 	{
-		m_pUnitTexture.reset();
+
+	}
+
+	HRESULT C_MarineManager::Update(const FLOAT& _deltaTime)
+	{
+		if (FAILED(C_UnitManager::Update(_deltaTime)))
+			return E_FAIL;
+
+		return S_OK;
+	}
+	HRESULT C_MarineManager::Render()
+	{
+		if (FAILED(C_UnitManager::Render()))
+			return E_FAIL;
+
+		return S_OK;
 	}
 }

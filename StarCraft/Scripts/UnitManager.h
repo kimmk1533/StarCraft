@@ -1,4 +1,5 @@
 #pragma once
+#include "..\..\CoreEngine\Scripts\ObjectPool.cpp"
 
 namespace Game
 {
@@ -11,8 +12,8 @@ namespace Game
 	class CoreEngine::C_Texture;
 #pragma endregion
 
-	template <class T>
-	class C_UnitManager : public C_Singleton<T>, public IFrameWork
+	template <class Manager, class Unit>
+	class C_UnitManager : public C_Singleton<Manager>, public IFrameWork, public IUpdatable, public IRenderable
 	{
 	protected:
 		C_UnitManager();
@@ -25,11 +26,16 @@ namespace Game
 		virtual HRESULT Create() override;
 		virtual void	Destroy() override;
 
+	public:
+		virtual HRESULT Update(const FLOAT& _deltaTime) override;
+		virtual HRESULT Render() override;
+
 	protected:
 		S_UnitInfo* m_pUnitInfo;
 		std::shared_ptr<C_Texture> m_pUnitTexture;
 		RECT m_rcUnitSize;
 		std::unordered_map<std::pair<E_UnitState, E_Direction>, std::pair<WORD, RECT>, Pair_Hash>* m_pUnitTextureRect;
+		C_ObjectPool<Unit>* m_pUnitPool;
 
 	protected:
 		void SetTextureRect(const E_UnitState& _state, const E_Direction& _direction, const RECT& _rect);
@@ -43,6 +49,9 @@ namespace Game
 		std::shared_ptr<C_Texture> GetTexture();
 		const RECT GetTextureRect(const E_UnitState& _state, const E_Direction& _direction, WORD& _index);
 		const RECT GetTextureRect(const std::pair<E_UnitState, E_Direction>& _state, WORD& _index);
+
+	public:
+		std::shared_ptr<Unit> SpawnUnit();
 
 	};
 }

@@ -9,7 +9,7 @@ namespace Game
 {
 	C_Marine::C_Marine()
 	{
-		m_Info = nullptr;
+
 	}
 	C_Marine::~C_Marine()
 	{

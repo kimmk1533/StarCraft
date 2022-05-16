@@ -8,7 +8,8 @@ namespace CoreEngine
 	C_ObjectPool<T>::C_ObjectPool(int _capacity)
 	{
 		m_Capacity = _capacity;
-		m_Queue = nullptr;
+		m_pQueue = nullptr;
+		m_pSpawnedObjList = nullptr;
 	}
 	template<class T>
 	C_ObjectPool<T>::~C_ObjectPool<T>()
@@ -19,14 +20,37 @@ namespace CoreEngine
 	template<class T>
 	HRESULT C_ObjectPool<T>::Create()
 	{
-		m_Queue = new std::queue<T>(m_Capacity);
+		m_pQueue = new std::queue<std::shared_ptr<T>>();
+		for (int i = 0; i < m_Capacity; ++i)
+		{
+			std::shared_ptr<T> item = std::make_shared<T>();
+
+			if (std::is_base_of<IFrameWork, T>::value)
+			{
+				if (FAILED((*item).Create()))
+				{
+					std::cout << "ObjectPool Create: Object Create Error\n";
+					return E_FAIL;
+				}
+			}
+
+			m_pQueue->push(item);
+		}
+
+		m_pSpawnedObjList = new std::vector<std::shared_ptr<T>>();
 
 		return S_OK;
 	}
 	template<class T>
 	void C_ObjectPool<T>::Destroy()
 	{
-		SAFE_DELETE(m_Queue);
+		for (int i = 0; i < m_pQueue->size(); ++i)
+		{
+			std::shared_ptr<T> item = m_pQueue->front();
+			item.reset();
+			m_pQueue->pop();
+		}		
+		SAFE_DELETE(m_pQueue);
 	}
 
 	template<class T>
@@ -34,18 +58,48 @@ namespace CoreEngine
 	{
 		for (int i = 0; i < m_Capacity; ++i)
 		{
-			T* item = new T();
-			m_Queue->push(item);
+			std::shared_ptr<T> item = std::make_shared<T>();
+
+			if (std::is_base_of<IFrameWork, T>::value)
+			{
+				if (FAILED((*item).Create()))
+				{
+					std::cout << "ObjectPool ExpandPool: Object Create Error\n";
+					return;
+				}
+			}
+
+			m_pQueue->push(item);
 		}
+		m_Capacity *= 2;
 	}
 
 	template<class T>
-	T C_ObjectPool<T>::Spawn()
+	const std::vector<std::shared_ptr<T>>* C_ObjectPool<T>::GetSpawnedObjList()
 	{
-		return T();
+		return m_pSpawnedObjList;
 	}
 	template<class T>
-	void C_ObjectPool<T>::Despawn(T _item)
+	std::shared_ptr<T> C_ObjectPool<T>::Spawn()
 	{
+		if (m_pQueue->size() == 0)
+			this->ExpandPool();
+
+		std::shared_ptr<T> item = m_pQueue->front();
+		m_pQueue->pop();
+
+		m_pSpawnedObjList->push_back(item);
+
+		return item;
+	}
+	template<class T>
+	void C_ObjectPool<T>::Despawn(const std::shared_ptr<T>& _item)
+	{
+		int index = std::find(m_pSpawnedObjList->begin(), m_pSpawnedObjList->end(), _item) - m_pSpawnedObjList->begin();
+		if (index == m_pSpawnedObjList->end())
+			return;
+
+		m_pQueue->push(_item);
+		m_pSpawnedObjList->erase(m_pSpawnedObjList->begin() + index);
 	}
 }

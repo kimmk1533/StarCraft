@@ -5,7 +5,6 @@ namespace Game
 	using namespace CoreEngine;
 
 	class C_Cursor;
-	class C_Marine;
 
 	class C_Main : public C_Engine
 	{
@@ -18,7 +17,6 @@ namespace Game
 
 	private:
 		C_Cursor* m_pCursor;
-		C_Marine** m_Marine;
 
 	public:
 		// Window+Device 관련 함수들

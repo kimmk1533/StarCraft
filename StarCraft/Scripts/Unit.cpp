@@ -49,4 +49,8 @@ namespace Game
 
 		SAFE_DELETE(m_Info);
 	}
+	const D3DXVECTOR2 C_Unit::GetPosition()
+	{
+		return *m_pPosition;
+	}
 }

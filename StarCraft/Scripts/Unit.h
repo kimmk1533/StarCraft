@@ -79,5 +79,8 @@ namespace Game
 		E_Direction m_Direction;
 		E_Direction m_TargetDir;
 
+	public:
+		const D3DXVECTOR2 GetPosition();
+
 	};
 }
