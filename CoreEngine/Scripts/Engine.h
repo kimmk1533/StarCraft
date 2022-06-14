@@ -35,6 +35,8 @@ namespace CoreEngine
 		static bool					m_bShowCusor;		// Show Cusor
 
 		static LPD3DXSPRITE			m_pd3dSprite;		// 2D Sprite
+		static LPD3DXLINE			m_pd3dLine;			// 2D Line
+
 		static C_Time*				m_pTime;			// System Time
 
 	public:

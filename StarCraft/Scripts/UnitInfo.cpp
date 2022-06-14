@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "UnitInfo.h"
 
 namespace Game
@@ -5,47 +6,50 @@ namespace Game
 	S_UnitInfo::S_UnitInfo()
 	{
 		// 종족
-		RaceType = E_RaceType::Neutral;			// 종족
+		m_RaceType = E_RaceType::Neutral;		// 종족
 
 		// 생산
-		iReqMineral = 0;						// 필요 미네랄
-		iReqVespeneGas = 0;						// 필요 가스
-		iReqPopulation = 0;						// 필요 인구수
-		iReqTime = 0;							// 필요 생산 시간(ms단위)
-		ShortcutKey = E_KeyCode::None;			// 생산 단축키
+		m_wMineral = 0;							// 필요 미네랄
+		m_wVespeneGas = 0;						// 필요 가스
+		m_wPopulation = 0;						// 필요 인구수
+		m_wProductionTime = 0;					// 필요 생산 시간(ms단위)
+		m_ShortcutKey = E_KeyCode::None;		// 생산 단축키
 
 		// 이동
-		bIsMovable = false;						// 이동 가능 여부
-		fMoveSpeed = 0.0f;						// 이동 속도
-		bIsAir = false;							// 공중 유닛인지
+		m_bIsMovable = false;					// 이동 가능 여부
+		m_fMoveSpeed = 0.0f;					// 이동 속도
+		m_bIsAir = false;						// 공중 유닛인지
 
 		// 공격
-		bIsAttackable = false;					// 공격 가능 여부
-		AttackType = E_UnitAtkType::None;		// 공격 타입(일반형, 폭발형, 진동형, 방어무시형)
-		iAttackPoint = 0;						// 공격력
-		fAttackSpeed = 0.0f;					// 공격 속도
-		fAttackRange = 0.0f;					// 공격 사거리
+		m_bIsAttackable = false;				// 공격 가능 여부
+		m_AttackType = E_UnitAtkType::None;		// 공격 타입(일반형, 폭발형, 진동형, 방어무시형)
+		m_wAttackPoint = 0;						// 공격력
+		m_fAttackSpeed = 0.0f;					// 공격 속도
+		m_fAttackRange = 0.0f;					// 공격 사거리
 
 		// 방어
-		bIsDefensible = false;					// 방어 가능 여부(타겟팅 가능 여부)
-		DeffenseType = E_UnitDefType::None;		// 방어 타입(소형, 중형, 대형)
-		fMaxHP = 0.0f;							// 최대 체력
-		fHP = 0.0f;								// 체력
-		fMaxShield = 0.0f;						// 최대 쉴드
-		fShield = 0.0f;							// 쉴드
-		iDeffensePoint = 0;						// 방어력
+		m_bIsHitable = false;					// 방어 가능 여부(타겟팅 가능 여부)
+		m_DeffenseType = E_UnitDefType::None;	// 방어 타입(소형, 중형, 대형)
+		m_fMaxHP = 0.0f;						// 최대 체력
+		m_fHP = 0.0f;							// 체력
+		m_wDeffensePoint = 0;					// 방어력
+
+		// 쉴드
+		m_bUseShield = false;					// 쉴드 사용 여부
+		m_fMaxShield = 0.0f;					// 최대 쉴드
+		m_fShield = 0.0f;						// 쉴드
 
 		// 에너지(마나)
-		bCanUseEnergy = false;					// 에너지 사용 여부
-		fMaxEnergy = 0.0f;						// 최대 에너지
-		fEnergy = 0.0f;							// 에너지
+		m_bUseEnergy = false;					// 에너지 사용 여부
+		m_fMaxEnergy = 0.0f;					// 최대 에너지
+		m_fEnergy = 0.0f;						// 에너지
 
 		// 시야
-		fVisualRange = 0.0f;					// 시야 거리
+		m_fVisualRange = 0.0f;					// 시야 거리
 
 		// 충돌 크기
-		ptPixelSize.x = 0;						// 충돌 크기 x
-		ptPixelSize.y = 0;						// 충돌 크기 y
+		m_PixelSize.x = 0;						// 충돌 크기 x
+		m_PixelSize.y = 0;						// 충돌 크기 y
 	}
 	S_UnitInfo::S_UnitInfo(const S_UnitInfo& s)
 	{
@@ -54,52 +58,50 @@ namespace Game
 	S_UnitInfo& S_UnitInfo::operator=(const S_UnitInfo& s)
 	{
 		// 종족
-		RaceType = s.RaceType;					// 종족
+		m_RaceType = s.m_RaceType;						// 종족
 
 		// 생산
-		iReqMineral = s.iReqMineral;			// 필요 미네랄
-		iReqVespeneGas = s.iReqVespeneGas;		// 필요 가스
-		iReqPopulation = s.iReqPopulation;		// 필요 인구수
-		iReqTime = s.iReqTime;					// 필요 생산 시간(ms단위)
-		ShortcutKey = s.ShortcutKey;			// 생산 단축키
+		m_wMineral = s.m_wMineral;						// 필요 미네랄
+		m_wVespeneGas = s.m_wVespeneGas;				// 필요 가스
+		m_wPopulation = s.m_wPopulation;				// 필요 인구수
+		m_wProductionTime = s.m_wProductionTime;		// 필요 생산 시간(ms단위)
+		m_ShortcutKey = s.m_ShortcutKey;				// 생산 단축키
 
 		// 이동
-		bIsMovable = s.bIsMovable;				// 이동 가능 여부
-		fMoveSpeed = s.fMoveSpeed;				// 이동 속도
-		bIsAir = false;							// 공중 유닛인지
+		m_bIsMovable = s.m_bIsMovable;					// 이동 가능 여부
+		m_fMoveSpeed = s.m_fMoveSpeed;					// 이동 속도
+		m_bIsAir = s.m_bIsAir;							// 공중 유닛인지
 
 		// 공격
-		bIsAttackable = s.bIsAttackable;		// 공격 가능 여부
-		AttackType = s.AttackType;				// 공격 타입(일반형, 폭발형, 진동형, 방어무시형)
-		iAttackPoint = s.iAttackPoint;			// 공격력
-		fAttackSpeed = s.fAttackSpeed;			// 공격 속도
-		fAttackRange = s.fAttackRange;			// 공격 사거리
+		m_bIsAttackable = s.m_bIsAttackable;			// 공격 가능 여부
+		m_AttackType = s.m_AttackType;					// 공격 타입(일반형, 폭발형, 진동형, 방어무시형)
+		m_wAttackPoint = s.m_wAttackPoint;				// 공격력
+		m_fAttackSpeed = s.m_fAttackSpeed;				// 공격 속도
+		m_fAttackRange = s.m_fAttackRange;				// 공격 사거리
 
 		// 방어
-		bIsDefensible = s.bIsDefensible;		// 방어 가능 여부(타겟팅 가능 여부)
-		DeffenseType = s.DeffenseType;			// 방어 타입(소형, 중형, 대형)
-		fMaxHP = s.fMaxHP;						// 최대 체력
-		fHP = s.fHP;							// 체력
-		fMaxShield = s.fMaxShield;				// 최대 쉴드
-		fShield = s.fShield;					// 쉴드
-		iDeffensePoint = s.iDeffensePoint;		// 방어력
+		m_bIsHitable = s.m_bIsHitable;					// 방어 가능 여부(타겟팅 가능 여부)
+		m_DeffenseType = s.m_DeffenseType;				// 방어 타입(소형, 중형, 대형)
+		m_fMaxHP = s.m_fMaxHP;							// 최대 체력
+		m_fHP = s.m_fHP;								// 체력
+		m_wDeffensePoint = s.m_wDeffensePoint;			// 방어력
+
+		// 쉴드
+		m_bUseShield = s.m_bUseShield;					// 쉴드 사용 여부
+		m_fMaxShield = s.m_fMaxShield;					// 최대 쉴드
+		m_fShield = s.m_fShield;						// 쉴드
 
 		// 에너지(마나)
-		bCanUseEnergy = s.bCanUseEnergy;		// 에너지 사용 여부
-		fMaxEnergy = s.fMaxEnergy;				// 최대 에너지
-		fEnergy = s.fEnergy;					// 에너지
+		m_bUseEnergy = s.m_bUseEnergy;					// 에너지 사용 여부
+		m_fMaxEnergy = s.m_fMaxEnergy;					// 최대 에너지
+		m_fEnergy = s.m_fEnergy;						// 에너지
 
 		// 시야
-		fVisualRange = s.fVisualRange;			// 시야 거리
+		m_fVisualRange = s.m_fVisualRange;				// 시야 거리
 
 		// 충돌 크기
-		ptPixelSize = s.ptPixelSize;			// 충돌 크기
+		m_PixelSize = s.m_PixelSize;					// 충돌 크기
 
 		return *this;
-	}
-
-	bool S_UnitInfo::IsMovable()
-	{
-		return this->bIsMovable;
 	}
 }

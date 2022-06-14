@@ -19,28 +19,29 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Scripts\Timer.cpp" />
     <ClCompile Include="Scripts\Cursor.cpp" />
     <ClCompile Include="Scripts\Main.cpp" />
     <ClCompile Include="Scripts\Marine.cpp" />
     <ClCompile Include="Scripts\MarineManager.cpp" />
     <ClCompile Include="Scripts\SelectManager.cpp" />
+    <ClCompile Include="Scripts\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Scripts\Unit.cpp" />
     <ClCompile Include="Scripts\UnitInfo.cpp" />
     <ClCompile Include="Scripts\UnitManager.cpp" />
     <ClCompile Include="Scripts\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Scripts\Timer.h" />
     <ClInclude Include="Scripts\Cursor.h" />
     <ClInclude Include="Scripts\Main.h" />
     <ClInclude Include="Scripts\Marine.h" />
     <ClInclude Include="Scripts\MarineManager.h" />
     <ClInclude Include="Scripts\SelectManager.h" />
+    <ClInclude Include="Scripts\stdafx.h" />
     <ClInclude Include="Scripts\Unit.h" />
     <ClInclude Include="Scripts\UnitInfo.h" />
     <ClInclude Include="Scripts\UnitManager.h" />
-    <ClInclude Include="Scripts\Utility.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CoreEngine\CoreEngine.vcxproj">
@@ -124,15 +125,14 @@
       <ConformanceMode>true</ConformanceMode>
       <DisableSpecificWarnings>4819;28251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\kimmk\Desktop\Portfolio\StarCraft\CoreEngine\Scripts;%(AdditionalIncludeDirectories);C:\Users\kimmk\Desktop\Portfolio\StarCraft\CoreEngine\Scripts</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\kimmk\Desktop\Portfolio\StarCraft\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;CoreEngine.lib;%(AdditionalDependencies);</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -157,10 +157,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\kimmk\Desktop\Portfolio\StarCraft\CoreEngine\Scripts;;C:\Users\kimmk\Desktop\Portfolio\StarCraft\CoreEngine\Scripts;C:\Users\kimmk\Desktop\Portfolio\StarCraft\CoreEngine\Scripts</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\kimmk\Desktop\Portfolio\StarCraft\Debug;;C:\Users\kimmk\Desktop\Portfolio\StarCraft\Debug;C:\Users\kimmk\Desktop\Portfolio\StarCraft\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;CoreEngine.lib;%(AdditionalDependencies);CoreEngine.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

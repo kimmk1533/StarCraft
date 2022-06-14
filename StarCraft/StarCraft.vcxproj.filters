@@ -40,27 +40,19 @@
     <Filter Include="Game\Cursor">
       <UniqueIdentifier>{aa15dcf4-e177-4815-94bf-45527df41e7c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Timer">
-      <UniqueIdentifier>{3febf028-72e9-49f3-8686-ea084e0a23c5}</UniqueIdentifier>
+    <Filter Include="Main">
+      <UniqueIdentifier>{d9ea72f7-c7d5-47e7-9615-765390948ca2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Unit\UnitInfo">
+      <UniqueIdentifier>{acd64827-171c-478c-867c-ba1781f55b05}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Scripts\WinMain.cpp" />
-    <ClCompile Include="Scripts\Main.cpp" />
     <ClCompile Include="Scripts\Unit.cpp">
-      <Filter>Game\Unit</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\UnitInfo.cpp">
       <Filter>Game\Unit</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Marine.cpp">
       <Filter>Game\Unit\Terran\Marine</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\UnitManager.cpp">
-      <Filter>Game\UnitManager</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\MarineManager.cpp">
-      <Filter>Game\UnitManager\Terran</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\SelectManager.cpp">
       <Filter>Game\SelectManager</Filter>
@@ -68,23 +60,31 @@
     <ClCompile Include="Scripts\Cursor.cpp">
       <Filter>Game\Cursor</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Timer.cpp">
-      <Filter>Game\Timer</Filter>
+    <ClCompile Include="Scripts\WinMain.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Main.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\stdafx.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\UnitInfo.cpp">
+      <Filter>Game\Unit\UnitInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\UnitManager.cpp">
+      <Filter>Game\UnitManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\MarineManager.cpp">
+      <Filter>Game\UnitManager\Terran</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Scripts\Main.h" />
     <ClInclude Include="Scripts\Unit.h">
-      <Filter>Game\Unit</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\UnitInfo.h">
       <Filter>Game\Unit</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Marine.h">
       <Filter>Game\Unit\Terran\Marine</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Utility.h">
-      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\UnitManager.h">
       <Filter>Game\UnitManager</Filter>
@@ -98,8 +98,14 @@
     <ClInclude Include="Scripts\Cursor.h">
       <Filter>Game\Cursor</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Timer.h">
-      <Filter>Game\Timer</Filter>
+    <ClInclude Include="Scripts\Main.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\stdafx.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\UnitInfo.h">
+      <Filter>Game\Unit\UnitInfo</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

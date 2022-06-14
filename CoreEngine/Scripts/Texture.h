@@ -36,6 +36,7 @@ namespace CoreEngine
 		void	GetImageRect(RECT* pRc);
 
 		LPDIRECT3DTEXTURE9	GetTexture();
+		LPDIRECT3DTEXTURE9	GetTexture() const;
 
 	};
 }

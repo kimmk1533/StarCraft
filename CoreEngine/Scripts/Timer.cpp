@@ -1,11 +1,8 @@
-#include "..\..\CoreEngine\Scripts\stdafx.h"
-
+#include "stdafx_Core.h"
 #include "Timer.h"
 
-namespace Game
+namespace CoreEngine
 {
-	using namespace CoreEngine;
-
 	C_Timer::C_Timer()
 	{
 		m_Time = 0.0f;

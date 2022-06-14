@@ -4,8 +4,6 @@ namespace Game
 {
 	using namespace CoreEngine;
 
-	class C_Cursor;
-
 	class C_Main : public C_Engine
 	{
 	public:
@@ -14,9 +12,6 @@ namespace Game
 
 		virtual HRESULT	Update(const FLOAT& _deltaTime) override;
 		virtual HRESULT	Render() override;
-
-	private:
-		C_Cursor* m_pCursor;
 
 	public:
 		// Window+Device 관련 함수들

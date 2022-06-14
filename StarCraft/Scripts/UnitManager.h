@@ -1,57 +1,173 @@
 #pragma once
-#include "..\..\CoreEngine\Scripts\ObjectPool.cpp"
+
+namespace Game
+{
+	enum class E_UnitState : unsigned char;
+	enum class E_Direction : unsigned char;
+}
 
 namespace Game
 {
 	using namespace CoreEngine;
 
-#pragma region extern
-	enum class E_UnitState : unsigned char;
-	enum class E_Direction : unsigned char;
-	struct S_UnitInfo;
-	class CoreEngine::C_Texture;
-#pragma endregion
-
-	template <class Manager, class Unit>
-	class C_UnitManager : public C_Singleton<Manager>, public IFrameWork, public IUpdatable, public IRenderable
+	template <class TManager, class TUnit>
+	class C_UnitManager : public C_Singleton<TManager>, public IFrameWork, public IUpdatable, public IRenderable
 	{
 	protected:
-		C_UnitManager();
-		virtual ~C_UnitManager();
+		C_UnitManager()
+		{
+			m_pUnitTexture = nullptr;
+			m_pUnitTextureRect = nullptr;
+			m_pUnitPool = nullptr;
+		}
+		virtual ~C_UnitManager()
+		{
+			Destroy();
+		}
 
 		C_UnitManager(const C_UnitManager& _other) = delete;
 		void operator=(const C_UnitManager& _other) = delete;
 
 	public:
-		virtual HRESULT Create() override;
-		virtual void	Destroy() override;
+		virtual HRESULT Create() override
+		{
+			m_pUnitTextureRect = new std::unordered_map<std::pair<E_UnitState, E_Direction>, std::pair<WORD, RECT>, Pair_Hash>();
+			m_pUnitPool = new C_ObjectPool<TUnit>(100);
+			if (FAILED(m_pUnitPool->Create()))
+				return E_FAIL;
 
-	public:
-		virtual HRESULT Update(const FLOAT& _deltaTime) override;
-		virtual HRESULT Render() override;
+			return S_OK;
+		}
+		virtual void	Destroy() override
+		{
+			SAFE_DELETE(m_pUnitPool);
+			SAFE_DELETE(m_pUnitTextureRect);
+			m_pUnitTexture.reset();
+		}
+
+		virtual HRESULT Update(const FLOAT& _deltaTime) override
+		{
+			if (!std::is_base_of_v<IUpdatable, TUnit>)
+			{
+				ErrorMessageBox("UnitManager TUnit is not base of IUpdatable");
+
+				return S_OK;
+			}
+
+			const std::vector<std::shared_ptr<TUnit>>* list = m_pUnitPool->GetSpawnedObjList();
+			for (unsigned int i = 0; i < list->size(); ++i)
+			{
+				(*list)[i]->Update(_deltaTime);
+			}
+
+			return S_OK;
+		}
+		virtual HRESULT Render() override
+		{
+			if (!std::is_base_of_v<IRenderable, TUnit>)
+			{
+				ErrorMessageBox("UnitManager TUnit is not base of IRenderable");
+
+				return S_OK;
+			}
+
+			const std::vector<std::shared_ptr<TUnit>>* list = m_pUnitPool->GetSpawnedObjList();
+			for (unsigned int i = 0; i < list->size(); ++i)
+			{
+				(*list)[i]->Render();
+			}
+
+			return S_OK;
+		}
 
 	protected:
-		S_UnitInfo* m_pUnitInfo;
-		std::shared_ptr<C_Texture> m_pUnitTexture;
 		RECT m_rcUnitSize;
+		std::shared_ptr<C_Texture> m_pUnitTexture;
 		std::unordered_map<std::pair<E_UnitState, E_Direction>, std::pair<WORD, RECT>, Pair_Hash>* m_pUnitTextureRect;
-		C_ObjectPool<Unit>* m_pUnitPool;
+
+		C_ObjectPool<TUnit>* m_pUnitPool;
 
 	protected:
-		void SetTextureRect(const E_UnitState& _state, const E_Direction& _direction, const RECT& _rect);
-		void SetTextureRect(const E_UnitState& _state, const E_Direction& _direction, const WORD& _maxIndex, const RECT& _rect);
-		void SetTextureRect(const E_UnitState& _state, const E_Direction& _direction, const std::pair<WORD, RECT>& _condition);
-		void SetTextureRect(const std::pair<E_UnitState, E_Direction>& _state, const RECT& _rect);
-		void SetTextureRect(const std::pair<E_UnitState, E_Direction>& _state, const WORD& _maxIndex, const RECT& _rect);
-		void SetTextureRect(const std::pair<E_UnitState, E_Direction>& _state, const std::pair<WORD, RECT>& _condition);
+		void SetTextureRect(const E_UnitState& _state, const E_Direction& _direction, const RECT& _rect)
+		{
+			this->SetTextureRect({ _state, _direction }, _rect);
+		}
+		void SetTextureRect(const E_UnitState& _state, const E_Direction& _direction, const WORD& _maxIndex, const RECT& _rect)
+		{
+			this->SetTextureRect({ _state, _direction }, { _maxIndex, _rect });
+		}
+		void SetTextureRect(const E_UnitState& _state, const E_Direction& _direction, const std::pair<WORD, RECT>& _condition)
+		{
+			this->SetTextureRect({ _state, _direction }, _condition);
+		}
+		void SetTextureRect(const std::pair<E_UnitState, E_Direction>& _state, const RECT& _rect)
+		{
+			int width = _rect.right - _rect.left;
+			int size = m_rcUnitSize.right - m_rcUnitSize.left;
+
+			if (width <= 0)
+			{
+				MessageBox(nullptr, TEXT("Error: UnitTexture Rect Width"), TEXT("Error!"), MB_OK);
+				return;
+			}
+
+			this->SetTextureRect(_state, { width / size, _rect });
+		}
+		void SetTextureRect(const std::pair<E_UnitState, E_Direction>& _state, const WORD& _maxIndex, const RECT& _rect)
+		{
+			this->SetTextureRect(_state, { _maxIndex, _rect });
+		}
+		void SetTextureRect(const std::pair<E_UnitState, E_Direction>& _state, const std::pair<WORD, RECT>& _condition)
+		{
+			if (m_pUnitTextureRect == nullptr)
+				return;
+
+			(*m_pUnitTextureRect)[_state] = _condition;
+		}
 
 	public:
-		std::shared_ptr<C_Texture> GetTexture();
-		const RECT GetTextureRect(const E_UnitState& _state, const E_Direction& _direction, WORD& _index);
-		const RECT GetTextureRect(const std::pair<E_UnitState, E_Direction>& _state, WORD& _index);
+		std::shared_ptr<C_Texture> GetTexture()
+		{
+			return m_pUnitTexture;
+		}
+		const RECT GetTextureRect(const E_UnitState& _state, const E_Direction& _direction, WORD& _index)
+		{
+			return this->GetTextureRect({ _state, _direction }, _index);
+		}
+		const RECT GetTextureRect(const std::pair<E_UnitState, E_Direction>& _state, WORD& _index)
+		{
+			std::pair<WORD, RECT> index_rect = (*m_pUnitTextureRect)[_state];
+			RECT rect = index_rect.second;
+
+			if (index_rect.first <= _index)
+			{
+				_index = 0;
+			}
+
+			if (index_rect.first > 1)
+			{
+				int size = m_rcUnitSize.right - m_rcUnitSize.left;
+
+				rect.left += _index * size;
+				rect.right = rect.left + size;
+			}
+
+			return rect;
+		}
+		const WORD& GetTextureMaxIndex(const E_UnitState& _state, const E_Direction& _direction)
+		{
+			return this->GetTextureMaxIndex({ _state, _direction });
+		}
+		const WORD& GetTextureMaxIndex(const std::pair<E_UnitState, E_Direction> _state)
+		{
+			return (*m_pUnitTextureRect)[_state].first;
+		}
 
 	public:
-		std::shared_ptr<Unit> SpawnUnit();
+		std::shared_ptr<TUnit> SpawnUnit()
+		{
+			return m_pUnitPool->Spawn();
+		}
 
 	};
 }

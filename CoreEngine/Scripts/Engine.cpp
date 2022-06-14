@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "stdafx_Core.h"
 
 namespace CoreEngine
 {
@@ -11,6 +11,7 @@ namespace CoreEngine
 	bool			C_Engine::m_bWindow = TRUE;						// WindowMode
 	bool			C_Engine::m_bShowCusor = TRUE;					// Show Cusor
 	LPD3DXSPRITE	C_Engine::m_pd3dSprite = nullptr;				// 2D Sprite
+	LPD3DXLINE		C_Engine::m_pd3dLine = nullptr;					// 2D Line
 	C_Time*			C_Engine::m_pTime = nullptr;					// System Time
 
 	C_Engine* g_pApp;
@@ -119,6 +120,18 @@ namespace CoreEngine
 			return E_FAIL;
 		}
 
+		// Line
+		if (FAILED(D3DXCreateLine(m_pd3dDevice, &m_pd3dLine)))
+		{
+			SAFE_RELEASE(m_pd3dSprite);
+			SAFE_RELEASE(m_pd3dDevice);
+			SAFE_RELEASE(m_pD3D);
+
+			return E_FAIL;
+		}
+		m_pd3dLine->SetAntialias(false);
+		m_pd3dLine->SetWidth(1.0f);
+
 		//
 		////////////////////////////////////////////////////////////////////////////
 
@@ -170,6 +183,7 @@ namespace CoreEngine
 		Destroy();
 
 		// DX 해제
+		SAFE_RELEASE(m_pd3dLine);
 		SAFE_RELEASE(m_pd3dSprite);
 		SAFE_RELEASE(m_pd3dDevice);
 		SAFE_RELEASE(m_pD3D);
@@ -191,7 +205,7 @@ namespace CoreEngine
 	HRESULT C_Engine::Create()
 	{
 		m_pSprite = new C_Sprite();
-		if (FAILED(m_pSprite->Create(m_pd3dSprite)))
+		if (FAILED(m_pSprite->Create(m_pd3dSprite, m_pd3dLine)))
 			return E_FAIL;
 
 		m_pInput = new C_Input();
@@ -200,7 +214,6 @@ namespace CoreEngine
 
 		return S_OK;
 	}
-
 	void C_Engine::Destroy()
 	{
 		SAFE_DELETE(m_pInput);
@@ -211,7 +224,6 @@ namespace CoreEngine
 	{
 		return S_OK;
 	}
-
 	HRESULT C_Engine::Render()
 	{
 		m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 120, 160), 1.0f, 0);
@@ -241,11 +253,21 @@ namespace CoreEngine
 		return S_OK;
 	}
 
-
 	LRESULT C_Engine::MsgProc(HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)
 	{
 		switch (_msg)
 		{
+		case WM_SIZE:
+		{
+			RECT ClientRect;
+
+			GetClientRect(m_hWnd, &ClientRect);
+
+			m_dScnX = ClientRect.right - ClientRect.left;
+			m_dScnY = ClientRect.bottom - ClientRect.top;
+
+			return 0;
+		}
 		case WM_KEYDOWN:
 		{
 			switch (_wParam)
@@ -258,7 +280,6 @@ namespace CoreEngine
 			}
 
 			return 0;
-
 		}
 		case WM_DESTROY:
 		{

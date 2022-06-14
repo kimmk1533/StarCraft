@@ -1,10 +1,14 @@
 #pragma once
 
+namespace CoreEngine
+{
+	class C_Animator;
+	class C_Timer;
+}
+
 namespace Game
 {
 	using namespace CoreEngine;
-
-	class C_Timer;
 
 	enum class E_CursorState : unsigned char
 	{
@@ -44,13 +48,17 @@ namespace Game
 		virtual HRESULT Update(const FLOAT& _deltaTime) override;
 		virtual HRESULT	Render() override;
 
+	private: // Cursor Info
+		D3DXVECTOR3* m_pHotspot;
+		D3DXVECTOR2* m_pPosition;
+
 	private: // Animation
+		C_Animator* m_pAnimator;
+
 		WORD m_AnimIndex;
 		C_Timer* m_pGameFrameTimer;
 		E_CursorState m_CursorState;
 		E_CursorDir m_CursorDir;
-		D3DXVECTOR3* m_pHotspot;
-		D3DXVECTOR2* m_pPosition;
 
 	public:
 		void SetCursorState(E_CursorState _state);

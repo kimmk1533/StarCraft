@@ -1,17 +1,14 @@
-#include "..\..\CoreEngine\Scripts\Singleton.cpp"
-
+#include "stdafx.h"
 #include "SelectManager.h"
+
 #include "Cursor.h"
-#include "..\..\CoreEngine\Scripts\Texture.h"
 
 namespace Game
 {
-	using namespace CoreEngine;
-
 	C_SelectManager::C_SelectManager()
 	{
 		m_pCursorTexture = nullptr;
-		m_pCursorTextrueRect = nullptr;
+		m_pCursorTextureRect = nullptr;
 		m_pCursor = nullptr;
 	}
 	C_SelectManager::~C_SelectManager()
@@ -35,48 +32,88 @@ namespace Game
 
 		m_rcCursorSize = RECT{ 0, 0, 41, 41 };
 
-		m_pCursorTextrueRect = new std::unordered_map<E_CursorState, std::pair<WORD, RECT>>();
+		m_pCursorTextureRect = new std::unordered_map<E_CursorState, std::pair<WORD, RECT>>();
 		{
-			E_CursorState state = E_CursorState::Idle;
-			RECT rect = RECT{ 0, 0, 41 * 5, 41 };
-			this->SetTextureRect(state, rect);
+			RECT rect = RECT{ 0, 0, m_rcCursorSize.right * 5, m_rcCursorSize.bottom };
+			this->SetTextureRect(E_CursorState::Idle, rect);
 
-			state = E_CursorState::Drag;
-			rect.left = 41 * 5; rect.right = 41 * 6;
-			this->SetTextureRect(state, rect);
+			rect.left = m_rcCursorSize.right * 5; rect.right = m_rcCursorSize.right * 6;
+			this->SetTextureRect(E_CursorState::Drag, rect);
 
-			state = E_CursorState::Selectable_Ally;
-			rect.top = 41 * 1; rect.bottom = 41 * 2;
-			rect.left = 41 * 2; rect.right = 41 * 16;
-			this->SetTextureRect(state, rect);
+			rect.top = m_rcCursorSize.bottom * 1; rect.bottom = m_rcCursorSize.bottom * 2;
+			rect.left = m_rcCursorSize.right * 2; rect.right = m_rcCursorSize.right * 16;
+			this->SetTextureRect(E_CursorState::Selectable_Ally, rect);
 
-			state = E_CursorState::Selectable_Neutral;
-			rect.top = 41 * 2; rect.bottom = 41 * 3;
-			rect.left = 41 * 2; rect.right = 41 * 16;
-			this->SetTextureRect(state, rect);
+			rect.top = m_rcCursorSize.bottom * 2; rect.bottom = m_rcCursorSize.bottom * 3;
+			rect.left = m_rcCursorSize.right * 2; rect.right = m_rcCursorSize.right * 16;
+			this->SetTextureRect(E_CursorState::Selectable_Neutral, rect);
 
-			state = E_CursorState::Selectable_Enemy;
-			rect.top = 41 * 3; rect.bottom = 41 * 4;
-			rect.left = 41 * 2; rect.right = 41 * 16;
-			this->SetTextureRect(state, rect);
+			rect.top = m_rcCursorSize.bottom * 3; rect.bottom = m_rcCursorSize.bottom * 4;
+			rect.left = m_rcCursorSize.right * 2; rect.right = m_rcCursorSize.right * 16;
+			this->SetTextureRect(E_CursorState::Selectable_Enemy, rect);
 
-			state = E_CursorState::Move;
-			rect.top = 41 * 4; rect.bottom = 41 * 5;
-			rect.left = 41 * 0; rect.right = 41 * 16;
-			this->SetTextureRect(state, rect);
-
+			rect.top = m_rcCursorSize.bottom * 4; rect.bottom = m_rcCursorSize.bottom * 5;
+			rect.left = m_rcCursorSize.right * 0; rect.right = m_rcCursorSize.right * 16;
+			this->SetTextureRect(E_CursorState::Move, rect);
 		}
 
 		m_pCursor = new C_Cursor();
-		if (FAILED(m_pCursor->Create()))
-			return E_FAIL;
+		SAFE_CREATE(m_pCursor);
+		m_pCursor->SetCursorState(E_CursorState::Idle);
 
 		return S_OK;
 	}
 	void C_SelectManager::Destroy()
 	{
-		SAFE_DELETE(m_pCursorTextrueRect);
+		SAFE_DELETE(m_pCursor);
+
+		SAFE_DELETE(m_pCursorTextureRect);
 		m_pCursorTexture.reset();
+	}
+
+	HRESULT C_SelectManager::Update(const FLOAT& _deltaTime)
+	{
+		if (Input->BtnDown(E_KeyCode::MouseLeftButton))
+		{
+			m_pCursor->SetCursorState(E_CursorState::Drag);
+
+			// ┌
+			m_arrDragPos[0] = m_arrDragPos[4] = Input->GetMousePos2();
+		}
+		else if (Input->BtnPress(E_KeyCode::MouseLeftButton))
+		{
+			// ┘
+			m_arrDragPos[2] = Input->GetMousePos2();
+
+			// ┐
+			m_arrDragPos[1].x = m_arrDragPos[2].x;
+			m_arrDragPos[1].y = m_arrDragPos[0].y;
+
+			// └
+			m_arrDragPos[3].x = m_arrDragPos[0].x;
+			m_arrDragPos[3].y = m_arrDragPos[2].y;
+		}
+		else if (Input->BtnUp(E_KeyCode::MouseLeftButton))
+		{
+			m_pCursor->SetCursorState(E_CursorState::Idle);
+
+			// 유닛 선택
+		}
+
+		SAFE_UPDATE(m_pCursor);
+
+		return S_OK;
+	}
+	HRESULT C_SelectManager::Render()
+	{
+		if (Input->BtnPress(E_KeyCode::MouseLeftButton))
+		{
+			Sprite->DrawLine(m_arrDragPos, 5, D3DCOLOR_XRGB(0, 255, 0), 1.0f, false);
+		}
+
+		SAFE_RENDER(m_pCursor);
+
+		return S_OK;
 	}
 
 	void C_SelectManager::SetTextureRect(const E_CursorState& _state, const RECT& _rect)
@@ -98,7 +135,7 @@ namespace Game
 	}
 	void C_SelectManager::SetTextureRect(const E_CursorState& _state, const std::pair<WORD, RECT>& _condition)
 	{
-		(*m_pCursorTextrueRect)[_state] = _condition;
+		(*m_pCursorTextureRect)[_state] = _condition;
 	}
 
 	std::shared_ptr<C_Texture> C_SelectManager::GetTexture()
@@ -107,7 +144,7 @@ namespace Game
 	}
 	RECT C_SelectManager::GetTextureRect(const E_CursorState& _state, WORD& _index)
 	{
-		std::pair<WORD, RECT> index_rect = (*m_pCursorTextrueRect)[_state];
+		std::pair<WORD, RECT> index_rect = (*m_pCursorTextureRect)[_state];
 		RECT rect = index_rect.second;
 
 		if (index_rect.first <= _index)
@@ -127,7 +164,7 @@ namespace Game
 	}
 	RECT C_SelectManager::GetTextureRect(const E_CursorDir& _state, WORD& _index)
 	{
-		std::pair<WORD, RECT> index_rect = (*m_pCursorTextrueRect)[E_CursorState::Move];
+		std::pair<WORD, RECT> index_rect = (*m_pCursorTextureRect)[E_CursorState::Move];
 		RECT rect = index_rect.second;
 
 		if (2 <= _index)

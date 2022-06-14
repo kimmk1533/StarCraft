@@ -1,11 +1,10 @@
-//#include <stdafx.h>
-#include "..\..\CoreEngine\Scripts\stdafx.h"
-
+#include "stdafx.h"
 #include "Unit.h"
-#include "Utility.h"
 
 namespace Game
 {
+	WORD C_Unit::m_UnitCount = 0;
+
 	C_Unit::C_Unit()
 	{
 		m_Info = nullptr;
@@ -13,6 +12,8 @@ namespace Game
 		m_pPosition = nullptr;
 		m_pTargetPos = nullptr;
 		m_pScale = nullptr;
+
+		m_pAnimator = nullptr;
 
 		m_AnimIndex = 0;
 		m_pGameFrameTimer = nullptr;
@@ -33,8 +34,16 @@ namespace Game
 		m_pTargetPos = new D3DXVECTOR2(100.0f, 100.0f);
 		m_pScale = new D3DXVECTOR2(1.0f, 1.0f);
 
+		m_pAnimator = new C_Animator();
+		SAFE_CREATE(m_pAnimator);
+		m_pAnimator->SetSampleRate(g_InGameFPS);
+		m_pAnimator->AddFunc(0, [this]() -> void
+			{
+				++m_AnimIndex;
+			});
+
 		m_pGameFrameTimer = new C_Timer();
-		m_pGameFrameTimer->SetTime(InGame_FPS);
+		m_pGameFrameTimer->SetTime(g_InGameFPS);
 		m_pGameFrameTimer->Play();
 
 		return S_OK;
@@ -47,10 +56,16 @@ namespace Game
 		SAFE_DELETE(m_pTargetPos);
 		SAFE_DELETE(m_pPosition);
 
+		SAFE_DELETE(m_pAnimator);
+
 		SAFE_DELETE(m_Info);
 	}
-	const D3DXVECTOR2 C_Unit::GetPosition()
+
+	HRESULT C_Unit::Update(const FLOAT& _deltaTime)
 	{
-		return *m_pPosition;
+		SAFE_UPDATE(m_pAnimator);
+
+		return S_OK;
 	}
+	
 }

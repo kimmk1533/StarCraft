@@ -1,15 +1,26 @@
 #pragma once
 
+namespace CoreEngine
+{
+	template <class T>
+	class C_Singleton;
+
+	class C_Texture;
+}
 namespace Game
 {
-	using namespace CoreEngine;
-
 	class C_Cursor;
-	class CoreEngine::C_Texture;
+	class C_Unit;
+
 	enum class E_CursorState : unsigned char;
 	enum class E_CursorDir : unsigned char;
+}
 
-	class C_SelectManager : public C_Singleton<C_SelectManager>, public IFrameWork
+namespace Game
+{	
+	using namespace CoreEngine;
+
+	class C_SelectManager : public C_Singleton<C_SelectManager>, public IFrameWork, public IUpdatable, public IRenderable
 	{
 		friend class C_Singleton<C_SelectManager>;
 
@@ -24,11 +35,20 @@ namespace Game
 		virtual HRESULT Create() override;
 		virtual void	Destroy() override;
 
-	private:
+		virtual HRESULT Update(const FLOAT& _deltaTime) override;
+		virtual HRESULT Render() override;
+
+	private: // Cursor
 		std::shared_ptr<C_Texture> m_pCursorTexture;
 		C_Cursor* m_pCursor;
 		RECT m_rcCursorSize;
-		std::unordered_map<E_CursorState, std::pair<WORD, RECT>>* m_pCursorTextrueRect;
+		std::unordered_map<E_CursorState, std::pair<WORD, RECT>>* m_pCursorTextureRect;
+
+	private: // Drag
+		D3DXVECTOR2 m_arrDragPos[5];
+
+	private: // Selected Unit
+		std::priority_queue<C_Unit>* m_pSelectedUnitList;
 
 	private:
 		void SetTextureRect(const E_CursorState& _state, const RECT& _rect);

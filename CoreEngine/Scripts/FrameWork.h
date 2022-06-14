@@ -30,6 +30,7 @@ namespace CoreEngine
 		static LPDIRECT3D9				m_pD3D;				// D3D
 		static LPDIRECT3DDEVICE9		m_pd3dDevice;		// Device
 
+	public:
 		static C_Sprite*				m_pSprite;			// 2D를 출력하기 위한 객체
 		static C_Input*					m_pInput;			// 입력을 위한 객체
 
@@ -39,4 +40,7 @@ namespace CoreEngine
 		virtual void	Destroy() override = 0;
 
 	};
+
+	#define Sprite C_FrameWork::m_pSprite
+	#define Input C_FrameWork::m_pInput
 }

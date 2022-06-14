@@ -1,5 +1,8 @@
 #pragma once
 
+// 파일명이 Time.h인 경우 std라이브러리의 time.h와 충돌을 일으킴
+// 참고: https://stackoverflow.com/questions/23907008/compilation-error-error-c2039-clock-t-is-not-a-member-of-global-namespace
+
 namespace CoreEngine
 {
 	// (주의)

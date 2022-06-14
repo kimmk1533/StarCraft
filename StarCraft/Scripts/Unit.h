@@ -1,12 +1,53 @@
 #pragma once
+#include <Animator.h>
+#include <Timer.h>
+
 #include "UnitInfo.h"
-#include "Timer.h"
+
+namespace Game
+{
+	enum class E_Direction : unsigned char;
+	enum class E_UnitState : unsigned char;
+}
 
 namespace Game
 {
 	using namespace CoreEngine;
 
-	enum class E_Direction : unsigned char;
+	class C_Unit : public C_FrameWork, public IUpdatable, public IRenderable
+	{
+	public:
+		C_Unit();
+		virtual ~C_Unit();
+
+	public:
+		virtual HRESULT	Create() override;
+		virtual void	Destroy() override;
+
+		virtual HRESULT	Update(const FLOAT& _deltaTime) override;
+		virtual HRESULT	Render() override = 0;
+
+	private:
+		static WORD m_UnitCount;
+
+	protected:
+		S_UnitInfo* m_Info;
+
+		D3DXVECTOR2* m_pPosition;
+		D3DXVECTOR2* m_pTargetPos;
+		D3DXVECTOR2* m_pScale;
+
+	protected: // Animation
+		C_Animator* m_pAnimator;
+
+		WORD m_AnimIndex;
+		C_Timer* m_pGameFrameTimer;
+		E_UnitState m_UnitState;
+		E_Direction m_Direction;
+		E_Direction m_TargetDir;
+
+	};
+
 	enum class E_UnitState : unsigned char
 	{
 		// 생성, 사망 관련
@@ -50,37 +91,5 @@ namespace Game
 		UnBurrow,					// 언버로우 상태
 
 		Max
-	};
-
-	class C_Unit : public C_FrameWork, public IUpdatable, public IRenderable
-	{
-	public:
-		C_Unit();
-		virtual ~C_Unit();
-
-	public:
-		virtual HRESULT	Create() override;
-		virtual void	Destroy() override;
-
-		virtual HRESULT	Update(const FLOAT& _deltaTime) override = 0;
-		virtual HRESULT	Render() override = 0;
-
-	protected:
-		S_UnitInfo* m_Info;
-
-		D3DXVECTOR2* m_pPosition;
-		D3DXVECTOR2* m_pTargetPos;
-		D3DXVECTOR2* m_pScale;
-
-	protected: // Animation
-		WORD m_AnimIndex;
-		C_Timer* m_pGameFrameTimer;
-		E_UnitState m_UnitState;
-		E_Direction m_Direction;
-		E_Direction m_TargetDir;
-
-	public:
-		const D3DXVECTOR2 GetPosition();
-
 	};
 }

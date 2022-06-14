@@ -1,9 +1,7 @@
 #pragma once
 
-namespace Game
+namespace CoreEngine
 {
-	using namespace CoreEngine;
-
 	class C_Timer final : public IUpdatable
 	{
 	public:

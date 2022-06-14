@@ -1,7 +1,6 @@
 #pragma comment(linker, "/subsystem:windows")
 
-//#include <stdafx.h>
-#include "..\..\CoreEngine\Scripts\stdafx.h"
+#include "stdafx.h"
 
 #ifdef DEBUG
 #ifdef UNICODE

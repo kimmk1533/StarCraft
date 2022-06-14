@@ -24,7 +24,7 @@
     <ClInclude Include="Scripts\Texture.h">
       <Filter>Header File</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Time.h">
+    <ClInclude Include="Scripts\CoreTime.h">
       <Filter>Header File</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\CoreUtil.h">
@@ -36,7 +36,13 @@
     <ClInclude Include="Scripts\Singleton.h">
       <Filter>Header File</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\stdafx.h">
+    <ClInclude Include="Scripts\stdafx_Core.h">
+      <Filter>Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Animator.h">
+      <Filter>Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Timer.h">
       <Filter>Header File</Filter>
     </ClInclude>
   </ItemGroup>
@@ -53,19 +59,25 @@
     <ClCompile Include="Scripts\Texture.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Time.cpp">
+    <ClCompile Include="Scripts\CoreTime.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\stdafx.cpp">
+    <ClCompile Include="Scripts\stdafx_Core.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\FrameWork.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Animator.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Timer.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\ObjectPool.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Singleton.cpp">
-      <Filter>Source File</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\FrameWork.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
   </ItemGroup>

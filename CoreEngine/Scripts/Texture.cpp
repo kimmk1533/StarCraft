@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "stdafx_Core.h"
 
 namespace CoreEngine
 {
@@ -109,6 +109,10 @@ namespace CoreEngine
 	}
 
 	LPDIRECT3DTEXTURE9 C_Texture::GetTexture()
+	{
+		return m_pTex;
+	}
+	LPDIRECT3DTEXTURE9 C_Texture::GetTexture() const
 	{
 		return m_pTex;
 	}
