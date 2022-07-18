@@ -7,11 +7,12 @@ namespace Game
 
 	C_Unit::C_Unit()
 	{
-		m_Info = nullptr;
-
 		m_pPosition = nullptr;
 		m_pTargetPos = nullptr;
 		m_pScale = nullptr;
+
+		m_Info = nullptr;
+		m_pBoxCollider = nullptr;
 
 		m_pAnimator = nullptr;
 
@@ -28,11 +29,13 @@ namespace Game
 
 	HRESULT C_Unit::Create()
 	{
-		m_Info = new S_UnitInfo();
+		m_pPosition = new D3DXVECTOR3(100.0f, 100.0f, 0.0f);
+		m_pTargetPos = new D3DXVECTOR3(100.0f, 100.0f, 0.0f);
+		m_pScale = new D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 
-		m_pPosition = new D3DXVECTOR2(100.0f, 100.0f);
-		m_pTargetPos = new D3DXVECTOR2(100.0f, 100.0f);
-		m_pScale = new D3DXVECTOR2(1.0f, 1.0f);
+		m_Info = new S_UnitInfo();
+		m_pBoxCollider = new C_BoxCollider();
+		SAFE_CREATE(m_pBoxCollider);
 
 		m_pAnimator = new C_Animator();
 		SAFE_CREATE(m_pAnimator);
@@ -52,13 +55,14 @@ namespace Game
 	{
 		SAFE_DELETE(m_pGameFrameTimer);
 
+		SAFE_DELETE(m_pAnimator);
+
+		SAFE_DELETE(m_pBoxCollider);
+		SAFE_DELETE(m_Info);
+
 		SAFE_DELETE(m_pScale);
 		SAFE_DELETE(m_pTargetPos);
 		SAFE_DELETE(m_pPosition);
-
-		SAFE_DELETE(m_pAnimator);
-
-		SAFE_DELETE(m_Info);
 	}
 
 	HRESULT C_Unit::Update(const FLOAT& _deltaTime)
@@ -67,5 +71,44 @@ namespace Game
 
 		return S_OK;
 	}
-	
+	HRESULT C_Unit::Render()
+	{
+		/*S_Bounds* bounds = m_pBoxCollider->bounds;
+
+		float width = bounds->size.x * 0.8f;
+		float height_half = bounds->size.y * 0.3f;
+
+		FAILED_CHECK(m_pSprite->DrawEllipse(
+			m_pPosition->x, m_pPosition->y + height_half + 5,
+			width, height_half,
+			30,
+			1.0f,
+			D3DCOLOR_XRGB(0, 255, 0)
+		)
+		);*/
+
+//#define TEST
+#ifdef TEST
+		D3DXVECTOR2 min = D3DXVECTOR2(bounds->min);
+		D3DXVECTOR2 max = D3DXVECTOR2(bounds->max);
+
+		D3DXVECTOR2 vertex[5];
+
+		vertex[4] = vertex[0] = min;
+		vertex[1] = min + D3DXVECTOR2(bounds->size.x, 0.0f);
+		vertex[2] = max;
+		vertex[3] = min + D3DXVECTOR2(0.0f, bounds->size.y);
+
+		FAILED_CHECK(m_pSprite->DrawLine(
+			vertex,
+			5,
+			1,
+			false,
+			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)
+		)
+		);
+#endif // TEST
+
+		return S_OK;
+	}
 }

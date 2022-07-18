@@ -22,18 +22,6 @@
     <Filter Include="Core">
       <UniqueIdentifier>{974c2c5f-063c-4b91-acb1-bc7e2f759c76}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\UnitManager">
-      <UniqueIdentifier>{7019a3a9-58c3-424b-a733-26a9ff90804e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\UnitManager\Zerg">
-      <UniqueIdentifier>{3f3256b4-63ea-43d2-9932-895cfb2f5226}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\UnitManager\Terran">
-      <UniqueIdentifier>{d7264886-f309-4085-9dd4-41f6542f7bc5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\UnitManager\Protoss">
-      <UniqueIdentifier>{07da9d9c-8f5a-4f2f-9b4e-af65ebae0984}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\SelectManager">
       <UniqueIdentifier>{e47b2a93-acb7-4fbf-a661-eb12b6399fbc}</UniqueIdentifier>
     </Filter>
@@ -45,6 +33,18 @@
     </Filter>
     <Filter Include="Game\Unit\UnitInfo">
       <UniqueIdentifier>{acd64827-171c-478c-867c-ba1781f55b05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Unit\UnitManager">
+      <UniqueIdentifier>{7019a3a9-58c3-424b-a733-26a9ff90804e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Unit\UnitManager\Zerg">
+      <UniqueIdentifier>{3f3256b4-63ea-43d2-9932-895cfb2f5226}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Unit\UnitManager\Terran">
+      <UniqueIdentifier>{d7264886-f309-4085-9dd4-41f6542f7bc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Unit\UnitManager\Protoss">
+      <UniqueIdentifier>{07da9d9c-8f5a-4f2f-9b4e-af65ebae0984}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -73,10 +73,10 @@
       <Filter>Game\Unit\UnitInfo</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\UnitManager.cpp">
-      <Filter>Game\UnitManager</Filter>
+      <Filter>Game\Unit\UnitManager</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\MarineManager.cpp">
-      <Filter>Game\UnitManager\Terran</Filter>
+      <Filter>Game\Unit\UnitManager\Terran</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -87,10 +87,10 @@
       <Filter>Game\Unit\Terran\Marine</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\UnitManager.h">
-      <Filter>Game\UnitManager</Filter>
+      <Filter>Game\Unit\UnitManager</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\MarineManager.h">
-      <Filter>Game\UnitManager\Terran</Filter>
+      <Filter>Game\Unit\UnitManager\Terran</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\SelectManager.h">
       <Filter>Game\SelectManager</Filter>

@@ -3,35 +3,13 @@
 namespace Game
 {
 	using namespace CoreEngine;
+}
 
-	enum class E_RaceType : unsigned char
-	{
-		Neutral,
-		Protoss,
-		Terran,
-		Zerg,
-
-		Max
-	};
-	enum class E_UnitAtkType : unsigned char
-	{
-		None,
-		NormalType,
-		ExplosiveType,
-		ConcussiveType,
-		SpellType,
-
-		Max
-	};
-	enum class E_UnitDefType : unsigned char
-	{
-		None,
-		SmallType,
-		MediumType,
-		LargeType,
-
-		Max
-	};
+namespace Game
+{
+	enum class E_RaceType : unsigned char;
+	enum class E_UnitAtkType : unsigned char;
+	enum class E_UnitDefType : unsigned char;
 
 	struct S_UnitInfo
 	{
@@ -78,13 +56,39 @@ namespace Game
 		// 시야
 		FLOAT m_fVisualRange;				// 시야 거리
 
-		// 충돌 크기
-		POINT m_PixelSize;					// 충돌 크기
-
 	public:
 		S_UnitInfo();
 		S_UnitInfo(const S_UnitInfo& s);
 		S_UnitInfo& operator=(const S_UnitInfo& s);
 
+	};
+
+	enum class E_RaceType : unsigned char
+	{
+		Neutral,
+		Protoss,
+		Terran,
+		Zerg,
+
+		Max
+	};
+	enum class E_UnitAtkType : unsigned char
+	{
+		None,
+		NormalType,
+		ExplosiveType,
+		ConcussiveType,
+		SpellType,
+
+		Max
+	};
+	enum class E_UnitDefType : unsigned char
+	{
+		None,
+		SmallType,
+		MediumType,
+		LargeType,
+
+		Max
 	};
 }

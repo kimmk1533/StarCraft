@@ -1,84 +1,144 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Header File">
-      <UniqueIdentifier>{e013dc35-a375-4d09-9bbf-f5ba3bc2fc03}</UniqueIdentifier>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{e3a7dbeb-f71a-4356-af7f-bb5d22393902}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source File">
-      <UniqueIdentifier>{d271f095-f6f8-4f7a-bc97-0ae1f00a7654}</UniqueIdentifier>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{8cf3f348-92fd-4430-b965-d8450872f1f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Time">
+      <UniqueIdentifier>{f9cf6428-bd92-4e48-8ceb-ec24cf64d457}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{7e8f86f4-c03e-450f-bd16-ec7795488422}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Collider">
+      <UniqueIdentifier>{4c024a6f-1746-4065-a23f-70f4c305c023}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{6c150df6-0143-4cbe-972f-a14c44b797e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Animation">
+      <UniqueIdentifier>{848205a6-d2e1-4575-9893-b9fa788f16fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component">
+      <UniqueIdentifier>{a4650ed8-ef78-407e-af01-1cf2c289247f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Collision">
+      <UniqueIdentifier>{1181252f-2501-44ff-a2db-de34ba4f43ea}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Scripts\Engine.h">
-      <Filter>Header File</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\FrameWork.h">
-      <Filter>Header File</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Input.h">
-      <Filter>Header File</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Sprite.h">
-      <Filter>Header File</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Texture.h">
-      <Filter>Header File</Filter>
+    <ClInclude Include="Scripts\Animator.h">
+      <Filter>Render\Animation</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\CoreTime.h">
-      <Filter>Header File</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\CoreUtil.h">
-      <Filter>Header File</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\ObjectPool.h">
-      <Filter>Header File</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Singleton.h">
-      <Filter>Header File</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\stdafx_Core.h">
-      <Filter>Header File</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Animator.h">
-      <Filter>Header File</Filter>
+      <Filter>Time</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Timer.h">
-      <Filter>Header File</Filter>
+      <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Physics.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Texture.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Sprite.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Singleton.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\ObjectPool.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\stdafx_Core.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\CoreUtil.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Input.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Engine.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\FrameWork.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Collider.h">
+      <Filter>Physics\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\BoxCollider.h">
+      <Filter>Physics\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Bounds.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Collision.h">
+      <Filter>Physics\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\QuadTree.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\QuadTreeNode.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Scripts\Engine.cpp">
-      <Filter>Source File</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\Input.cpp">
-      <Filter>Source File</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\Sprite.cpp">
-      <Filter>Source File</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\Texture.cpp">
-      <Filter>Source File</Filter>
+    <ClCompile Include="Scripts\Animator.cpp">
+      <Filter>Render\Animation</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\CoreTime.cpp">
-      <Filter>Source File</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\stdafx_Core.cpp">
-      <Filter>Source File</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\FrameWork.cpp">
-      <Filter>Source File</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\Animator.cpp">
-      <Filter>Source File</Filter>
+      <Filter>Time</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Timer.cpp">
-      <Filter>Source File</Filter>
+      <Filter>Time</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\ObjectPool.cpp">
-      <Filter>Source File</Filter>
+    <ClCompile Include="Scripts\Physics.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Sprite.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Texture.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Singleton.cpp">
-      <Filter>Source File</Filter>
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\ObjectPool.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\stdafx_Core.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Engine.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\FrameWork.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Input.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Collider.cpp">
+      <Filter>Physics\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\BoxCollider.cpp">
+      <Filter>Physics\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Bounds.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\QuadTree.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\QuadTreeNode.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

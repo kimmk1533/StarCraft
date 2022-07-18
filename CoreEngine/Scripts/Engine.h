@@ -6,19 +6,12 @@ namespace CoreEngine
 	class C_Engine;
 
 	extern C_Engine* g_pApp;
+}
 
+namespace CoreEngine
+{
 	class C_Engine : public C_FrameWork, public IUpdatable, public IRenderable
 	{
-	public:
-		C_Engine();
-
-	public:
-		virtual HRESULT	Create() override;
-		virtual void	Destroy() override;
-
-		virtual HRESULT	Update(const FLOAT& deltaTime) override;
-		virtual HRESULT	Render() override;
-
 	private:
 #ifdef UNICODE
 		static const LPCWSTR		m_Title;
@@ -28,9 +21,9 @@ namespace CoreEngine
 
 		static HINSTANCE			m_hInst;
 		static HWND					m_hWnd;
-		static DWORD				m_dWinStyle;
-		static DWORD				m_dScnX;			// Screen Width
-		static DWORD				m_dScnY;			// Screen Height
+		static DWORD				m_dwWinStyle;
+		static DWORD				m_dwScreenX;		// Screen Width
+		static DWORD				m_dwScreenY;		// Screen Height
 		static bool					m_bWindow;			// WindowMode
 		static bool					m_bShowCusor;		// Show Cusor
 
@@ -48,6 +41,20 @@ namespace CoreEngine
 
 		virtual LRESULT MsgProc(HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam);
 		static LRESULT WINAPI WndProc(HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam);
+
+	public:
+		static RECT GetScreenRect();
+
+	public:
+		C_Engine();
+
+	public:
+		virtual HRESULT	Create() override;
+		virtual void	Destroy() override;
+
+	public:
+		virtual HRESULT	Update(const FLOAT& _deltaTime) override;
+		virtual HRESULT	Render() override;
 
 	};
 }

@@ -23,7 +23,9 @@ namespace Game
 		SAFE_CREATE(C_SelectManager::GetI());
 
 		SAFE_CREATE(C_MarineManager::GetI());
-		C_MarineManager::GetI()->SpawnUnit();
+
+		for (int i = 0; i < 1; ++i)
+			C_MarineManager::GetI()->SpawnUnit();
 
 		return S_OK;
 	}
@@ -45,14 +47,11 @@ namespace Game
 	}
 	HRESULT C_Main::Render()
 	{
-		if (FAILED(C_Engine::Render()))
-			return E_FAIL;
+		FAILED_CHECK(C_Engine::Render());
 
-		if (FAILED(m_pd3dDevice->BeginScene()))
-			return E_FAIL;
+		FAILED_CHECK(m_pd3dDevice->BeginScene());
 
 		SAFE_RENDER(C_MarineManager::GetI());
-
 		SAFE_RENDER(C_SelectManager::GetI());
 
 		// EndScene

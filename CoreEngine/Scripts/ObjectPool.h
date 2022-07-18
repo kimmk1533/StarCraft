@@ -69,6 +69,12 @@ namespace CoreEngine
 		}
 		void	Destroy() override
 		{
+			for (unsigned int i = 0; i < m_pSpawnedObjList->size(); ++i)
+			{
+				std::shared_ptr<T> item = (*m_pSpawnedObjList)[0];
+				this->Despawn(item);
+			}
+			SAFE_DELETE(m_pSpawnedObjList);
 			for (unsigned int i = 0; i < m_pQueue->size(); ++i)
 			{
 				std::shared_ptr<T> item = m_pQueue->front();
@@ -98,7 +104,7 @@ namespace CoreEngine
 		void Despawn(const std::shared_ptr<T>& _item)
 		{
 			int index = std::find(m_pSpawnedObjList->begin(), m_pSpawnedObjList->end(), _item) - m_pSpawnedObjList->begin();
-			if (index == m_pSpawnedObjList->end())
+			if (index == m_pSpawnedObjList->size())
 				return;
 
 			m_pQueue->push(_item);

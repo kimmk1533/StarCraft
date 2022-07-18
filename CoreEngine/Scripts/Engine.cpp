@@ -1,18 +1,20 @@
 #include "stdafx_Core.h"
 
+#include "Physics.h"
+
 namespace CoreEngine
 {
 	const LPCWSTR	C_Engine::m_Title = LPCWSTR(L"DirectX StarCraft");
 	HINSTANCE		C_Engine::m_hInst = nullptr;
 	HWND			C_Engine::m_hWnd = nullptr;
-	DWORD			C_Engine::m_dWinStyle = WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU | WS_VISIBLE;
-	DWORD			C_Engine::m_dScnX = 800;						// Screen Width
-	DWORD			C_Engine::m_dScnY = 600;						// Screen Height
+	DWORD			C_Engine::m_dwWinStyle = WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU | WS_VISIBLE;
+	DWORD			C_Engine::m_dwScreenX = 800;					// Screen Width
+	DWORD			C_Engine::m_dwScreenY = 600;					// Screen Height
 	bool			C_Engine::m_bWindow = TRUE;						// WindowMode
 	bool			C_Engine::m_bShowCusor = TRUE;					// Show Cusor
 	LPD3DXSPRITE	C_Engine::m_pd3dSprite = nullptr;				// 2D Sprite
 	LPD3DXLINE		C_Engine::m_pd3dLine = nullptr;					// 2D Line
-	C_Time*			C_Engine::m_pTime = nullptr;					// System Time
+	C_Time* C_Engine::m_pTime = nullptr;					// System Time
 
 	C_Engine* g_pApp;
 
@@ -20,9 +22,9 @@ namespace CoreEngine
 	{
 		//m_hInst = nullptr;
 		//m_hWnd = nullptr;
-		//m_dWinStyle = WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU | WS_VISIBLE;
-		//m_dScnX = 800;					// Screen Width
-		//m_dScnY = 600;					// Screen Height
+		//m_dwWinStyle = WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU | WS_VISIBLE;
+		//m_dwScreenX = 800;					// Screen Width
+		//m_dwScreenY = 600;					// Screen Height
 		//m_bWindow = true;					// WindowMode
 		//m_bShowCusor = true;				// Show Cusor
 		//m_pd3dSprite = nullptr;			// 2D Sprite
@@ -51,15 +53,15 @@ namespace CoreEngine
 
 		RECT rc;									//Create the application's window
 
-		SetRect(&rc, 0, 0, m_dScnX, m_dScnY);
-		AdjustWindowRect(&rc, m_dWinStyle, FALSE);
+		SetRect(&rc, 0, 0, m_dwScreenX, m_dwScreenY);
+		AdjustWindowRect(&rc, m_dwWinStyle, FALSE);
 
 		int iScnSysW = ::GetSystemMetrics(SM_CXSCREEN);
 		int iScnSysH = ::GetSystemMetrics(SM_CYSCREEN);
 
 		m_hWnd = CreateWindow(m_Title
 			, m_Title
-			, m_dWinStyle
+			, m_dwWinStyle
 			, (iScnSysW - (rc.right - rc.left)) / 2
 			, (iScnSysH - (rc.bottom - rc.top)) / 2
 			, (rc.right - rc.left)
@@ -89,8 +91,8 @@ namespace CoreEngine
 		m_d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
 		m_d3dpp.BackBufferFormat = d3ddm.Format;
 		m_d3dpp.BackBufferCount = 2;
-		m_d3dpp.BackBufferWidth = m_dScnX;
-		m_d3dpp.BackBufferHeight = m_dScnY;
+		m_d3dpp.BackBufferWidth = m_dwScreenX;
+		m_d3dpp.BackBufferHeight = m_dwScreenY;
 		m_d3dpp.EnableAutoDepthStencil = TRUE;
 		m_d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
 
@@ -162,9 +164,6 @@ namespace CoreEngine
 			{
 				m_pTime->Update();
 
-				if (FAILED(m_pInput->Update()))
-					break;
-
 				if (FAILED(RPR()))
 					break;
 
@@ -205,12 +204,12 @@ namespace CoreEngine
 	HRESULT C_Engine::Create()
 	{
 		m_pSprite = new C_Sprite();
-		if (FAILED(m_pSprite->Create(m_pd3dSprite, m_pd3dLine)))
-			return E_FAIL;
+		FAILED_CHECK(m_pSprite->Create(m_pd3dSprite, m_pd3dLine));
 
 		m_pInput = new C_Input();
-		if (FAILED(m_pInput->Create(m_hWnd)))
-			return E_FAIL;
+		FAILED_CHECK(m_pInput->Create(m_hWnd));
+
+		FAILED_CHECK(Physics::Create());
 
 		return S_OK;
 	}
@@ -220,35 +219,17 @@ namespace CoreEngine
 		SAFE_DELETE(m_pSprite);
 	}
 
-	HRESULT C_Engine::Update(const FLOAT& deltaTime)
+	HRESULT C_Engine::Update(const FLOAT& _deltaTime)
 	{
+		SAFE_UPDATE(Input);
+
+		Physics::Update(_deltaTime);
+
 		return S_OK;
 	}
 	HRESULT C_Engine::Render()
 	{
 		m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 120, 160), 1.0f, 0);
-
-		/*if (FAILED(m_pd3dDevice->BeginScene()))
-			return E_FAIL;
-
-		D3DXVECTOR2			vcPos(50, 50);
-		D3DXVECTOR2			vcScale(1, 1);
-		RECT				rc1 { 0, 0, 64, 64 };
-		LPDIRECT3DTEXTURE9	pTex = m_Marine->GetTexture()->GetTexture();
-
-		pTex = marine->GetTexture()->GetTexture();
-
-		m_TestTexture->GetImageRect(&rc1);
-
-		m_pSprite->Draw(pTex, &rc1, &vcScale, NULL, 0, &vcPos, D3DXCOLOR(1, 1, 1, 1));
-
-		vcPos.x += 100;
-		vcPos.y += 100;
-
-		m_pSprite->Draw(pTex, &rc1, &vcScale, NULL, 0, &vcPos, D3DXCOLOR(1, 1, 1, 1));
-
-		// EndScene
-		m_pd3dDevice->EndScene();*/
 
 		return S_OK;
 	}
@@ -263,8 +244,16 @@ namespace CoreEngine
 
 			GetClientRect(m_hWnd, &ClientRect);
 
-			m_dScnX = ClientRect.right - ClientRect.left;
-			m_dScnY = ClientRect.bottom - ClientRect.top;
+			m_dwScreenX = ClientRect.right - ClientRect.left;
+			m_dwScreenY = ClientRect.bottom - ClientRect.top;
+
+			// 창 크기 변경된 거 적용 시켜줘야 함.
+			RECT rc;
+			SetRect(&rc, 0, 0, m_dwScreenX, m_dwScreenY);
+			AdjustWindowRect(&rc, m_dwWinStyle, FALSE);
+
+			m_d3dpp.BackBufferWidth = m_dwScreenX;
+			m_d3dpp.BackBufferHeight = m_dwScreenY;
 
 			return 0;
 		}
@@ -294,5 +283,11 @@ namespace CoreEngine
 	LRESULT WINAPI C_Engine::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 		return g_pApp->MsgProc(hWnd, msg, wParam, lParam);
+	}
+	RECT C_Engine::GetScreenRect()
+	{
+		RECT rc;
+		SetRect(&rc, 0, 0, m_dwScreenX, m_dwScreenY);
+		return rc;
 	}
 }

@@ -125,7 +125,7 @@
       <ConformanceMode>true</ConformanceMode>
       <DisableSpecificWarnings>4819;28251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>C:\Users\kimmk\Desktop\Portfolio\StarCraft\CoreEngine\Scripts;%(AdditionalIncludeDirectories);C:\Users\kimmk\Desktop\Portfolio\StarCraft\CoreEngine\Scripts</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\kimmk\Desktop\Portfolio\StarCraft\CoreEngine\Scripts;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>

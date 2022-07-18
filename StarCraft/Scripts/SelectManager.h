@@ -6,6 +6,7 @@ namespace CoreEngine
 	class C_Singleton;
 
 	class C_Texture;
+	class C_BoxCollider;
 }
 namespace Game
 {
@@ -45,7 +46,8 @@ namespace Game
 		std::unordered_map<E_CursorState, std::pair<WORD, RECT>>* m_pCursorTextureRect;
 
 	private: // Drag
-		D3DXVECTOR2 m_arrDragPos[5];
+		RECT m_DragRect;
+		C_BoxCollider* m_pDragCollider;
 
 	private: // Selected Unit
 		std::priority_queue<C_Unit>* m_pSelectedUnitList;

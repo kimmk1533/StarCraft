@@ -1,7 +1,13 @@
 #include "stdafx.h"
 #include "SelectManager.h"
 
+#include <BoxCollider.h>
+#include <Physics.h>
+
 #include "Cursor.h"
+
+#include "UnitManager.h"
+#include "MarineManager.h"
 
 namespace Game
 {
@@ -10,6 +16,9 @@ namespace Game
 		m_pCursorTexture = nullptr;
 		m_pCursorTextureRect = nullptr;
 		m_pCursor = nullptr;
+
+		m_pDragCollider = nullptr;
+		m_pSelectedUnitList = nullptr;
 	}
 	C_SelectManager::~C_SelectManager()
 	{
@@ -61,44 +70,74 @@ namespace Game
 		SAFE_CREATE(m_pCursor);
 		m_pCursor->SetCursorState(E_CursorState::Idle);
 
+		m_pDragCollider = new C_BoxCollider();
+		SAFE_CREATE(m_pDragCollider);
+
 		return S_OK;
 	}
 	void C_SelectManager::Destroy()
 	{
+		SAFE_DELETE(m_pDragCollider);
+
 		SAFE_DELETE(m_pCursor);
 
 		SAFE_DELETE(m_pCursorTextureRect);
+
 		m_pCursorTexture.reset();
 	}
 
 	HRESULT C_SelectManager::Update(const FLOAT& _deltaTime)
 	{
-		if (Input->BtnDown(E_KeyCode::MouseLeftButton))
+		if (Input->GetMouseDown(E_MouseCode::Left))
 		{
-			m_pCursor->SetCursorState(E_CursorState::Drag);
-
 			// ┌
-			m_arrDragPos[0] = m_arrDragPos[4] = Input->GetMousePos2();
+			m_DragRect.left = Input->GetMousePos().x;
+			m_DragRect.top = Input->GetMousePos().y;
 		}
-		else if (Input->BtnPress(E_KeyCode::MouseLeftButton))
+		else if (Input->GetMouse(E_MouseCode::Left))
 		{
 			// ┘
-			m_arrDragPos[2] = Input->GetMousePos2();
-
-			// ┐
-			m_arrDragPos[1].x = m_arrDragPos[2].x;
-			m_arrDragPos[1].y = m_arrDragPos[0].y;
-
-			// └
-			m_arrDragPos[3].x = m_arrDragPos[0].x;
-			m_arrDragPos[3].y = m_arrDragPos[2].y;
+			m_DragRect.right = Input->GetMousePos().x;
+			m_DragRect.bottom = Input->GetMousePos().y;
 		}
-		else if (Input->BtnUp(E_KeyCode::MouseLeftButton))
+		else if (Input->GetMouseUp(E_MouseCode::Left))
 		{
-			m_pCursor->SetCursorState(E_CursorState::Idle);
+			if (m_DragRect.left > m_DragRect.right)
+				SWAP(m_DragRect.left, m_DragRect.right);
+			if (m_DragRect.top > m_DragRect.bottom)
+				SWAP(m_DragRect.top, m_DragRect.bottom);
 
 			// 유닛 선택
-		}
+			m_pDragCollider->bounds->size = D3DXVECTOR3(
+				m_DragRect.right - m_DragRect.left,
+				m_DragRect.bottom - m_DragRect.top,
+				0.0f
+			);
+			m_pDragCollider->bounds->center = D3DXVECTOR3(
+				m_DragRect.left + m_DragRect.right,
+				m_DragRect.top + m_DragRect.bottom,
+				0.0f
+			) * 0.5f;
+
+			auto marineList = C_MarineManager::GetI()->GetSpawnedObjList();
+			for (size_t i = 0; i < marineList->size(); ++i)
+			{
+				if (Physics::AABB_Collision(*m_pDragCollider, (*(*marineList)[i]->collider)))
+					std::cout << "충돌\n";
+
+#ifdef TEST
+				if (i == 0)
+				{
+					S_Bounds* bounds = (*marineList)[i]->collider->bounds;
+					std::cout << "unit_min (" << bounds->min.x << ", " << bounds->min.y << ")\n";
+					std::cout << "unit_max (" << bounds->max.x << ", " << bounds->max.y << ")\n";
+					std::cout << "m_arrDragPos[0] (" << m_arrDragPos[0].x << ", " << m_arrDragPos[0].y << ")\n";
+					std::cout << "m_arrDragPos[1] (" << m_arrDragPos[1].x << ", " << m_arrDragPos[1].y << ")\n\n";
+				}
+#endif // TEST
+
+			} // for (size_t i = 0; i < marineList->size(); ++i)
+		} // else if (Input->GetMouseUp(E_MouseCode::Left))
 
 		SAFE_UPDATE(m_pCursor);
 
@@ -106,9 +145,15 @@ namespace Game
 	}
 	HRESULT C_SelectManager::Render()
 	{
-		if (Input->BtnPress(E_KeyCode::MouseLeftButton))
+		if (Input->GetMouse(E_MouseCode::Left))
 		{
-			Sprite->DrawLine(m_arrDragPos, 5, D3DCOLOR_XRGB(0, 255, 0), 1.0f, false);
+			
+			FAILED_CHECK(Sprite->DrawRect(
+				m_DragRect,
+				1.0f,
+				false,
+				D3DCOLOR_XRGB(0, 255, 0)
+			));
 		}
 
 		SAFE_RENDER(m_pCursor);

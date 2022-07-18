@@ -65,7 +65,7 @@ namespace CoreEngine
 
 		return S_OK;
 	}
-	HRESULT C_Input::Update()	// Mouse
+	HRESULT C_Input::Update(const FLOAT& _deltaTime)	// Mouse
 	{
 		INT i = 0;
 
@@ -156,6 +156,10 @@ namespace CoreEngine
 				{
 					m_dBtnBgn[i] = dBtnCur;
 				}
+				else if (2 == m_dBtnCnt[i])
+				{
+					m_BtnMap[i] = E_InputState::INPUT_DBCLC;
+				}
 			}
 
 			if (E_InputState::INPUT_UP == m_BtnMap[i])
@@ -171,13 +175,12 @@ namespace CoreEngine
 				{
 					if ((dBtnCur - m_dBtnBgn[i]) <= m_dTimeDC)
 					{
-						m_BtnMap[i] = E_InputState::INPUT_DBCLC;
+						m_BtnMap[i] = E_InputState::INPUT_DBCLC_UP;
 					}
 
 					m_dBtnCnt[i] = 0;
 				}
 			}
-
 		}
 
 		//
@@ -186,114 +189,69 @@ namespace CoreEngine
 		return S_OK;
 	}
 
-	bool C_Input::KeyDown(E_KeyCode nKey)
+	LRESULT C_Input::MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
-		if (nKey < E_KeyCode::Backspace || nKey >= E_KeyCode::MAX)
+		switch (msg)
 		{
-			MessageBox(m_hWnd,
-				L"키보드 입력 에러",
-				L"Error!",
-				0);
+		case WM_MOUSEWHEEL:
+		{
+			INT c = HIWORD(wParam);
+			INT d = LOWORD(wParam);
+
+			c = short(c);
+			m_vcCur.z += FLOAT(c);
+			break;
+		}
+		}
+
+		return 0;
+	}
+
+	// 마우스
+	bool C_Input::GetMouseDown(E_MouseCode nBtn)
+	{
+		if (nBtn <= E_MouseCode::None || nBtn >= E_MouseCode::Max)
+		{
+			ErrorMessageBox("Mouse Down Error");
 
 			return FALSE;
 		}
 
-		return m_KeyMap[static_cast<INT>(nKey)] == E_InputState::INPUT_DOWN;
+		bool condition1 = m_BtnMap[static_cast<INT>(nBtn)] == E_InputState::INPUT_DOWN;
+		bool condition2 = m_BtnMap[static_cast<INT>(nBtn)] == E_InputState::INPUT_DBCLC;
+
+		return condition1 || condition2;
 	}
-	bool C_Input::KeyUp(E_KeyCode nKey)
+	bool C_Input::GetMouseUp(E_MouseCode nBtn)
 	{
-		if (nKey < E_KeyCode::Backspace || nKey >= E_KeyCode::MAX)
+		if (nBtn <= E_MouseCode::None || nBtn >= E_MouseCode::Max)
 		{
-			MessageBox(m_hWnd,
-				L"키보드 입력 에러",
-				L"Error!",
-				0);
+			ErrorMessageBox("Mouse Up Error");
 
 			return FALSE;
 		}
 
-		return m_KeyMap[static_cast<INT>(nKey)] == E_InputState::INPUT_UP;
+		bool condition1 = m_BtnMap[static_cast<INT>(nBtn)] == E_InputState::INPUT_UP;
+		bool condition2 = m_BtnMap[static_cast<INT>(nBtn)] == E_InputState::INPUT_DBCLC_UP;
+
+		return condition1 || condition2;
 	}
-	bool C_Input::KeyPress(E_KeyCode nKey)
+	bool C_Input::GetMouse(E_MouseCode nBtn)
 	{
-		if (nKey < E_KeyCode::Backspace || nKey >= E_KeyCode::MAX)
+		if (nBtn <= E_MouseCode::None || nBtn >= E_MouseCode::Max)
 		{
-			MessageBox(m_hWnd,
-				L"키보드 입력 에러",
-				L"Error!",
-				0);
-
-			return FALSE;
-		}
-
-		return m_KeyMap[static_cast<INT>(nKey)] == E_InputState::INPUT_PRESS;
-	}
-	C_Input::E_InputState C_Input::KeyState(E_KeyCode nKey)
-	{
-		if (nKey < E_KeyCode::Backspace || nKey >= E_KeyCode::MAX)
-		{
-			MessageBox(m_hWnd,
-				L"키보드 입력 에러",
-				L"Error!",
-				0);
-
-			return E_InputState::INPUT_ERROR;
-		}
-
-		return m_KeyMap[static_cast<INT>(nKey)];
-	}
-
-	// Mouse
-	bool C_Input::BtnDown(E_KeyCode nBtn)
-	{
-		if (nBtn <= E_KeyCode::None || nBtn >= E_KeyCode::Backspace)
-		{
-			MessageBox(m_hWnd,
-				L"마우스 입력 에러",
-				L"Error!",
-				0);
-
-			return FALSE;
-		}
-
-		return m_BtnMap[static_cast<INT>(nBtn)] == E_InputState::INPUT_DOWN;
-	}
-	bool C_Input::BtnUp(E_KeyCode nBtn)
-	{
-		if (nBtn <= E_KeyCode::None || nBtn >= E_KeyCode::Backspace)
-		{
-			MessageBox(m_hWnd,
-				L"마우스 입력 에러",
-				L"Error!",
-				0);
-
-			return FALSE;
-		}
-
-		return m_BtnMap[static_cast<INT>(nBtn)] == E_InputState::INPUT_UP;
-	}
-	bool C_Input::BtnPress(E_KeyCode nBtn)
-	{
-		if (nBtn <= E_KeyCode::None || nBtn >= E_KeyCode::Backspace)
-		{
-			MessageBox(m_hWnd,
-				L"마우스 입력 에러",
-				L"Error!",
-				0);
+			ErrorMessageBox("Mouse Pressed Error");
 
 			return FALSE;
 		}
 
 		return m_BtnMap[static_cast<INT>(nBtn)] == E_InputState::INPUT_PRESS;
 	}
-	C_Input::E_InputState C_Input::BtnState(E_KeyCode nBtn)
+	C_Input::E_InputState C_Input::GetMouseState(E_MouseCode nBtn)
 	{
-		if (nBtn <= E_KeyCode::None || nBtn >= E_KeyCode::Backspace)
+		if (nBtn <= E_MouseCode::None || nBtn >= E_MouseCode::Max)
 		{
-			MessageBox(m_hWnd,
-				L"마우스 입력 에러",
-				L"Error!",
-				0);
+			ErrorMessageBox("Mouse State Error");
 
 			return E_InputState::INPUT_ERROR;
 		}
@@ -313,21 +271,50 @@ namespace CoreEngine
 	{
 		return m_vcEps;
 	}
-	LRESULT C_Input::MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+
+	// 키보드
+	bool C_Input::GetKeyDown(E_KeyCode nKey)
 	{
-		switch (msg)
+		if (nKey < E_KeyCode::Backspace || nKey >= E_KeyCode::MAX)
 		{
-		case WM_MOUSEWHEEL:
-		{
-			INT c = HIWORD(wParam);
-			INT d = LOWORD(wParam);
+			ErrorMessageBox("Key Down Error");
 
-			c = short(c);
-			m_vcCur.z += FLOAT(c);
-			break;
-		}
+			return FALSE;
 		}
 
-		return 0;
+		return m_KeyMap[static_cast<INT>(nKey)] == E_InputState::INPUT_DOWN;
+	}
+	bool C_Input::GetKeyUp(E_KeyCode nKey)
+	{
+		if (nKey < E_KeyCode::Backspace || nKey >= E_KeyCode::MAX)
+		{
+			ErrorMessageBox("Key Up Error");
+
+			return FALSE;
+		}
+
+		return m_KeyMap[static_cast<INT>(nKey)] == E_InputState::INPUT_UP;
+	}
+	bool C_Input::GetKey(E_KeyCode nKey)
+	{
+		if (nKey < E_KeyCode::Backspace || nKey >= E_KeyCode::MAX)
+		{
+			ErrorMessageBox("Key Pressed Error");
+
+			return FALSE;
+		}
+
+		return m_KeyMap[static_cast<INT>(nKey)] == E_InputState::INPUT_PRESS;
+	}
+	C_Input::E_InputState C_Input::GetKeyState(E_KeyCode nKey)
+	{
+		if (nKey < E_KeyCode::Backspace || nKey >= E_KeyCode::MAX)
+		{
+			ErrorMessageBox("Key State Error");
+
+			return E_InputState::INPUT_ERROR;
+		}
+
+		return m_KeyMap[static_cast<INT>(nKey)];
 	}
 }

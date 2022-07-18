@@ -2,40 +2,18 @@
 
 namespace CoreEngine
 {
-	C_Sprite::C_Sprite()
-	{
-		m_pDxSprite = nullptr;
-		m_pDxLine = nullptr;
-	}
-
-	C_Sprite::~C_Sprite()
-	{
-
-	}
-
-	HRESULT C_Sprite::Create(LPD3DXSPRITE _pSprite, LPD3DXLINE _pLine)
-	{
-		NULL_CHECK(_pSprite, "_pSprite is nullptr");
-		NULL_CHECK(_pLine, "_pLine is nullptr");
-
-		m_pDxSprite = _pSprite;
-		m_pDxLine = _pLine;
-
-		return S_OK;
-	}
-
 	HRESULT C_Sprite::Draw(
 		LPDIRECT3DTEXTURE9	_pTex,
 		const RECT*			_pSrcRect,
-		const D3DXVECTOR2*	_pScaling,		// Scaling
-		const D3DXVECTOR2*	_pCenter,		// Rotation Center
-		FLOAT				_fAngle,		// Degree.
-		const D3DXVECTOR2*	_pPosition,		// Translation
-		const D3DXVECTOR3*	_pOffset,		// Offset
-		D3DXCOLOR			_Color
+		const D3DXVECTOR2*	_pScale,	// Scaling
+		const D3DXVECTOR2*	_pCenter,	// Rotation Center
+		const FLOAT&		_fAngle,	// Degree.
+		const D3DXVECTOR2*	_pPosition,	// Translation
+		const D3DXVECTOR3*	_pOffset,	// Offset
+		const D3DXCOLOR&	_color		// Color
 	)
 	{
-		NULL_CHECK(m_pDxSprite, "m_pDxSprite is nullptr");
+		NULL_CHECK_WITH_MSG(m_pDxSprite, "m_pDxSprite is nullptr");
 
 		m_pDxSprite->Begin(D3DXSPRITE_ALPHABLEND);
 
@@ -55,26 +33,26 @@ namespace CoreEngine
 		D3DXMatrixIdentity(&mtTrn);
 		D3DXMatrixIdentity(&mtRctI);
 
-		if (_pScaling)
-			D3DXMatrixScaling(&mtScl, _pScaling->x, _pScaling->y, 1);
+		if (_pScale)
+			D3DXMatrixScaling(&mtScl, _pScale->x, _pScale->y, 1.0f);
 
 		D3DXMatrixRotationZ(&mtRot, -fTheta);
 
 		if (_pCenter)
-			D3DXMatrixTranslation(&mtRct, _pCenter->x, _pCenter->y, 0);
+			D3DXMatrixTranslation(&mtRct, _pCenter->x, _pCenter->y, 0.0f);
 
 		//	D3DXMatrixInverse(&mtRctI, NULL, &mtRct);
 		if (_pCenter)
-			D3DXMatrixTranslation(&mtRctI, -(_pCenter->x), -(_pCenter->y), 0);
+			D3DXMatrixTranslation(&mtRctI, -(_pCenter->x), -(_pCenter->y), 0.0f);
 
 		if (_pPosition)
-			D3DXMatrixTranslation(&mtTrn, _pPosition->x, _pPosition->y, 0);
+			D3DXMatrixTranslation(&mtTrn, _pPosition->x, _pPosition->y, 0.0f);
 
 		mtW = mtScl * mtRctI * mtRot * mtRct * mtTrn;
 
 		m_pDxSprite->SetTransform(&mtW);
 
-		m_pDxSprite->Draw(_pTex, _pSrcRect, _pOffset, NULL, _Color);
+		m_pDxSprite->Draw(_pTex, _pSrcRect, _pOffset, nullptr, _color);
 
 		D3DXMatrixIdentity(&mtW);
 		m_pDxSprite->SetTransform(&mtW);
@@ -86,39 +64,160 @@ namespace CoreEngine
 	HRESULT C_Sprite::Draw(
 		LPDIRECT3DTEXTURE9	_pTex,
 		const RECT*			_pSrcRect,
-		const D3DXVECTOR2*	_pScaling,		// Scaling
-		const D3DXVECTOR3*	_pRotation,		// Rotation
-		const D3DXVECTOR2*	_pPosition,		// Translation
-		const D3DXVECTOR3*	_pOffset,		// Offset
-		D3DXCOLOR			_Color
+		const D3DXVECTOR2*	_pScale,	// Scaling
+		const D3DXVECTOR3*	_pRotation,	// Rotation
+		const D3DXVECTOR2*	_pPosition,	// Translation
+		const D3DXVECTOR3*	_pOffset,	// Offset
+		const D3DXCOLOR&	_color		// Color
 	)
 	{
-		NULL_CHECK(m_pDxSprite, "m_pDxSprite is nullptr");
+		NULL_CHECK_WITH_MSG(m_pDxSprite, "m_pDxSprite is nullptr");
 
 		if (!_pRotation)
-			return this->Draw(_pTex, _pSrcRect, _pScaling, nullptr, 0.0f, _pPosition, _pOffset, _Color);
+			return this->Draw(_pTex, _pSrcRect, _pScale, nullptr, 0.0f, _pPosition, _pOffset, _color);
 
 		D3DXVECTOR2 rotation(_pRotation->x, _pRotation->y);
-		return this->Draw(_pTex, _pSrcRect, _pScaling, &rotation, _pRotation->z, _pPosition, _pOffset, _Color);
+		return this->Draw(_pTex, _pSrcRect, _pScale, &rotation, _pRotation->z, _pPosition, _pOffset, _color);
 	}
+
 	HRESULT C_Sprite::DrawLine(
-		const D3DXVECTOR2* _pVertexList,
-		DWORD				_dwVertexListCount,
-		D3DCOLOR			_Color,
-		FLOAT				_fWidth,
-		bool				_bAntialias
+		const D3DXVECTOR2*	_pVertexList,
+		const DWORD&		_dwVertexListCount,
+		const FLOAT&		_fThickness,
+		const bool&			_bAntialias,
+		const D3DCOLOR&		_color
 	)
 	{
-		NULL_CHECK(m_pDxLine, "m_pDxLine is nullptr");
+		NULL_CHECK_WITH_MSG(m_pDxLine, "m_pDxLine is nullptr");
 
+		m_pDxLine->SetGLLines(false);
 		m_pDxLine->SetAntialias(_bAntialias);
-		m_pDxLine->SetWidth(_fWidth);
+		m_pDxLine->SetWidth(_fThickness);
 
 		m_pDxLine->Begin();
 
-		m_pDxLine->Draw(_pVertexList, _dwVertexListCount, _Color);
+		m_pDxLine->Draw(_pVertexList, _dwVertexListCount, _color);
 
 		m_pDxLine->End();
+
+		return S_OK;
+	}
+	HRESULT C_Sprite::DrawRect(
+		const RECT& _rect,
+		const FLOAT& _fThickness,
+		const bool& _bAntialias,
+		const D3DCOLOR& _color
+	)
+	{
+		NULL_CHECK_WITH_MSG(m_pDxLine, "m_pDxLine is nullptr");
+
+		D3DXVECTOR2 RectPos[2];
+		const D3DXVECTOR2 LeftTop = D3DXVECTOR2(_rect.left, _rect.top);
+		const D3DXVECTOR2 RightBottom = D3DXVECTOR2(_rect.right, _rect.bottom);
+
+		FAILED_CHECK(m_pDxLine->SetGLLines(false));
+		FAILED_CHECK(m_pDxLine->SetAntialias(_bAntialias));
+		FAILED_CHECK(m_pDxLine->SetWidth(_fThickness));
+
+		FAILED_CHECK(m_pDxLine->Begin());
+
+		// ┌─┐
+		RectPos[1] = RectPos[0] = LeftTop;
+		RectPos[1].x = _rect.right;
+		FAILED_CHECK(m_pDxLine->Draw(RectPos, 2, _color));
+
+		// ┐
+		// ┘
+		RectPos[0] = RectPos[1];
+		RectPos[1] = RightBottom;
+		FAILED_CHECK(m_pDxLine->Draw(RectPos, 2, _color));
+
+		// └─┘
+		RectPos[0] = RectPos[1];
+		RectPos[1].x = _rect.left;
+		FAILED_CHECK(m_pDxLine->Draw(RectPos, 2, _color));
+
+		// ┌
+		// └
+		RectPos[0] = RectPos[1];
+		RectPos[1] = LeftTop;
+		FAILED_CHECK(m_pDxLine->Draw(RectPos, 2, _color));
+
+		FAILED_CHECK(m_pDxLine->End());
+
+		return S_OK;
+	}
+	HRESULT C_Sprite::DrawEllipse(
+		const FLOAT&		_fCenterX,
+		const FLOAT&		_fCenterY,
+		const FLOAT&		_fWidth,
+		const FLOAT&		_fHeight,
+		const FLOAT&		_fNumSides,
+		const FLOAT&		_fThickness,
+		const D3DCOLOR&		_color
+	)
+	{
+		// 출처: https://www.unknowncheats.me/forum/direct3d/467770-directx-9-function-draw-ellipse.html
+		float theta = 2.0f * D3DX_PI / _fNumSides;
+		float c = cosf(theta); // precalculate the sine and cosine
+		float s = sinf(theta);
+		float t;
+
+		float x = 1; // we start at angle = 0 
+		float y = 0;
+
+		D3DXVECTOR2 vLine[2];
+
+		m_pDxLine->SetWidth(_fThickness);
+		m_pDxLine->SetAntialias(false);
+		m_pDxLine->SetGLLines(true);
+
+		m_pDxLine->Begin();
+
+		for (int i = 0; i < _fNumSides; ++i)
+		{
+			// apply radius and offset 1
+			float x1 = x * _fWidth + _fCenterX;
+			float y1 = y * _fHeight + _fCenterY;
+
+			// apply the rotation matrix
+			t = x;
+			x = c * x - s * y;
+			y = s * t + c * y;
+
+			// apply radius and offset 2
+			float x2 = x * _fWidth + _fCenterX;
+			float y2 = y * _fHeight + _fCenterY;
+
+			// draw the line
+			vLine[0].x = x1; vLine[0].y = y1;
+			vLine[1].x = x2; vLine[1].y = y2;
+
+			m_pDxLine->Draw(vLine, 2, _color);
+		}
+
+		m_pDxLine->End();
+
+		return S_OK;
+	}
+
+	C_Sprite::C_Sprite()
+	{
+		m_pDxSprite = nullptr;
+		m_pDxLine = nullptr;
+	}
+	C_Sprite::~C_Sprite()
+	{
+
+	}
+
+	HRESULT C_Sprite::Create(LPD3DXSPRITE _pSprite, LPD3DXLINE _pLine)
+	{
+		NULL_CHECK_WITH_MSG(_pSprite, "_pSprite is nullptr");
+		NULL_CHECK_WITH_MSG(_pLine, "_pLine is nullptr");
+
+		m_pDxSprite = _pSprite;
+		m_pDxLine = _pLine;
 
 		return S_OK;
 	}

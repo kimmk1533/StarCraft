@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Unit.h"
+
 namespace Game
 {
 	enum class E_UnitState : unsigned char;
@@ -31,10 +33,14 @@ namespace Game
 	public:
 		virtual HRESULT Create() override
 		{
-			m_pUnitTextureRect = new std::unordered_map<std::pair<E_UnitState, E_Direction>, std::pair<WORD, RECT>, Pair_Hash>();
+			if (!std::is_base_of_v<C_Unit, TUnit>)
+				return E_FAIL;
+
 			m_pUnitPool = new C_ObjectPool<TUnit>(100);
 			if (FAILED(m_pUnitPool->Create()))
 				return E_FAIL;
+
+			m_pUnitTextureRect = new std::unordered_map<std::pair<E_UnitState, E_Direction>, std::pair<WORD, RECT>, Pair_Hash>();
 
 			return S_OK;
 		}
@@ -47,12 +53,7 @@ namespace Game
 
 		virtual HRESULT Update(const FLOAT& _deltaTime) override
 		{
-			if (!std::is_base_of_v<IUpdatable, TUnit>)
-			{
-				ErrorMessageBox("UnitManager TUnit is not base of IUpdatable");
-
-				return S_OK;
-			}
+			static_assert(std::is_base_of_v<IUpdatable, TUnit>, "UnitManager TUnit is not base of IUpdatable");
 
 			const std::vector<std::shared_ptr<TUnit>>* list = m_pUnitPool->GetSpawnedObjList();
 			for (unsigned int i = 0; i < list->size(); ++i)
@@ -64,12 +65,7 @@ namespace Game
 		}
 		virtual HRESULT Render() override
 		{
-			if (!std::is_base_of_v<IRenderable, TUnit>)
-			{
-				ErrorMessageBox("UnitManager TUnit is not base of IRenderable");
-
-				return S_OK;
-			}
+			static_assert(std::is_base_of_v<IRenderable, TUnit>, "UnitManager TUnit is not base of IRenderable");
 
 			const std::vector<std::shared_ptr<TUnit>>* list = m_pUnitPool->GetSpawnedObjList();
 			for (unsigned int i = 0; i < list->size(); ++i)
@@ -80,7 +76,7 @@ namespace Game
 			return S_OK;
 		}
 
-	protected:
+	protected: // Unit
 		RECT m_rcUnitSize;
 		std::shared_ptr<C_Texture> m_pUnitTexture;
 		std::unordered_map<std::pair<E_UnitState, E_Direction>, std::pair<WORD, RECT>, Pair_Hash>* m_pUnitTextureRect;
@@ -168,6 +164,7 @@ namespace Game
 		{
 			return m_pUnitPool->Spawn();
 		}
+		const std::vector<std::shared_ptr<TUnit>>* GetSpawnedObjList() { return m_pUnitPool->GetSpawnedObjList(); }
 
 	};
 }

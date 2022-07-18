@@ -10,6 +10,11 @@ namespace Game
 {
 	using namespace CoreEngine;
 
+	void C_Cursor::SetCursorState(E_CursorState _state)
+	{
+		m_CursorState = _state;
+	}
+
 	C_Cursor::C_Cursor()
 	{
 		m_pHotspot = nullptr;
@@ -30,7 +35,7 @@ namespace Game
 	HRESULT C_Cursor::Create()
 	{
 		m_pHotspot = new D3DXVECTOR3(19.0f, 17.0f, 0.0f);
-		m_pPosition = new D3DXVECTOR2(0.0f, 0.0f);
+		m_pPosition = new D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 		m_pAnimator = new C_Animator();
 		SAFE_CREATE(m_pAnimator);
@@ -58,19 +63,22 @@ namespace Game
 
 	HRESULT C_Cursor::Update(const FLOAT& _deltaTime)
 	{
-		// 매 프레임
-		(*m_pPosition) = m_pInput->GetMousePos2();
-		//
-
 		m_pAnimator->Update(_deltaTime);
 
-		// 게임 프레임
-		// 1 게임 프레임 대기
-		/*if (FAILED(m_pGameFrameTimer->Update(_deltaTime)))
-			return S_OK;
-
-		++m_AnimIndex;*/
-		//
+#pragma region Mouse Position
+		(*m_pPosition) = m_pInput->GetMousePos();
+#pragma endregion
+		
+#pragma region Mouse Click
+		if (Input->GetMouseDown(E_MouseCode::Left))
+		{
+			this->SetCursorState(E_CursorState::Drag);
+		}
+		else if (Input->GetMouseUp(E_MouseCode::Left))
+		{
+			this->SetCursorState(E_CursorState::Idle);
+		}
+#pragma endregion
 
 		return S_OK;
 	}
@@ -84,14 +92,16 @@ namespace Game
 		else
 			rect = C_SelectManager::GetI()->GetTextureRect(m_CursorState, m_AnimIndex);
 
-		m_pSprite->Draw(texture->GetTexture(), &rect, nullptr, nullptr, m_pPosition, m_pHotspot, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		m_pSprite->Draw(
+			texture->GetTexture(),
+			&rect,
+			nullptr,
+			nullptr,
+			(D3DXVECTOR2*)m_pPosition,
+			m_pHotspot,
+			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)
+		);
 
 		return S_OK;
 	}
-
-	void C_Cursor::SetCursorState(E_CursorState _state)
-	{
-		m_CursorState = _state;
-	}
-
 }

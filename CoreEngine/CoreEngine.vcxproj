@@ -147,8 +147,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Scripts\Animator.h" />
+    <ClInclude Include="Scripts\Bounds.h" />
+    <ClInclude Include="Scripts\BoxCollider.h" />
+    <ClInclude Include="Scripts\Collider.h" />
+    <ClInclude Include="Scripts\Collision.h" />
     <ClInclude Include="Scripts\FrameWork.h" />
     <ClInclude Include="Scripts\Input.h" />
+    <ClInclude Include="Scripts\Physics.h" />
+    <ClInclude Include="Scripts\QuadTree.h" />
+    <ClInclude Include="Scripts\QuadTreeNode.h" />
     <ClInclude Include="Scripts\Sprite.h" />
     <ClInclude Include="Scripts\Texture.h" />
     <ClInclude Include="Scripts\Engine.h" />
@@ -161,9 +168,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scripts\Animator.cpp" />
+    <ClCompile Include="Scripts\Bounds.cpp" />
+    <ClCompile Include="Scripts\BoxCollider.cpp" />
+    <ClCompile Include="Scripts\Collider.cpp" />
     <ClCompile Include="Scripts\FrameWork.cpp" />
     <ClCompile Include="Scripts\Input.cpp" />
     <ClCompile Include="Scripts\ObjectPool.cpp" />
+    <ClCompile Include="Scripts\Physics.cpp" />
+    <ClCompile Include="Scripts\QuadTree.cpp" />
+    <ClCompile Include="Scripts\QuadTreeNode.cpp" />
     <ClCompile Include="Scripts\Singleton.cpp" />
     <ClCompile Include="Scripts\Sprite.cpp" />
     <ClCompile Include="Scripts\Texture.cpp" />

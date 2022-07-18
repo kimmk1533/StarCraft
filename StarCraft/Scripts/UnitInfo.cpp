@@ -46,10 +46,6 @@ namespace Game
 
 		// 시야
 		m_fVisualRange = 0.0f;					// 시야 거리
-
-		// 충돌 크기
-		m_PixelSize.x = 0;						// 충돌 크기 x
-		m_PixelSize.y = 0;						// 충돌 크기 y
 	}
 	S_UnitInfo::S_UnitInfo(const S_UnitInfo& s)
 	{
@@ -98,9 +94,6 @@ namespace Game
 
 		// 시야
 		m_fVisualRange = s.m_fVisualRange;				// 시야 거리
-
-		// 충돌 크기
-		m_PixelSize = s.m_PixelSize;					// 충돌 크기
 
 		return *this;
 	}

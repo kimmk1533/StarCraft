@@ -63,16 +63,16 @@ namespace Game
 		// 시야
 		m_Info->m_fVisualRange = 7.0f;							// 시야 거리
 
-		// 충돌 크기
-		m_Info->m_PixelSize.x = 17;								// 충돌 크기 x
-		m_Info->m_PixelSize.y = 20;								// 충돌 크기 y
+		// 바운딩 박스
+		m_pBoxCollider->bounds->size = D3DXVECTOR3(17.0f, 20.0f, 0.0f);		// 충돌 크기
+		m_pBoxCollider->bounds->SetCenter(m_pPosition);
 #pragma endregion
 
 		m_pAnimator->AddFunc(0, [&]() -> void
 			{
 #pragma region Variables
-				D3DXVECTOR2 d = (*m_pTargetPos) - (*m_pPosition);
-				FLOAT length = D3DXVec2Length(&d);
+				D3DXVECTOR3 d = (*m_pTargetPos) - (*m_pPosition);
+				FLOAT length = D3DXVec3Length(&d);
 
 				FLOAT dx = d.x;
 				FLOAT dy = d.y;
@@ -128,12 +128,13 @@ namespace Game
 					// 최종 속도 = 이동 속도 * 1 게임 프레임 * 델타타임(1 게임 프레임이 진행되는 동안 지난 시간) 
 					FLOAT speed = m_Info->m_fMoveSpeed * DEBUG_GAME_SPEED * g_InGameFPS;
 
-					D3DXVECTOR2 vcMove;
+					D3DXVECTOR3 vcMove;
 
 					FLOAT move = fminf(length, speed);
 
 					vcMove.x = move * sinf(radian);
 					vcMove.y = move * cosf(radian);
+					vcMove.z = 0.0f;
 
 					(*m_pPosition) += vcMove;
 
@@ -160,11 +161,11 @@ namespace Game
 	{
 		C_Unit::Update(_deltaTime);
 
-		if (m_pInput->BtnDown(E_KeyCode::MouseRightButton))
+		if (Input->GetMouseDown(E_MouseCode::Right))
 		{
-			(*m_pTargetPos) = m_pInput->GetMousePos2();
+			(*m_pTargetPos) = m_pInput->GetMousePos();
 
-			D3DXVECTOR2 d = (*m_pTargetPos) - (*m_pPosition);
+			D3DXVECTOR3 d = (*m_pTargetPos) - (*m_pPosition);
 			FLOAT dx = d.x;
 			FLOAT dy = d.y;
 
@@ -188,10 +189,18 @@ namespace Game
 			m_Info->m_bIsMovable = false;
 		}
 
+		// 임시 코드
+		if (Input->GetKeyDown(E_KeyCode::S))
+		{
+			(*m_pTargetPos) = (*m_pPosition);
+		}
+
 		return S_OK;
 	}
 	HRESULT C_Marine::Render()
 	{
+		C_Unit::Render();
+
 		static const D3DXVECTOR3 Offset(32, 32, 0);
 
 		std::shared_ptr<C_Texture> texture = C_MarineManager::GetI()->GetTexture();
@@ -202,6 +211,6 @@ namespace Game
 		else
 			m_pScale->x = 1.0f;
 
-		return m_pSprite->Draw(texture->GetTexture(), &rect, m_pScale, nullptr, m_pPosition, &Offset, D3DXCOLOR(1, 1, 1, 1));
+		return m_pSprite->Draw(texture->GetTexture(), &rect, (D3DXVECTOR2*)m_pScale, nullptr, (D3DXVECTOR2*)m_pPosition, &Offset, D3DXCOLOR(1, 1, 1, 1));
 	}
 }

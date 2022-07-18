@@ -1,6 +1,7 @@
 #pragma once
 #include <Animator.h>
 #include <Timer.h>
+#include <BoxCollider.h>
 
 #include "UnitInfo.h"
 
@@ -16,26 +17,16 @@ namespace Game
 
 	class C_Unit : public C_FrameWork, public IUpdatable, public IRenderable
 	{
-	public:
-		C_Unit();
-		virtual ~C_Unit();
-
-	public:
-		virtual HRESULT	Create() override;
-		virtual void	Destroy() override;
-
-		virtual HRESULT	Update(const FLOAT& _deltaTime) override;
-		virtual HRESULT	Render() override = 0;
-
 	private:
 		static WORD m_UnitCount;
 
 	protected:
-		S_UnitInfo* m_Info;
+		D3DXVECTOR3* m_pPosition;
+		D3DXVECTOR3* m_pTargetPos;
+		D3DXVECTOR3* m_pScale;
 
-		D3DXVECTOR2* m_pPosition;
-		D3DXVECTOR2* m_pTargetPos;
-		D3DXVECTOR2* m_pScale;
+		S_UnitInfo* m_Info;
+		C_BoxCollider* m_pBoxCollider;
 
 	protected: // Animation
 		C_Animator* m_pAnimator;
@@ -45,6 +36,21 @@ namespace Game
 		E_UnitState m_UnitState;
 		E_Direction m_Direction;
 		E_Direction m_TargetDir;
+
+	public:
+		READONLY_PROPERTY(C_BoxCollider*, collider);
+		GET(collider) { return m_pBoxCollider; }
+
+	public:
+		C_Unit();
+		virtual ~C_Unit();
+
+	public:
+		virtual HRESULT	Create() override;
+		virtual void	Destroy() override;
+
+		virtual HRESULT	Update(const FLOAT& _deltaTime) override;
+		virtual HRESULT	Render() override;
 
 	};
 

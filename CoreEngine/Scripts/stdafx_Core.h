@@ -3,10 +3,14 @@
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
 
+//#define TEST
+
 #include <Windows.h>
 // d3d 다음 x는 Extended의 의미로 Direct3D의 기본에 대한 확장을 의미
 #include <d3d9.h>
 #include <d3dx9.h>
+
+#pragma region STD Library
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,8 +23,12 @@
 #include <utility>
 #include <functional>
 
-#include <list>
+#pragma endregion
+
+#pragma region Container
+
 #include <vector>
+#include <list>
 #include <queue>
 #include <map>
 #include <unordered_map>
@@ -36,24 +44,29 @@ struct Pair_Hash
 		// 참고 https://www.geeksforgeeks.org/how-to-create-an-unordered_map-of-pairs-in-c/
 		/*
 		* auto hash1 = hash<T1>{}(p.first);
-        * auto hash2 = hash<T2>{}(p.second);
-		* 
-        * if (hash1 != hash2) {
-		* return hash1 ^ hash2;             
-        * }
-        * 
-        * // If hash1 == hash2, their XOR is zero.
-        * return hash1;
+		* auto hash2 = hash<T2>{}(p.second);
+		*
+		* if (hash1 != hash2) {
+		* return hash1 ^ hash2;
+		* }
+		*
+		* // If hash1 == hash2, their XOR is zero.
+		* return hash1;
 		*/
 	}
 };
 
-//#define GMAIN			g_pApp
-//#define GHINST		g_pApp->m_hInst
-//#define GHWND			g_pApp->m_hWnd
+#pragma endregion
 
-#define ErrorMessageBox(message) MessageBox(NULL, TEXT(message), TEXT("Error!"), MB_OK)
-#define NULL_CHECK(p, message)	{ if (p == nullptr) { ErrorMessageBox(message); return E_FAIL; } }
+namespace std
+{
+	/*template <class TContainer, class TValue>
+	bool contains(const TContainer& _container, const TValue& _value)
+	{
+		std::vector
+		return std::find(_container)
+	}*/
+}
 
 #include "CoreUtil.h"
 

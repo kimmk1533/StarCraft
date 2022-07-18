@@ -1,26 +1,30 @@
 #pragma once
 
+#define Sprite CoreEngine::C_FrameWork::m_pSprite
+#define Input CoreEngine::C_FrameWork::m_pInput
+
 namespace CoreEngine
 {
-	__interface IUpdatable
-	{
-		virtual HRESULT Update(const FLOAT& _deltaTime) = 0;
-	};
+	class C_Time;
+	class C_Sprite;
+	class C_Input;
+}
 
-	__interface IRenderable
-	{
-		virtual HRESULT Render() = 0;
-	};
-
+namespace CoreEngine
+{
 	__interface IFrameWork
 	{
 		virtual HRESULT Create() = 0;
 		virtual void	Destroy() = 0;
 	};
-
-	class C_Time;
-	class C_Sprite;
-	class C_Input;
+	__interface IUpdatable
+	{
+		virtual HRESULT Update(const FLOAT& _deltaTime) = 0;
+	};
+	__interface IRenderable
+	{
+		virtual HRESULT Render() = 0;
+	};
 
 	class C_FrameWork : public IFrameWork
 	{
@@ -40,7 +44,4 @@ namespace CoreEngine
 		virtual void	Destroy() override = 0;
 
 	};
-
-	#define Sprite C_FrameWork::m_pSprite
-	#define Input C_FrameWork::m_pInput
 }
