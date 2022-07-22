@@ -29,9 +29,9 @@ namespace Game
 
 	HRESULT C_Unit::Create()
 	{
-		m_pPosition = new D3DXVECTOR3(100.0f, 100.0f, 0.0f);
-		m_pTargetPos = new D3DXVECTOR3(100.0f, 100.0f, 0.0f);
-		m_pScale = new D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+		m_pPosition = std::make_shared<D3DXVECTOR3>(100.0f, 100.0f, 0.0f);
+		m_pTargetPos = std::make_shared<D3DXVECTOR3>(100.0f, 100.0f, 0.0f);
+		m_pScale = std::make_shared<D3DXVECTOR3>(1.0f, 1.0f, 1.0f);
 
 		m_Info = new S_UnitInfo();
 		m_pBoxCollider = new C_BoxCollider();
@@ -60,9 +60,9 @@ namespace Game
 		SAFE_DELETE(m_pBoxCollider);
 		SAFE_DELETE(m_Info);
 
-		SAFE_DELETE(m_pScale);
-		SAFE_DELETE(m_pTargetPos);
-		SAFE_DELETE(m_pPosition);
+		m_pScale = nullptr;
+		m_pTargetPos = nullptr;
+		m_pPosition = nullptr;
 	}
 
 	HRESULT C_Unit::Update(const FLOAT& _deltaTime)
@@ -73,12 +73,12 @@ namespace Game
 	}
 	HRESULT C_Unit::Render()
 	{
-		/*S_Bounds* bounds = m_pBoxCollider->bounds;
+		/*S_Bounds* bounds = m_pBounds->bounds;
 
 		float width = bounds->size.x * 0.8f;
 		float height_half = bounds->size.y * 0.3f;
 
-		FAILED_CHECK(m_pSprite->DrawEllipse(
+		FAILED_CHECK_RETURN(m_pSprite->DrawEllipse(
 			m_pPosition->x, m_pPosition->y + height_half + 5,
 			width, height_half,
 			30,
@@ -99,7 +99,7 @@ namespace Game
 		vertex[2] = max;
 		vertex[3] = min + D3DXVECTOR2(0.0f, bounds->size.y);
 
-		FAILED_CHECK(m_pSprite->DrawLine(
+		FAILED_CHECK_RETURN(m_pSprite->DrawLine(
 			vertex,
 			5,
 			1,

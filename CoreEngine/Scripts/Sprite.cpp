@@ -4,13 +4,13 @@ namespace CoreEngine
 {
 	HRESULT C_Sprite::Draw(
 		LPDIRECT3DTEXTURE9	_pTex,
-		const RECT*			_pSrcRect,
-		const D3DXVECTOR2*	_pScale,	// Scaling
-		const D3DXVECTOR2*	_pCenter,	// Rotation Center
-		const FLOAT&		_fAngle,	// Degree.
-		const D3DXVECTOR2*	_pPosition,	// Translation
-		const D3DXVECTOR3*	_pOffset,	// Offset
-		const D3DXCOLOR&	_color		// Color
+		const RECT* _pSrcRect,
+		const D3DXVECTOR2* _pScale,	// Scaling
+		const D3DXVECTOR2* _pCenter,	// Rotation Center
+		const FLOAT& _fAngle,	// Degree.
+		const D3DXVECTOR2* _pPosition,	// Translation
+		const D3DXVECTOR3* _pOffset,	// Offset
+		const D3DXCOLOR& _color		// Color
 	)
 	{
 		NULL_CHECK_WITH_MSG(m_pDxSprite, "m_pDxSprite is nullptr");
@@ -63,12 +63,12 @@ namespace CoreEngine
 	}
 	HRESULT C_Sprite::Draw(
 		LPDIRECT3DTEXTURE9	_pTex,
-		const RECT*			_pSrcRect,
-		const D3DXVECTOR2*	_pScale,	// Scaling
-		const D3DXVECTOR3*	_pRotation,	// Rotation
-		const D3DXVECTOR2*	_pPosition,	// Translation
-		const D3DXVECTOR3*	_pOffset,	// Offset
-		const D3DXCOLOR&	_color		// Color
+		const RECT* _pSrcRect,
+		const D3DXVECTOR2* _pScale,	// Scaling
+		const D3DXVECTOR3* _pRotation,	// Rotation
+		const D3DXVECTOR2* _pPosition,	// Translation
+		const D3DXVECTOR3* _pOffset,	// Offset
+		const D3DXCOLOR& _color		// Color
 	)
 	{
 		NULL_CHECK_WITH_MSG(m_pDxSprite, "m_pDxSprite is nullptr");
@@ -81,11 +81,11 @@ namespace CoreEngine
 	}
 
 	HRESULT C_Sprite::DrawLine(
-		const D3DXVECTOR2*	_pVertexList,
-		const DWORD&		_dwVertexListCount,
-		const FLOAT&		_fThickness,
-		const bool&			_bAntialias,
-		const D3DCOLOR&		_color
+		const D3DXVECTOR2* _pVertexList,
+		const DWORD& _dwVertexListCount,
+		const FLOAT& _fThickness,
+		const bool& _bAntialias,
+		const D3DCOLOR& _color
 	)
 	{
 		NULL_CHECK_WITH_MSG(m_pDxLine, "m_pDxLine is nullptr");
@@ -115,46 +115,55 @@ namespace CoreEngine
 		const D3DXVECTOR2 LeftTop = D3DXVECTOR2(_rect.left, _rect.top);
 		const D3DXVECTOR2 RightBottom = D3DXVECTOR2(_rect.right, _rect.bottom);
 
-		FAILED_CHECK(m_pDxLine->SetGLLines(false));
-		FAILED_CHECK(m_pDxLine->SetAntialias(_bAntialias));
-		FAILED_CHECK(m_pDxLine->SetWidth(_fThickness));
+		if (m_pDxLine->GetGLLines())
+			FAILED_CHECK_RETURN(m_pDxLine->SetGLLines(false));
 
-		FAILED_CHECK(m_pDxLine->Begin());
+		if (m_pDxLine->GetAntialias() != _bAntialias)
+			FAILED_CHECK_RETURN(m_pDxLine->SetAntialias(_bAntialias));
+
+		if (m_pDxLine->GetWidth() != _fThickness)
+			FAILED_CHECK_RETURN(m_pDxLine->SetWidth(_fThickness));
+
+		if (FAILED(m_pDxLine->Begin()))
+		{
+			FAILED_CHECK_WITH_MSG(m_pDxLine->End(), "Begin() and End() of m_pDxLine failed.");
+			return E_FAIL;
+		}
 
 		// ┌─┐
 		RectPos[1] = RectPos[0] = LeftTop;
 		RectPos[1].x = _rect.right;
-		FAILED_CHECK(m_pDxLine->Draw(RectPos, 2, _color));
+		FAILED_CHECK_RETURN(m_pDxLine->Draw(RectPos, 2, _color));
 
 		// ┐
 		// ┘
 		RectPos[0] = RectPos[1];
 		RectPos[1] = RightBottom;
-		FAILED_CHECK(m_pDxLine->Draw(RectPos, 2, _color));
+		FAILED_CHECK_RETURN(m_pDxLine->Draw(RectPos, 2, _color));
 
 		// └─┘
 		RectPos[0] = RectPos[1];
 		RectPos[1].x = _rect.left;
-		FAILED_CHECK(m_pDxLine->Draw(RectPos, 2, _color));
+		FAILED_CHECK_RETURN(m_pDxLine->Draw(RectPos, 2, _color));
 
 		// ┌
 		// └
 		RectPos[0] = RectPos[1];
 		RectPos[1] = LeftTop;
-		FAILED_CHECK(m_pDxLine->Draw(RectPos, 2, _color));
+		FAILED_CHECK_RETURN(m_pDxLine->Draw(RectPos, 2, _color));
 
-		FAILED_CHECK(m_pDxLine->End());
+		FAILED_CHECK_RETURN(m_pDxLine->End());
 
 		return S_OK;
 	}
 	HRESULT C_Sprite::DrawEllipse(
-		const FLOAT&		_fCenterX,
-		const FLOAT&		_fCenterY,
-		const FLOAT&		_fWidth,
-		const FLOAT&		_fHeight,
-		const FLOAT&		_fNumSides,
-		const FLOAT&		_fThickness,
-		const D3DCOLOR&		_color
+		const FLOAT& _fCenterX,
+		const FLOAT& _fCenterY,
+		const FLOAT& _fWidth,
+		const FLOAT& _fHeight,
+		const FLOAT& _fNumSides,
+		const FLOAT& _fThickness,
+		const D3DCOLOR& _color
 	)
 	{
 		// 출처: https://www.unknowncheats.me/forum/direct3d/467770-directx-9-function-draw-ellipse.html

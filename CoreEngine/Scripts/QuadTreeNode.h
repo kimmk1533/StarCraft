@@ -1,7 +1,10 @@
 #pragma once
+#include "Physics.h"
 #include "BoxCollider.h"
 
 //#define USE_SHARED_PTR
+#define DEBUG_RENDER
+//#define DEBUG_PRINT
 
 namespace CoreEngine
 {
@@ -24,11 +27,13 @@ namespace CoreEngine
 #endif // USE_SHARED_PTR
 
 	private:
+		DWORD m_Depth;
 		E_NodeType m_Type;
 		C_BoxCollider* m_pBoxCollider;
 		PtrType m_pParentNode;
+		PtrType m_pRootNode;
 		PtrType m_pChildNodes[Quad];
-		std::vector<T>* m_pObjList;
+		std::vector<T*>* m_pObjList;
 
 	public:
 		PROPERTY(E_NodeType, type);
@@ -51,7 +56,7 @@ namespace CoreEngine
 		}
 
 	public:
-		static PtrType BuildTree(const D3DXVECTOR3& _center, const D3DXVECTOR3& _size)
+		static PtrType BuildRootTree(const D3DXVECTOR3& _center, const D3DXVECTOR3& _size, const WORD& _depth = Quad)
 		{
 			// 최상단 노드 생성
 #ifdef USE_SHARED_PTR
@@ -64,31 +69,68 @@ namespace CoreEngine
 			node->m_Type = E_NodeType::Root;
 			node->m_pBoxCollider->bounds->center = _center;
 			node->m_pBoxCollider->bounds->size = _size;
+			node->m_pRootNode = node;
+			//node->m_Depth = ;
 
 			// 자식 노드 생성에 사용할 변수
 			D3DXVECTOR3 offset;
-			D3DXVECTOR3 childCenter;
+			D3DXVECTOR3 childCenter = _center;
 			D3DXVECTOR3 childSize = _size * 0.5f;
+
+#ifdef DEBUG_PRINT
+			std::cout << "[ depth " << 0 << " ]\n";
+#endif // DEBUG_PRINT
 
 			// 자식 노드 생성
 			for (WORD i = 0; i < Quad; ++i)
 			{
-				offset.x = ((i | 1) ? -childSize.x : childSize.x);
-				offset.y = ((i | 2) ? childSize.y : -childSize.y);
+#ifdef DEBUG_PRINT
+				switch (static_cast<E_NodeType>(i))
+				{
+				case E_NodeType::LeftTop:
+					std::cout << " Left  Top\n";
+					break;
+				case E_NodeType::RightTop:
+					std::cout << " Right  Top\n";
+					break;
+				case E_NodeType::LeftBottom:
+					std::cout << " Left  Bottom\n";
+					break;
+				case E_NodeType::RightBottom:
+					std::cout << " Right  Bottom\n";
+					break;
+				}
+#endif // DEBUG_PRINT
+
+				offset.x = ((i & 1) ? childSize.x : -childSize.x);
+				offset.y = ((i & 2) ? childSize.y : -childSize.y);
+
+				offset *= 0.5f;
+
+#ifdef DEBUG_PRINT
+				std::cout << "  offset.x = " << offset.x << "\n";
+				std::cout << "  offset.y = " << offset.y << "\n\n";
+#endif // DEBUG_PRINT
 
 				childCenter.x = offset.x + _center.x;
 				childCenter.y = offset.y + _center.y;
 
-				node->AddChildNode(node->BuildTree(childCenter, childSize, static_cast<E_NodeType>(i), 1));
+#ifdef DEBUG_PRINT
+				std::cout << "  childCenter.x = " << childCenter.x << "\n";
+				std::cout << "  childCenter.y = " << childCenter.y << "\n\n";
+#endif // DEBUG_PRINT
+
+				node->AddChildNode(node->BuildChildTree(node, childCenter, childSize, static_cast<E_NodeType>(i), _depth));
 			}
 
 			return node;
 		}
+		bool AddObj(T* _obj);
 
 	private:
-		PtrType BuildTree(const D3DXVECTOR3& _center, const D3DXVECTOR3& _size, const E_NodeType& _type, const WORD& _depth)
+		PtrType BuildChildTree(const PtrType _root, const D3DXVECTOR3& _center, const D3DXVECTOR3& _size, const E_NodeType& _type, const WORD& _depth)
 		{
-			if (_depth >= Quad)
+			if (_depth <= 0)
 				return nullptr;
 
 			// 노드 생성
@@ -102,22 +144,58 @@ namespace CoreEngine
 			node->m_Type = _type;
 			node->m_pBoxCollider->bounds->center = _center;
 			node->m_pBoxCollider->bounds->size = _size;
+			node->m_pRootNode = _root;
+			//node->m_Depth = 
 
 			// 자식 노드 생성에 사용할 변수
 			D3DXVECTOR3 offset;
 			D3DXVECTOR3 childCenter;
 			D3DXVECTOR3 childSize = _size * 0.5f;
 
+#ifdef DEBUG_PRINT
+			std::cout << "[ depth " << Quad - _depth << " ]\n";
+#endif // DEBUG_PRINT
+
 			// 자식 노드 생성
 			for (WORD i = 0; i < Quad; ++i)
 			{
-				offset.x = ((i | 1) ? -childSize.x : childSize.x);
-				offset.y = ((i | 2) ? childSize.y : -childSize.y);
+#ifdef DEBUG_PRINT
+				switch (static_cast<E_NodeType>(i))
+				{
+				case E_NodeType::LeftTop:
+					std::cout << " Left  Top\n";
+					break;
+				case E_NodeType::RightTop:
+					std::cout << " Right  Top\n";
+					break;
+				case E_NodeType::LeftBottom:
+					std::cout << " Left  Bottom\n";
+					break;
+				case E_NodeType::RightBottom:
+					std::cout << " Right  Bottom\n";
+					break;
+				}
+#endif // DEBUG_PRINT
+
+				offset.x = ((i & 1) ? childSize.x : -childSize.x);
+				offset.y = ((i & 2) ? childSize.y : -childSize.y);
+
+				offset *= 0.5f;
+
+#ifdef DEBUG_PRINT
+				std::cout << "  offset.x = " << offset.x << "\n";
+				std::cout << "  offset.y = " << offset.y << "\n\n";
+#endif // DEBUG_PRINT
 
 				childCenter.x = offset.x + _center.x;
 				childCenter.y = offset.y + _center.y;
 
-				PtrType child = node->BuildTree(childCenter, childSize, static_cast<E_NodeType>(i), _depth + 1);
+#ifdef DEBUG_PRINT
+				std::cout << "  childCenter.x = " << childCenter.x << "\n";
+				std::cout << "  childCenter.y = " << childCenter.y << "\n\n";
+#endif // DEBUG_PRINT
+
+				PtrType child = node->BuildChildTree(_root, childCenter, childSize, static_cast<E_NodeType>(i), _depth - 1);
 				if (child == nullptr)
 					continue;
 
@@ -126,11 +204,8 @@ namespace CoreEngine
 
 			return node;
 		}
-#ifdef USE_SHARED_PTR
-		void AddChildNode(const std::shared_ptr<QuadTreeNode> _node)
-#else
+
 		void AddChildNode(const PtrType _node)
-#endif // USE_SHARED_PTR
 		{
 			for (WORD i = 0; i < Quad; ++i)
 			{
@@ -138,7 +213,7 @@ namespace CoreEngine
 				{
 					m_pChildNodes[i] = _node;
 #ifdef USE_SHARED_PTR
-					_node->m_pParentNode = std::make_shared<QuadTreeNode>();
+					_node->m_pParentNode = std::make_shared<QuadTreeNode>(); // 수정 필요
 #else
 					_node->m_pParentNode = this;
 #endif // USE_SHARED_PTR
@@ -148,7 +223,8 @@ namespace CoreEngine
 			}
 		}
 		E_NodeType FindType(const D3DXVECTOR3& _pos);
-		bool CheckObj(const T& _obj);
+		bool CheckObj(const T* _obj);
+		bool AddObj(T* _obj, const S_Bounds& _bounds);
 
 	public:
 		C_QuadTreeNode();
@@ -160,6 +236,7 @@ namespace CoreEngine
 
 	public:
 		HRESULT Update(const FLOAT& _deltaTime) override;
+		HRESULT Debug_Render(size_t _depth = 0);
 
 	};
 
@@ -183,16 +260,64 @@ namespace CoreEngine
 
 		char bit = 0;
 
-		if (center.x < _pos.x) bit |= 1;
-		if (center.y < _pos.y) bit |= 2;
+		if (center.x < _pos.x) bit &= 1;
+		if (center.y < _pos.y) bit &= 2;
 
 		return static_cast<E_NodeType>(bit);
 	}
+	template<class T>
+	inline bool C_QuadTreeNode<T>::AddObj(T* _obj)
+	{
+		static_assert(std::is_base_of_v<ICollision, T>, "T of QuadTreeNode<T> is not base of ICollision");
+
+		ICollision* obj = static_cast<ICollision*>(const_cast<T*>(_obj));
+		S_Bounds bounds = obj->GetBounds();
+
+		if (!Physics::CollisionCheck((*m_pBoxCollider->bounds), bounds))
+			return false;
+
+		bool flag = false;
+
+		for (size_t i = 0; i < Quad; ++i)
+		{
+			if (m_pChildNodes[i] == nullptr)
+				continue;
+
+			if (m_pChildNodes[i]->AddObj(_obj, bounds))
+				flag = true;
+		}
+
+		if (!flag && !CheckObj(_obj))
+			m_pObjList->push_back(_obj);
+
+		return true;
+	}
+	template<class T>
+	inline bool C_QuadTreeNode<T>::CheckObj(const T* _obj)
+	{
+		return std::count(m_pObjList->begin(), m_pObjList->end(), _obj);
+	}
 
 	template<class T>
-	inline bool C_QuadTreeNode<T>::CheckObj(const T& _obj)
+	inline bool C_QuadTreeNode<T>::AddObj(T* _obj, const S_Bounds& _bounds)
 	{
-		//return _obj;
+		if (!Physics::CollisionCheck((*m_pBoxCollider->bounds), _bounds))
+			return false;
+
+		bool flag = false;
+
+		for (size_t i = 0; i < Quad; ++i)
+		{
+			if (m_pChildNodes[i] == nullptr)
+				continue;
+
+			if (m_pChildNodes[i]->AddObj(_obj, _bounds))
+				flag = true;
+		}
+
+		if (!flag && !CheckObj(_obj))
+			m_pObjList->push_back(_obj);
+
 		return true;
 	}
 
@@ -200,8 +325,10 @@ namespace CoreEngine
 	C_QuadTreeNode<T>::C_QuadTreeNode()
 	{
 		m_Type = E_NodeType::None;
+		m_Depth = -1;
 		m_pBoxCollider = nullptr;
 		m_pParentNode = nullptr;
+		m_pRootNode = nullptr;
 		for (WORD i = 0; i < Quad; ++i)
 		{
 			m_pChildNodes[i] = nullptr;
@@ -219,7 +346,7 @@ namespace CoreEngine
 	{
 		m_pBoxCollider = new C_BoxCollider();
 		SAFE_CREATE(m_pBoxCollider);
-		m_pObjList = new std::vector<T>();
+		m_pObjList = new std::vector<T*>();
 
 		return S_OK;
 	}
@@ -238,10 +365,66 @@ namespace CoreEngine
 	template<class T>
 	HRESULT C_QuadTreeNode<T>::Update(const FLOAT& _deltaTime)
 	{
-		for (size_t i = 0; i < m_pObjList->size(); ++i)
+		static_assert(std::is_base_of_v<ICollision, T>, "T of QuadTreeNode<T> is not base of ICollision");
+
+		for (size_t i = 0; i < Quad; ++i)
 		{
-			//(*m_pObjList)[i]
+			if (nullptr != m_pChildNodes[i])
+				SAFE_UPDATE(m_pChildNodes[i]);
 		}
+
+		size_t size = m_pObjList->size();
+		for (size_t i = 0; i < size; ++i)
+		{
+			ICollision* obj = static_cast<ICollision*>((*m_pObjList)[i]);
+
+			// 자신에게 속한 오브젝트가 빠져나갔는 지 확인.
+			// 빠져나갔다면 자신의 부모 노드에게 해당 오브젝트 추가
+			// 자신은 오브젝트 제거
+
+			// 다른 섹터와 겹친 경우
+			if (!Physics::CollisionCheck((*m_pBoxCollider->bounds), obj->GetBounds(), true))
+			{
+				m_pRootNode->AddObj((*m_pObjList)[i]);
+
+				// 현재 섹터에서 완전히 나간 경우
+				if (!Physics::CollisionCheck((*m_pBoxCollider->bounds), obj->GetBounds()))
+					m_pObjList->erase(m_pObjList->begin() + i);
+			}
+		}
+
+		return S_OK;
+	}
+	template<class T>
+	inline HRESULT C_QuadTreeNode<T>::Debug_Render(size_t _depth)
+	{
+#ifdef DEBUG_RENDER
+		if (_depth > Quad)
+			return S_OK;
+
+		for (size_t i = 0; i < Quad; i++)
+		{
+			if (m_pChildNodes[i] != nullptr)
+				m_pChildNodes[i]->Debug_Render(_depth + 1);
+		}
+
+		S_Bounds* bounds = m_pBoxCollider->bounds;
+		RECT rc;
+		rc.left = bounds->min.x;
+		rc.top = bounds->min.y;
+		rc.right = bounds->max.x - 1;
+		rc.bottom = bounds->max.y - 1;
+
+		Sprite->DrawRect(rc, 1.0f, false, D3DCOLOR_XRGB(255, 255, 255));
+
+		if (m_pObjList->size() > 0)
+		{
+			++rc.left; ++rc.top;
+			--rc.right; --rc.bottom;
+
+			Sprite->DrawRect(rc, 1.0f, false, D3DCOLOR_XRGB(255, 0, 0));
+		}
+#endif // DEBUG_RENDER
 
 		return S_OK;
 	}

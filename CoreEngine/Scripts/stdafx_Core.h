@@ -58,6 +58,12 @@ struct Pair_Hash
 
 #pragma endregion
 
+#pragma region D3DXVECTOR operator
+std::ostream& operator<<(std::ostream& _out, const D3DXVECTOR2& _vector);
+std::ostream& operator<<(std::ostream& _out, const D3DXVECTOR3& _vector);
+#pragma endregion
+
+
 namespace std
 {
 	/*template <class TContainer, class TValue>

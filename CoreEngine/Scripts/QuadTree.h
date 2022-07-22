@@ -14,13 +14,15 @@ namespace CoreEngine
 		using PtrType = QuadTreeNode*;
 #endif // USE_SHARED_PTR
 
-	private:
-		
+	private:		
 		PtrType m_pRootNode;
 
 	public:
 		C_QuadTree();
 		~C_QuadTree();
+
+	public:
+		void AddCollision(T* _obj);
 
 	public:
 		HRESULT Create() override;
@@ -29,6 +31,7 @@ namespace CoreEngine
 
 	public:
 		HRESULT Update(const FLOAT& _deltaTime) override;
+		HRESULT Debug_Render();
 
 	};
 
@@ -43,6 +46,14 @@ namespace CoreEngine
 		Destroy();
 	}
 
+	template<class T>
+	inline void C_QuadTree<T>::AddCollision(T* _obj)
+	{
+		static_assert(std::is_base_of_v<ICollision, T>, "T of QuadTree<T> is not base of ICollision");
+
+		m_pRootNode->AddObj(_obj);
+	}
+
 	template <class T>
 	HRESULT C_QuadTree<T>::Create()
 	{
@@ -52,21 +63,21 @@ namespace CoreEngine
 		D3DXVECTOR3 size(width, height, 0.0f);
 		D3DXVECTOR3 center = size * 0.5f;
 
-		m_pRootNode = QuadTreeNode::BuildTree(center, size);
+		m_pRootNode = QuadTreeNode::BuildRootTree(center, size);
 
 		return S_OK;
 	}
 	template <class T>
 	HRESULT C_QuadTree<T>::Create(const D3DXVECTOR3& _center, const D3DXVECTOR3& _size)
 	{
-		this->m_pRootNode = C_QuadTreeNode<T>::BuildTree(_center, _size);
+		this->m_pRootNode = C_QuadTreeNode<T>::BuildRootTree(_center, _size);
 
 		return S_OK;
 	}
 	template <class T>
 	void	C_QuadTree<T>::Destroy()
 	{
-		m_pRootNode = nullptr;
+		SAFE_DELETE(m_pRootNode);
 	}
 
 	template<class T>
@@ -76,5 +87,12 @@ namespace CoreEngine
 
 		return S_OK;
 	}
+	template<class T>
+	inline HRESULT C_QuadTree<T>::Debug_Render()
+	{
+		if (FAILED(this->m_pRootNode->Debug_Render()))
+			return E_FAIL;
 
+		return S_OK;
+	}
 }

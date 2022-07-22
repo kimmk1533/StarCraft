@@ -122,7 +122,7 @@ namespace Game
 			auto marineList = C_MarineManager::GetI()->GetSpawnedObjList();
 			for (size_t i = 0; i < marineList->size(); ++i)
 			{
-				if (Physics::AABB_Collision(*m_pDragCollider, (*(*marineList)[i]->collider)))
+				if (Physics::CollisionCheck(*m_pDragCollider->bounds, (*(*marineList)[i]->collider->bounds)))
 					std::cout << "충돌\n";
 
 #ifdef TEST
@@ -147,8 +147,7 @@ namespace Game
 	{
 		if (Input->GetMouse(E_MouseCode::Left))
 		{
-			
-			FAILED_CHECK(Sprite->DrawRect(
+			FAILED_CHECK_RETURN(Sprite->DrawRect(
 				m_DragRect,
 				1.0f,
 				false,

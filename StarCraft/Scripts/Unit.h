@@ -21,9 +21,9 @@ namespace Game
 		static WORD m_UnitCount;
 
 	protected:
-		D3DXVECTOR3* m_pPosition;
-		D3DXVECTOR3* m_pTargetPos;
-		D3DXVECTOR3* m_pScale;
+		std::shared_ptr<D3DXVECTOR3> m_pPosition;
+		std::shared_ptr<D3DXVECTOR3> m_pTargetPos;
+		std::shared_ptr<D3DXVECTOR3> m_pScale;
 
 		S_UnitInfo* m_Info;
 		C_BoxCollider* m_pBoxCollider;
@@ -38,6 +38,10 @@ namespace Game
 		E_Direction m_TargetDir;
 
 	public:
+		PROPERTY(D3DXVECTOR3, position);
+		GET(position) { return *m_pPosition; }
+		SET(position) { (*m_pPosition) = _value; }
+
 		READONLY_PROPERTY(C_BoxCollider*, collider);
 		GET(collider) { return m_pBoxCollider; }
 

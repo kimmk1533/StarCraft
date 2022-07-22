@@ -3,6 +3,7 @@
 namespace CoreEngine
 {
 	class C_Collider;
+	struct S_Bounds;
 }
 
 namespace CoreEngine
@@ -22,6 +23,8 @@ namespace CoreEngine
 
 	__interface ICollision : public ICollisionBegin, public ICollisionStay, public ICollisionEnd
 	{
-
+		virtual D3DXVECTOR3 GetPosition() = 0;
+		virtual C_Collider GetCollider() = 0;
+		virtual S_Bounds GetBounds() = 0;
 	};
 }

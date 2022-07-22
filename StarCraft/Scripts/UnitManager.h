@@ -1,5 +1,5 @@
 #pragma once
-
+#include <Physics.h>
 #include "Unit.h"
 
 namespace Game
@@ -162,7 +162,14 @@ namespace Game
 	public:
 		std::shared_ptr<TUnit> SpawnUnit()
 		{
-			return m_pUnitPool->Spawn();
+			static_assert(std::is_base_of_v<C_Unit, TUnit>, "TUnit of UnitManagerT> is not base of C_Unit class.");
+
+			std::shared_ptr<TUnit> unit_smtptr = m_pUnitPool->Spawn();
+			C_Unit* unit_ptr = static_cast<C_Unit*>(unit_smtptr.get());
+
+			Physics::AddCollision(unit_ptr->collider);
+
+			return unit_smtptr;
 		}
 		const std::vector<std::shared_ptr<TUnit>>* GetSpawnedObjList() { return m_pUnitPool->GetSpawnedObjList(); }
 

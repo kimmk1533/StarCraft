@@ -25,9 +25,6 @@
     <Filter Include="Game\SelectManager">
       <UniqueIdentifier>{e47b2a93-acb7-4fbf-a661-eb12b6399fbc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Cursor">
-      <UniqueIdentifier>{aa15dcf4-e177-4815-94bf-45527df41e7c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Main">
       <UniqueIdentifier>{d9ea72f7-c7d5-47e7-9615-765390948ca2}</UniqueIdentifier>
     </Filter>
@@ -46,6 +43,9 @@
     <Filter Include="Game\Unit\UnitManager\Protoss">
       <UniqueIdentifier>{07da9d9c-8f5a-4f2f-9b4e-af65ebae0984}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\SelectManager\Cursor">
+      <UniqueIdentifier>{aa15dcf4-e177-4815-94bf-45527df41e7c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scripts\Unit.cpp">
@@ -58,7 +58,7 @@
       <Filter>Game\SelectManager</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Cursor.cpp">
-      <Filter>Game\Cursor</Filter>
+      <Filter>Game\SelectManager\Cursor</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\WinMain.cpp">
       <Filter>Main</Filter>
@@ -96,7 +96,7 @@
       <Filter>Game\SelectManager</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Cursor.h">
-      <Filter>Game\Cursor</Filter>
+      <Filter>Game\SelectManager\Cursor</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Main.h">
       <Filter>Main</Filter>

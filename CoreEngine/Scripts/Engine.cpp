@@ -1,4 +1,5 @@
 #include "stdafx_Core.h"
+#include <cassert>
 
 #include "Physics.h"
 
@@ -204,12 +205,12 @@ namespace CoreEngine
 	HRESULT C_Engine::Create()
 	{
 		m_pSprite = new C_Sprite();
-		FAILED_CHECK(m_pSprite->Create(m_pd3dSprite, m_pd3dLine));
+		FAILED_CHECK_RETURN(m_pSprite->Create(m_pd3dSprite, m_pd3dLine));
 
 		m_pInput = new C_Input();
-		FAILED_CHECK(m_pInput->Create(m_hWnd));
+		FAILED_CHECK_RETURN(m_pInput->Create(m_hWnd));
 
-		FAILED_CHECK(Physics::Create());
+		FAILED_CHECK_RETURN(Physics::Create());
 
 		return S_OK;
 	}
@@ -231,6 +232,8 @@ namespace CoreEngine
 	{
 		m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 120, 160), 1.0f, 0);
 
+		Physics::Render();
+
 		return S_OK;
 	}
 
@@ -240,20 +243,20 @@ namespace CoreEngine
 		{
 		case WM_SIZE:
 		{
-			RECT ClientRect;
+			//RECT ClientRect;
 
-			GetClientRect(m_hWnd, &ClientRect);
+			//GetClientRect(m_hWnd, &ClientRect);
 
-			m_dwScreenX = ClientRect.right - ClientRect.left;
-			m_dwScreenY = ClientRect.bottom - ClientRect.top;
+			//m_dwScreenX = ClientRect.right - ClientRect.left;
+			//m_dwScreenY = ClientRect.bottom - ClientRect.top;
 
-			// 창 크기 변경된 거 적용 시켜줘야 함.
-			RECT rc;
-			SetRect(&rc, 0, 0, m_dwScreenX, m_dwScreenY);
-			AdjustWindowRect(&rc, m_dwWinStyle, FALSE);
+			//// 창 크기 변경된 거 적용 시켜줘야 함.
+			//RECT rc;
+			//SetRect(&rc, 0, 0, m_dwScreenX, m_dwScreenY);
+			//AdjustWindowRect(&rc, m_dwWinStyle, FALSE);
 
-			m_d3dpp.BackBufferWidth = m_dwScreenX;
-			m_d3dpp.BackBufferHeight = m_dwScreenY;
+			//m_d3dpp.BackBufferWidth = m_dwScreenX;
+			//m_d3dpp.BackBufferHeight = m_dwScreenY;
 
 			return 0;
 		}
@@ -286,8 +289,6 @@ namespace CoreEngine
 	}
 	RECT C_Engine::GetScreenRect()
 	{
-		RECT rc;
-		SetRect(&rc, 0, 0, m_dwScreenX, m_dwScreenY);
-		return rc;
+		return RECT{ 0, 0, (long)m_dwScreenX, (long)m_dwScreenY };
 	}
 }

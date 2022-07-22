@@ -211,6 +211,9 @@ namespace Game
 		else
 			m_pScale->x = 1.0f;
 
-		return m_pSprite->Draw(texture->GetTexture(), &rect, (D3DXVECTOR2*)m_pScale, nullptr, (D3DXVECTOR2*)m_pPosition, &Offset, D3DXCOLOR(1, 1, 1, 1));
+		D3DXVECTOR2* position = (D3DXVECTOR2*)(&(*m_pPosition));
+		D3DXVECTOR2* scale = (D3DXVECTOR2*)(&(*m_pScale));
+
+		return m_pSprite->Draw(texture->GetTexture(), &rect, scale, nullptr, position, &Offset, D3DCOLOR_XRGB(255, 255, 255));
 	}
 }

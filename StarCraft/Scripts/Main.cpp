@@ -47,9 +47,9 @@ namespace Game
 	}
 	HRESULT C_Main::Render()
 	{
-		FAILED_CHECK(C_Engine::Render());
+		FAILED_CHECK_RETURN(C_Engine::Render());
 
-		FAILED_CHECK(m_pd3dDevice->BeginScene());
+		FAILED_CHECK_RETURN(m_pd3dDevice->BeginScene());
 
 		SAFE_RENDER(C_MarineManager::GetI());
 		SAFE_RENDER(C_SelectManager::GetI());

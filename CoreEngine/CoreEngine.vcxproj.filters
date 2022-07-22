@@ -4,49 +4,52 @@
     <Filter Include="Engine">
       <UniqueIdentifier>{e3a7dbeb-f71a-4356-af7f-bb5d22393902}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Physics">
-      <UniqueIdentifier>{8cf3f348-92fd-4430-b965-d8450872f1f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Time">
-      <UniqueIdentifier>{f9cf6428-bd92-4e48-8ceb-ec24cf64d457}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Core">
       <UniqueIdentifier>{7e8f86f4-c03e-450f-bd16-ec7795488422}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Physics\Collider">
+    <Filter Include="Engine\Physics">
+      <UniqueIdentifier>{8cf3f348-92fd-4430-b965-d8450872f1f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Physics\Collider">
       <UniqueIdentifier>{4c024a6f-1746-4065-a23f-70f4c305c023}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Render">
+    <Filter Include="Engine\Physics\Collision">
+      <UniqueIdentifier>{1181252f-2501-44ff-a2db-de34ba4f43ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Render">
       <UniqueIdentifier>{6c150df6-0143-4cbe-972f-a14c44b797e5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Render\Animation">
+    <Filter Include="Engine\Render\Animation">
       <UniqueIdentifier>{848205a6-d2e1-4575-9893-b9fa788f16fe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Component">
-      <UniqueIdentifier>{a4650ed8-ef78-407e-af01-1cf2c289247f}</UniqueIdentifier>
+    <Filter Include="Engine\Time">
+      <UniqueIdentifier>{f9cf6428-bd92-4e48-8ceb-ec24cf64d457}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Physics\Collision">
-      <UniqueIdentifier>{1181252f-2501-44ff-a2db-de34ba4f43ea}</UniqueIdentifier>
+    <Filter Include="Engine\Physics\QuadTree">
+      <UniqueIdentifier>{ac4ddc48-fa5e-44cb-be69-f840e16d45dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Physics\QuadTree\Node">
+      <UniqueIdentifier>{ac678125-55e4-4d85-be47-e3159aa9b219}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scripts\Animator.h">
-      <Filter>Render\Animation</Filter>
+      <Filter>Engine\Render\Animation</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\CoreTime.h">
-      <Filter>Time</Filter>
+      <Filter>Engine\Time</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Timer.h">
-      <Filter>Time</Filter>
+      <Filter>Engine\Time</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Physics.h">
-      <Filter>Physics</Filter>
+      <Filter>Engine\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Texture.h">
-      <Filter>Render</Filter>
+      <Filter>Engine\Render</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Sprite.h">
-      <Filter>Render</Filter>
+      <Filter>Engine\Render</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Singleton.h">
       <Filter>Core</Filter>
@@ -70,42 +73,42 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Collider.h">
-      <Filter>Physics\Collider</Filter>
+      <Filter>Engine\Physics\Collider</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\BoxCollider.h">
-      <Filter>Physics\Collider</Filter>
+      <Filter>Engine\Physics\Collider</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Bounds.h">
-      <Filter>Physics</Filter>
+      <Filter>Engine\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Collision.h">
-      <Filter>Physics\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\QuadTree.h">
-      <Filter>Core</Filter>
+      <Filter>Engine\Physics\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\QuadTreeNode.h">
-      <Filter>Core</Filter>
+      <Filter>Engine\Physics\QuadTree\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\QuadTree.h">
+      <Filter>Engine\Physics\QuadTree</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scripts\Animator.cpp">
-      <Filter>Render\Animation</Filter>
+      <Filter>Engine\Render\Animation</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\CoreTime.cpp">
-      <Filter>Time</Filter>
+      <Filter>Engine\Time</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Timer.cpp">
-      <Filter>Time</Filter>
+      <Filter>Engine\Time</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Physics.cpp">
-      <Filter>Physics</Filter>
+      <Filter>Engine\Physics</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Sprite.cpp">
-      <Filter>Render</Filter>
+      <Filter>Engine\Render</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Texture.cpp">
-      <Filter>Render</Filter>
+      <Filter>Engine\Render</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Singleton.cpp">
       <Filter>Core</Filter>
@@ -126,19 +129,19 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Collider.cpp">
-      <Filter>Physics\Collider</Filter>
+      <Filter>Engine\Physics\Collider</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\BoxCollider.cpp">
-      <Filter>Physics\Collider</Filter>
+      <Filter>Engine\Physics\Collider</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Bounds.cpp">
-      <Filter>Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\QuadTree.cpp">
-      <Filter>Core</Filter>
+      <Filter>Engine\Physics</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\QuadTreeNode.cpp">
-      <Filter>Core</Filter>
+      <Filter>Engine\Physics\QuadTree\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\QuadTree.cpp">
+      <Filter>Engine\Physics\QuadTree</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

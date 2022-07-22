@@ -15,7 +15,8 @@
 #define NULL_CHECK(p)	{ if (p == nullptr) { return E_FAIL; } }
 #define NULL_CHECK_WITH_MSG(p, message)	{ if (p == nullptr) { ErrorMessageBox(message); return E_FAIL; } }
 
-#define FAILED_CHECK(p) { if (FAILED(p)) return E_FAIL; }
+#define FAILED_CHECK(p) if (FAILED(p))
+#define FAILED_CHECK_RETURN(p) { if (FAILED(p)) return E_FAIL; }
 #define FAILED_CHECK_WITH_MSG(p, message) { if (FAILED(p)) { ErrorMessageBox(message); return E_FAIL; } }
 
 // 참고: https://gohen.tistory.com/31
