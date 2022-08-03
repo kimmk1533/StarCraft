@@ -149,9 +149,11 @@
     <ClInclude Include="Scripts\Animator.h" />
     <ClInclude Include="Scripts\Bounds.h" />
     <ClInclude Include="Scripts\BoxCollider.h" />
+    <ClInclude Include="Scripts\Camera.h" />
     <ClInclude Include="Scripts\Collider.h" />
     <ClInclude Include="Scripts\Collision.h" />
     <ClInclude Include="Scripts\FrameWork.h" />
+    <ClInclude Include="Scripts\GameObject.h" />
     <ClInclude Include="Scripts\Input.h" />
     <ClInclude Include="Scripts\Physics.h" />
     <ClInclude Include="Scripts\QuadTree.h" />
@@ -165,13 +167,16 @@
     <ClInclude Include="Scripts\stdafx_Core.h" />
     <ClInclude Include="Scripts\CoreTime.h" />
     <ClInclude Include="Scripts\Timer.h" />
+    <ClInclude Include="Scripts\Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scripts\Animator.cpp" />
     <ClCompile Include="Scripts\Bounds.cpp" />
     <ClCompile Include="Scripts\BoxCollider.cpp" />
+    <ClCompile Include="Scripts\Camera.cpp" />
     <ClCompile Include="Scripts\Collider.cpp" />
     <ClCompile Include="Scripts\FrameWork.cpp" />
+    <ClCompile Include="Scripts\GameObject.cpp" />
     <ClCompile Include="Scripts\Input.cpp" />
     <ClCompile Include="Scripts\ObjectPool.cpp" />
     <ClCompile Include="Scripts\Physics.cpp" />
@@ -186,6 +191,7 @@
     </ClCompile>
     <ClCompile Include="Scripts\CoreTime.cpp" />
     <ClCompile Include="Scripts\Timer.cpp" />
+    <ClCompile Include="Scripts\Transform.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

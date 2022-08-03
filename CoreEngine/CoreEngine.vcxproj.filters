@@ -31,6 +31,18 @@
     <Filter Include="Engine\Physics\QuadTree\Node">
       <UniqueIdentifier>{ac678125-55e4-4d85-be47-e3159aa9b219}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Render\Camera">
+      <UniqueIdentifier>{17492035-ffbb-4637-9ce1-6720a93b1830}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Render\Image">
+      <UniqueIdentifier>{5dfff10c-ad5b-49b2-882e-0e4da9cfafa1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameObject">
+      <UniqueIdentifier>{156696a4-71e0-4ae4-ba3c-292e06d4b106}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Transform">
+      <UniqueIdentifier>{cac63fef-8ede-4708-acb7-c59bcb43b0d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scripts\Animator.h">
@@ -44,12 +56,6 @@
     </ClInclude>
     <ClInclude Include="Scripts\Physics.h">
       <Filter>Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Texture.h">
-      <Filter>Engine\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Sprite.h">
-      <Filter>Engine\Render</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Singleton.h">
       <Filter>Core</Filter>
@@ -90,6 +96,21 @@
     <ClInclude Include="Scripts\QuadTree.h">
       <Filter>Engine\Physics\QuadTree</Filter>
     </ClInclude>
+    <ClInclude Include="Scripts\Sprite.h">
+      <Filter>Engine\Render\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Texture.h">
+      <Filter>Engine\Render\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Camera.h">
+      <Filter>Engine\Render\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\GameObject.h">
+      <Filter>Engine\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Transform.h">
+      <Filter>Engine\Transform</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scripts\Animator.cpp">
@@ -103,12 +124,6 @@
     </ClCompile>
     <ClCompile Include="Scripts\Physics.cpp">
       <Filter>Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\Sprite.cpp">
-      <Filter>Engine\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\Texture.cpp">
-      <Filter>Engine\Render</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Singleton.cpp">
       <Filter>Core</Filter>
@@ -142,6 +157,21 @@
     </ClCompile>
     <ClCompile Include="Scripts\QuadTree.cpp">
       <Filter>Engine\Physics\QuadTree</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Sprite.cpp">
+      <Filter>Engine\Render\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Texture.cpp">
+      <Filter>Engine\Render\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Camera.cpp">
+      <Filter>Engine\Render\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\GameObject.cpp">
+      <Filter>Engine\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Transform.cpp">
+      <Filter>Engine\Transform</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -33,6 +33,9 @@ namespace CoreEngine
 		D3DXMatrixIdentity(&mtTrn);
 		D3DXMatrixIdentity(&mtRctI);
 
+		D3DXMATRIX mtResult;
+		D3DXMatrixIdentity(&mtResult);
+
 		if (_pScale)
 			D3DXMatrixScaling(&mtScl, _pScale->x, _pScale->y, 1.0f);
 
@@ -50,7 +53,9 @@ namespace CoreEngine
 
 		mtW = mtScl * mtRctI * mtRot * mtRct * mtTrn;
 
-		m_pDxSprite->SetTransform(&mtW);
+		mtResult = mtW * (*Camera->viewMatrix);
+
+		m_pDxSprite->SetTransform(&mtResult);
 
 		m_pDxSprite->Draw(_pTex, _pSrcRect, _pOffset, nullptr, _color);
 
@@ -111,10 +116,6 @@ namespace CoreEngine
 	{
 		NULL_CHECK_WITH_MSG(m_pDxLine, "m_pDxLine is nullptr");
 
-		D3DXVECTOR2 RectPos[2];
-		const D3DXVECTOR2 LeftTop = D3DXVECTOR2(_rect.left, _rect.top);
-		const D3DXVECTOR2 RightBottom = D3DXVECTOR2(_rect.right, _rect.bottom);
-
 		if (m_pDxLine->GetGLLines())
 			FAILED_CHECK_RETURN(m_pDxLine->SetGLLines(false));
 
@@ -126,31 +127,53 @@ namespace CoreEngine
 
 		if (FAILED(m_pDxLine->Begin()))
 		{
-			FAILED_CHECK_WITH_MSG(m_pDxLine->End(), "Begin() and End() of m_pDxLine failed.");
+			FAILED_CHECK_WITH_MSG(m_pDxLine->End(), "m_pDxLine's Begin() and m_pDxLine's End() failed.");
 			return E_FAIL;
 		}
 
+		D3DXVECTOR2 TempPos[2], LinePos[2];
+		const D3DXVECTOR2 LeftTop = D3DXVECTOR2(_rect.left, _rect.top);
+		const D3DXVECTOR2 RightBottom = D3DXVECTOR2(_rect.right, _rect.bottom);
+
+		D3DXMATRIX mtV = (*Camera->viewMatrix);
+
 		// ┌─┐
-		RectPos[1] = RectPos[0] = LeftTop;
-		RectPos[1].x = _rect.right;
-		FAILED_CHECK_RETURN(m_pDxLine->Draw(RectPos, 2, _color));
+		TempPos[1] = TempPos[0] = LeftTop;
+		TempPos[1].x = RightBottom.x;
+
+		D3DXVec2TransformCoord(&LinePos[0], &TempPos[0], &mtV);
+		D3DXVec2TransformCoord(&LinePos[1], &TempPos[1], &mtV);
+
+		FAILED_CHECK_RETURN(m_pDxLine->Draw(LinePos, 2, _color));
 
 		// ┐
 		// ┘
-		RectPos[0] = RectPos[1];
-		RectPos[1] = RightBottom;
-		FAILED_CHECK_RETURN(m_pDxLine->Draw(RectPos, 2, _color));
+		TempPos[0] = TempPos[1];
+		TempPos[1] = RightBottom;
+
+		D3DXVec2TransformCoord(&LinePos[0], &TempPos[0], &mtV);
+		D3DXVec2TransformCoord(&LinePos[1], &TempPos[1], &mtV);
+
+		FAILED_CHECK_RETURN(m_pDxLine->Draw(LinePos, 2, _color));
 
 		// └─┘
-		RectPos[0] = RectPos[1];
-		RectPos[1].x = _rect.left;
-		FAILED_CHECK_RETURN(m_pDxLine->Draw(RectPos, 2, _color));
+		TempPos[0] = TempPos[1];
+		TempPos[1].x = LeftTop.x;
+
+		D3DXVec2TransformCoord(&LinePos[0], &TempPos[0], &mtV);
+		D3DXVec2TransformCoord(&LinePos[1], &TempPos[1], &mtV);
+
+		FAILED_CHECK_RETURN(m_pDxLine->Draw(LinePos, 2, _color));
 
 		// ┌
 		// └
-		RectPos[0] = RectPos[1];
-		RectPos[1] = LeftTop;
-		FAILED_CHECK_RETURN(m_pDxLine->Draw(RectPos, 2, _color));
+		TempPos[0] = TempPos[1];
+		TempPos[1] = LeftTop;
+
+		D3DXVec2TransformCoord(&LinePos[0], &TempPos[0], &mtV);
+		D3DXVec2TransformCoord(&LinePos[1], &TempPos[1], &mtV);
+
+		FAILED_CHECK_RETURN(m_pDxLine->Draw(LinePos, 2, _color));
 
 		FAILED_CHECK_RETURN(m_pDxLine->End());
 
@@ -175,11 +198,13 @@ namespace CoreEngine
 		float x = 1; // we start at angle = 0 
 		float y = 0;
 
-		D3DXVECTOR2 vLine[2];
+		D3DXVECTOR2 TempPos[2], LinePos[2];
 
 		m_pDxLine->SetWidth(_fThickness);
 		m_pDxLine->SetAntialias(false);
 		m_pDxLine->SetGLLines(true);
+
+		D3DXMATRIX mtV = (*Camera->viewMatrix);
 
 		m_pDxLine->Begin();
 
@@ -199,10 +224,13 @@ namespace CoreEngine
 			float y2 = y * _fHeight + _fCenterY;
 
 			// draw the line
-			vLine[0].x = x1; vLine[0].y = y1;
-			vLine[1].x = x2; vLine[1].y = y2;
+			TempPos[0].x = x1; TempPos[0].y = y1;
+			TempPos[1].x = x2; TempPos[1].y = y2;
 
-			m_pDxLine->Draw(vLine, 2, _color);
+			D3DXVec2TransformCoord(&LinePos[0], &TempPos[0], &mtV);
+			D3DXVec2TransformCoord(&LinePos[1], &TempPos[1], &mtV);
+
+			m_pDxLine->Draw(LinePos, 2, _color);
 		}
 
 		m_pDxLine->End();

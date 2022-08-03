@@ -3,6 +3,8 @@
 
 namespace CoreEngine
 {
+	// 참고: https://blog.naver.com/hermet/57456541
+
 	template <class T>
 	class C_QuadTree final : public IFrameWork, public IUpdatable
 	{
@@ -26,7 +28,7 @@ namespace CoreEngine
 
 	public:
 		HRESULT Create() override;
-		HRESULT Create(const D3DXVECTOR3& _center, const D3DXVECTOR3& _size);
+		HRESULT Create(const D3DXVECTOR3& _center, const D3DXVECTOR3& _size, const WORD& _depth = 1);
 		void	Destroy() override;
 
 	public:
@@ -68,9 +70,9 @@ namespace CoreEngine
 		return S_OK;
 	}
 	template <class T>
-	HRESULT C_QuadTree<T>::Create(const D3DXVECTOR3& _center, const D3DXVECTOR3& _size)
+	HRESULT C_QuadTree<T>::Create(const D3DXVECTOR3& _center, const D3DXVECTOR3& _size, const WORD& _depth)
 	{
-		this->m_pRootNode = C_QuadTreeNode<T>::BuildRootTree(_center, _size);
+		this->m_pRootNode = C_QuadTreeNode<T>::BuildRootTree(_center, _size, _depth);
 
 		return S_OK;
 	}

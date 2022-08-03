@@ -5,32 +5,30 @@
 
 namespace CoreEngine
 {
-	const LPCWSTR	C_Engine::m_Title = LPCWSTR(L"DirectX StarCraft");
+	C_Engine* g_pApp;
+
+#ifdef UNICODE
+	const LPCWSTR	C_Engine::m_Title = TEXT("DirectX StarCraft");
+#else
+	const LPCSTR	C_Engine::m_Title = TEXT("DirectX StarCraft");
+#endif
+
 	HINSTANCE		C_Engine::m_hInst = nullptr;
 	HWND			C_Engine::m_hWnd = nullptr;
+
+	LPD3DXSPRITE	C_Engine::m_pd3dSprite = nullptr;				// 2D Sprite
+	LPD3DXLINE		C_Engine::m_pd3dLine = nullptr;					// 2D Line
+
+	C_Camera*		C_Engine::m_pCamera = nullptr;					// Camera
+	C_Sprite*		C_Engine::m_pSprite = nullptr;					// 2D를 출력하기 위한 객체
+	C_Input*		C_Engine::m_pInput = nullptr;					// 입력을 위한 객체
+	C_Time*			C_Engine::m_pTime = nullptr;					// System Time
+
 	DWORD			C_Engine::m_dwWinStyle = WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU | WS_VISIBLE;
 	DWORD			C_Engine::m_dwScreenX = 800;					// Screen Width
 	DWORD			C_Engine::m_dwScreenY = 600;					// Screen Height
-	bool			C_Engine::m_bWindow = TRUE;						// WindowMode
-	bool			C_Engine::m_bShowCusor = TRUE;					// Show Cusor
-	LPD3DXSPRITE	C_Engine::m_pd3dSprite = nullptr;				// 2D Sprite
-	LPD3DXLINE		C_Engine::m_pd3dLine = nullptr;					// 2D Line
-	C_Time* C_Engine::m_pTime = nullptr;					// System Time
-
-	C_Engine* g_pApp;
-
-	C_Engine::C_Engine()// : m_Title(LPCWSTR(L"DirectX StarCraft"))
-	{
-		//m_hInst = nullptr;
-		//m_hWnd = nullptr;
-		//m_dwWinStyle = WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU | WS_VISIBLE;
-		//m_dwScreenX = 800;					// Screen Width
-		//m_dwScreenY = 600;					// Screen Height
-		//m_bWindow = true;					// WindowMode
-		//m_bShowCusor = true;				// Show Cusor
-		//m_pd3dSprite = nullptr;			// 2D Sprite
-		//m_pTime = nullptr;				// System Time
-	}
+	bool			C_Engine::m_bWindow = true;						// WindowMode
+	bool			C_Engine::m_bShowCusor = true;					// Show Cusor
 
 	HRESULT C_Engine::Init(HINSTANCE _hInst)
 	{
@@ -202,8 +200,18 @@ namespace CoreEngine
 		return S_OK;
 	}
 
+	C_Engine::C_Engine()
+	{
+	}
+	C_Engine::~C_Engine()
+	{
+	}
+
 	HRESULT C_Engine::Create()
 	{
+		m_pCamera = new C_Camera();
+		SAFE_CREATE(m_pCamera);
+
 		m_pSprite = new C_Sprite();
 		FAILED_CHECK_RETURN(m_pSprite->Create(m_pd3dSprite, m_pd3dLine));
 
@@ -218,13 +226,16 @@ namespace CoreEngine
 	{
 		SAFE_DELETE(m_pInput);
 		SAFE_DELETE(m_pSprite);
+		SAFE_DELETE(m_pCamera);
 	}
 
 	HRESULT C_Engine::Update(const FLOAT& _deltaTime)
 	{
-		SAFE_UPDATE(Input);
+		SAFE_UPDATE(m_pInput);
 
 		Physics::Update(_deltaTime);
+
+		SAFE_UPDATE(m_pCamera);
 
 		return S_OK;
 	}
@@ -239,6 +250,8 @@ namespace CoreEngine
 
 	LRESULT C_Engine::MsgProc(HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)
 	{
+		Input->MsgProc(_hWnd, _msg, _wParam, _lParam);
+
 		switch (_msg)
 		{
 		case WM_SIZE:
@@ -287,8 +300,21 @@ namespace CoreEngine
 	{
 		return g_pApp->MsgProc(hWnd, msg, wParam, lParam);
 	}
+
 	RECT C_Engine::GetScreenRect()
 	{
 		return RECT{ 0, 0, (long)m_dwScreenX, (long)m_dwScreenY };
+	}
+	/*const*/ C_Camera* C_Engine::GetCamera()
+	{
+		return m_pCamera;
+	}
+	/*const*/ C_Sprite* C_Engine::GetSprite()
+	{
+		return m_pSprite;
+	}
+	/*const*/ C_Input* C_Engine::GetInput()
+	{
+		return m_pInput;
 	}
 }

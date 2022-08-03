@@ -4,6 +4,7 @@
 #include <BoxCollider.h>
 
 #include "UnitInfo.h"
+#include <GameObject.h>
 
 namespace Game
 {

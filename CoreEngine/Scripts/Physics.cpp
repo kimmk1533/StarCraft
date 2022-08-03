@@ -79,7 +79,11 @@ namespace CoreEngine
 	HRESULT Physics::Create()
 	{
 		m_pQuadTree = new C_QuadTree<ICollision>();
-		SAFE_CREATE(m_pQuadTree);
+		FAILED_CHECK_RETURN(m_pQuadTree->Create(
+			D3DXVECTOR3(0, 0, 0),
+			D3DXVECTOR3(2560, 2560, 0),
+			5
+		));
 
 		return S_OK;
 	}

@@ -27,7 +27,8 @@ namespace CoreEngine
 #endif // USE_SHARED_PTR
 
 	private:
-		DWORD m_Depth;
+		WORD m_Depth;
+		WORD m_MaxDepth;
 		E_NodeType m_Type;
 		C_BoxCollider* m_pBoxCollider;
 		PtrType m_pParentNode;
@@ -60,17 +61,18 @@ namespace CoreEngine
 		{
 			// 최상단 노드 생성
 #ifdef USE_SHARED_PTR
-			PtrType node = std::make_shared<QuadTreeNode>();
+			PtrType root = std::make_shared<QuadTreeNode>();
 #else
-			PtrType node = new QuadTreeNode();
+			PtrType root = new QuadTreeNode();
 #endif // USE_SHARED_PTR
-			if (FAILED(node->Create()))
+			if (FAILED(root->Create()))
 				return nullptr;
-			node->m_Type = E_NodeType::Root;
-			node->m_pBoxCollider->bounds->center = _center;
-			node->m_pBoxCollider->bounds->size = _size;
-			node->m_pRootNode = node;
-			//node->m_Depth = ;
+			root->m_Type = E_NodeType::Root;
+			root->m_pBoxCollider->bounds->center = _center;
+			root->m_pBoxCollider->bounds->size = _size;
+			root->m_pRootNode = root;
+			//root->m_Depth = ;
+			root->m_MaxDepth = _depth;
 
 			// 자식 노드 생성에 사용할 변수
 			D3DXVECTOR3 offset;
@@ -120,10 +122,10 @@ namespace CoreEngine
 				std::cout << "  childCenter.y = " << childCenter.y << "\n\n";
 #endif // DEBUG_PRINT
 
-				node->AddChildNode(node->BuildChildTree(node, childCenter, childSize, static_cast<E_NodeType>(i), _depth));
+				root->AddChildNode(root->BuildChildTree(root, childCenter, childSize, static_cast<E_NodeType>(i), _depth));
 			}
 
-			return node;
+			return root;
 		}
 		bool AddObj(T* _obj);
 
@@ -146,6 +148,7 @@ namespace CoreEngine
 			node->m_pBoxCollider->bounds->size = _size;
 			node->m_pRootNode = _root;
 			//node->m_Depth = 
+			node->m_MaxDepth = _root->m_MaxDepth;
 
 			// 자식 노드 생성에 사용할 변수
 			D3DXVECTOR3 offset;
@@ -295,7 +298,7 @@ namespace CoreEngine
 	template<class T>
 	inline bool C_QuadTreeNode<T>::CheckObj(const T* _obj)
 	{
-		return std::count(m_pObjList->begin(), m_pObjList->end(), _obj);
+		return contains(*m_pObjList, _obj);
 	}
 
 	template<class T>
@@ -325,7 +328,7 @@ namespace CoreEngine
 	C_QuadTreeNode<T>::C_QuadTreeNode()
 	{
 		m_Type = E_NodeType::None;
-		m_Depth = -1;
+		m_MaxDepth = m_Depth = -1;		
 		m_pBoxCollider = nullptr;
 		m_pParentNode = nullptr;
 		m_pRootNode = nullptr;
@@ -399,7 +402,7 @@ namespace CoreEngine
 	inline HRESULT C_QuadTreeNode<T>::Debug_Render(size_t _depth)
 	{
 #ifdef DEBUG_RENDER
-		if (_depth > Quad)
+		if (_depth > m_MaxDepth)
 			return S_OK;
 
 		for (size_t i = 0; i < Quad; i++)

@@ -60,7 +60,6 @@ namespace CoreEngine
 		E_InputState	GetMouseState(E_MouseCode nBtn);
 
 		D3DXVECTOR3		GetMousePos();
-		D3DXVECTOR2		GetMousePos2();
 		D3DXVECTOR3		GetMouseEps();
 
 	public: // 키보드

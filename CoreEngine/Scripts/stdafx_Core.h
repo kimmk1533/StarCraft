@@ -59,26 +59,28 @@ struct Pair_Hash
 #pragma endregion
 
 #pragma region D3DXVECTOR operator
+D3DXVECTOR2 operator+(const D3DXVECTOR2& _lhs, const D3DXVECTOR3& _rhs);
+D3DXVECTOR3 operator+(const D3DXVECTOR3& _lhs, const D3DXVECTOR2& _rhs);
+
+D3DXVECTOR2 operator-(const D3DXVECTOR2& _lhs, const D3DXVECTOR3& _rhs);
+D3DXVECTOR3 operator-(const D3DXVECTOR3& _lhs, const D3DXVECTOR2& _rhs);
+
+D3DXVECTOR2& operator+=(D3DXVECTOR2& _lhs, const D3DXVECTOR3& _rhs);
+D3DXVECTOR3& operator+=(D3DXVECTOR3& _lhs, const D3DXVECTOR2& _rhs);
+
+D3DXVECTOR2& operator-=(D3DXVECTOR2& _lhs, const D3DXVECTOR3& _rhs);
+D3DXVECTOR3& operator-=(D3DXVECTOR3& _lhs, const D3DXVECTOR2& _rhs);
+
 std::ostream& operator<<(std::ostream& _out, const D3DXVECTOR2& _vector);
 std::ostream& operator<<(std::ostream& _out, const D3DXVECTOR3& _vector);
 #pragma endregion
 
-
-namespace std
-{
-	/*template <class TContainer, class TValue>
-	bool contains(const TContainer& _container, const TValue& _value)
-	{
-		std::vector
-		return std::find(_container)
-	}*/
-}
-
 #include "CoreUtil.h"
-
-#include "Input.h"
 #include "Texture.h"
+
+#include "Camera.h"
 #include "Sprite.h"
+#include "Input.h"
 #include "CoreTime.h"
 
 #include "FrameWork.h"
@@ -86,3 +88,7 @@ namespace std
 
 #include "Singleton.h"
 #include "ObjectPool.h"
+
+#define Camera CoreEngine::C_Engine::GetCamera()
+#define Sprite CoreEngine::C_Engine::GetSprite()
+#define Input CoreEngine::C_Engine::GetInput()

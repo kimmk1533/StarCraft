@@ -72,10 +72,11 @@ namespace Game
 			{
 #pragma region Variables
 				D3DXVECTOR3 d = (*m_pTargetPos) - (*m_pPosition);
-				FLOAT length = D3DXVec3Length(&d);
-
 				FLOAT dx = d.x;
 				FLOAT dy = d.y;
+				d.z = 0.0f;
+
+				FLOAT length = D3DXVec3Length(&d);
 
 				FLOAT radian = atan2f(dx, dy);
 				FLOAT theta = 180.0f + g_DegreeUnit * 0.5f - D3DXToDegree(radian);
@@ -118,15 +119,16 @@ namespace Game
 #pragma endregion
 
 #pragma region Move
-				if (m_Direction == m_TargetDir)
+				if (m_Info->m_bIsMovable == false &&
+					m_Direction == m_TargetDir)
 				{
 					m_Info->m_bIsMovable = true;
 				}
 
 				if (m_Info->m_bIsMovable && length > 0.01f)
 				{
-					// 최종 속도 = 이동 속도 * 1 게임 프레임 * 델타타임(1 게임 프레임이 진행되는 동안 지난 시간) 
-					FLOAT speed = m_Info->m_fMoveSpeed * DEBUG_GAME_SPEED * g_InGameFPS;
+					// 최종 속도 = 이동 속도
+					FLOAT speed = m_Info->m_fMoveSpeed;
 
 					D3DXVECTOR3 vcMove;
 
@@ -163,11 +165,12 @@ namespace Game
 
 		if (Input->GetMouseDown(E_MouseCode::Right))
 		{
-			(*m_pTargetPos) = m_pInput->GetMousePos();
+			(*m_pTargetPos) = Input->GetMousePos() + (D3DXVECTOR3)(Camera->position);
 
 			D3DXVECTOR3 d = (*m_pTargetPos) - (*m_pPosition);
 			FLOAT dx = d.x;
 			FLOAT dy = d.y;
+			d.z = 0.0f;
 
 			// 명령 방향: 현재 위치에서 우클릭한 위치로 에 해당하는 방향
 			// 현재 방향과 명령 방향의 각도(라디안) 구하기
@@ -201,7 +204,7 @@ namespace Game
 	{
 		C_Unit::Render();
 
-		static const D3DXVECTOR3 Offset(32, 32, 0);
+		static const D3DXVECTOR3 Offset(32, 32, 1.0f);
 
 		std::shared_ptr<C_Texture> texture = C_MarineManager::GetI()->GetTexture();
 		RECT rect = C_MarineManager::GetI()->GetTextureRect({ m_UnitState, m_Direction }, m_AnimIndex);
@@ -214,6 +217,6 @@ namespace Game
 		D3DXVECTOR2* position = (D3DXVECTOR2*)(&(*m_pPosition));
 		D3DXVECTOR2* scale = (D3DXVECTOR2*)(&(*m_pScale));
 
-		return m_pSprite->Draw(texture->GetTexture(), &rect, scale, nullptr, position, &Offset, D3DCOLOR_XRGB(255, 255, 255));
+		return Sprite->Draw(texture->GetTexture(), &rect, scale, nullptr, position, &Offset, D3DCOLOR_XRGB(255, 255, 255));
 	}
 }

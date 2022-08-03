@@ -91,21 +91,21 @@ namespace Game
 		if (Input->GetMouseDown(E_MouseCode::Left))
 		{
 			// ┌
-			m_DragRect.left = Input->GetMousePos().x;
-			m_DragRect.top = Input->GetMousePos().y;
+			m_DragRect.left = Input->GetMousePos().x + Camera->position.x;
+			m_DragRect.top = Input->GetMousePos().y + Camera->position.y;
 		}
 		else if (Input->GetMouse(E_MouseCode::Left))
 		{
 			// ┘
-			m_DragRect.right = Input->GetMousePos().x;
-			m_DragRect.bottom = Input->GetMousePos().y;
+			m_DragRect.right = Input->GetMousePos().x + Camera->position.x;
+			m_DragRect.bottom = Input->GetMousePos().y + Camera->position.y;
 		}
 		else if (Input->GetMouseUp(E_MouseCode::Left))
 		{
 			if (m_DragRect.left > m_DragRect.right)
-				SWAP(m_DragRect.left, m_DragRect.right);
+				swap(m_DragRect.left, m_DragRect.right);
 			if (m_DragRect.top > m_DragRect.bottom)
-				SWAP(m_DragRect.top, m_DragRect.bottom);
+				swap(m_DragRect.top, m_DragRect.bottom);
 
 			// 유닛 선택
 			m_pDragCollider->bounds->size = D3DXVECTOR3(

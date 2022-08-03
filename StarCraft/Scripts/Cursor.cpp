@@ -34,7 +34,7 @@ namespace Game
 
 	HRESULT C_Cursor::Create()
 	{
-		m_pHotspot = new D3DXVECTOR3(19.0f, 17.0f, 0.0f);
+		m_pHotspot = new D3DXVECTOR3(19.0f, 17.0f, 1.0f);
 		m_pPosition = new D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 		m_pAnimator = new C_Animator();
@@ -66,7 +66,7 @@ namespace Game
 		m_pAnimator->Update(_deltaTime);
 
 #pragma region Mouse Position
-		(*m_pPosition) = m_pInput->GetMousePos();
+		(*m_pPosition) = Input->GetMousePos();
 #pragma endregion
 		
 #pragma region Mouse Click
@@ -92,12 +92,14 @@ namespace Game
 		else
 			rect = C_SelectManager::GetI()->GetTextureRect(m_CursorState, m_AnimIndex);
 
-		m_pSprite->Draw(
+		D3DXVECTOR2 temp = (D3DXVECTOR2)(*m_pPosition + (D3DXVECTOR3)(Camera->position));
+
+		Sprite->Draw(
 			texture->GetTexture(),
 			&rect,
 			nullptr,
 			nullptr,
-			(D3DXVECTOR2*)m_pPosition,
+			&temp,
 			m_pHotspot,
 			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)
 		);

@@ -3,7 +3,10 @@
 namespace CoreEngine
 {
     class C_Timer;
+}
 
+namespace CoreEngine
+{
     class C_Animator : public C_FrameWork, public IUpdatable//, public IRenderable
     {
     public:
