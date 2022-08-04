@@ -4,61 +4,10 @@
 #include <BoxCollider.h>
 
 #include "UnitInfo.h"
-#include <GameObject.h>
 
 namespace Game
 {
 	enum class E_Direction : unsigned char;
-	enum class E_UnitState : unsigned char;
-}
-
-namespace Game
-{
-	using namespace CoreEngine;
-
-	class C_Unit : public C_FrameWork, public IUpdatable, public IRenderable
-	{
-	private:
-		static WORD m_UnitCount;
-
-	protected:
-		std::shared_ptr<D3DXVECTOR3> m_pPosition;
-		std::shared_ptr<D3DXVECTOR3> m_pTargetPos;
-		std::shared_ptr<D3DXVECTOR3> m_pScale;
-
-		S_UnitInfo* m_Info;
-		C_BoxCollider* m_pBoxCollider;
-
-	protected: // Animation
-		C_Animator* m_pAnimator;
-
-		WORD m_AnimIndex;
-		C_Timer* m_pGameFrameTimer;
-		E_UnitState m_UnitState;
-		E_Direction m_Direction;
-		E_Direction m_TargetDir;
-
-	public:
-		PROPERTY(D3DXVECTOR3, position);
-		GET(position) { return *m_pPosition; }
-		SET(position) { (*m_pPosition) = _value; }
-
-		READONLY_PROPERTY(C_BoxCollider*, collider);
-		GET(collider) { return m_pBoxCollider; }
-
-	public:
-		C_Unit();
-		virtual ~C_Unit();
-
-	public:
-		virtual HRESULT	Create() override;
-		virtual void	Destroy() override;
-
-		virtual HRESULT	Update(const FLOAT& _deltaTime) override;
-		virtual HRESULT	Render() override;
-
-	};
-
 	enum class E_UnitState : unsigned char
 	{
 		// 생성, 사망 관련
@@ -102,5 +51,50 @@ namespace Game
 		UnBurrow,					// 언버로우 상태
 
 		Max
+	};
+}
+
+namespace Game
+{
+	using namespace CoreEngine;
+
+	class C_Unit : public C_FrameWork, public IUpdatable, public IRenderable
+	{
+	protected:
+		std::shared_ptr<D3DXVECTOR3> m_pPosition;
+		std::shared_ptr<D3DXVECTOR3> m_pTargetPos;
+		std::shared_ptr<D3DXVECTOR3> m_pScale;
+
+		S_UnitInfo* m_Info;
+		C_BoxCollider* m_pBoxCollider;
+
+	protected: // Animation
+		C_Animator* m_pAnimator;
+
+		WORD m_AnimIndex;
+		C_Timer* m_pGameFrameTimer;
+		E_UnitState m_UnitState;
+		E_Direction m_Direction;
+		E_Direction m_TargetDir;
+
+	public:
+		PROPERTY(D3DXVECTOR3, position);
+		GET(position) { return *m_pPosition; }
+		SET(position) { (*m_pPosition) = _value; }
+
+		READONLY_PROPERTY(C_BoxCollider*, collider);
+		GET(collider) { return m_pBoxCollider; }
+
+	public:
+		C_Unit();
+		virtual ~C_Unit();
+
+	public:
+		virtual HRESULT	Create() override;
+		virtual void	Destroy() override;
+
+		virtual HRESULT	Update(const FLOAT& _deltaTime) override;
+		virtual HRESULT	Render() override;
+
 	};
 }

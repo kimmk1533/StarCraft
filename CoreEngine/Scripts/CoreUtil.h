@@ -25,11 +25,11 @@
 
 // 참고: https://gohen.tistory.com/31
 #define PROPERTY(t,n)  __declspec( property (put = property__set_##n, get = property__get_##n)) t n; \
-	typedef t property__tmp_type_##n
+	using property__tmp_type_##n = t;
 #define READONLY_PROPERTY(t,n) __declspec( property (get = property__get_##n) ) t n;\
-	typedef t property__tmp_type_##n
+	using property__tmp_type_##n = t;
 #define WRITEONLY_PROPERTY(t,n) __declspec( property (put = property__set_##n) ) t n;\
-	typedef t property__tmp_type_##n
+	using property__tmp_type_##n = t;
 
 #define GET(n) property__tmp_type_##n property__get_##n()
 #define SET(n) void property__set_##n(const property__tmp_type_##n& _value)

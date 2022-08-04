@@ -202,7 +202,7 @@ namespace Game
 	}
 	HRESULT C_Marine::Render()
 	{
-		C_Unit::Render();
+		FAILED_CHECK_RETURN(C_Unit::Render());
 
 		static const D3DXVECTOR3 Offset(32, 32, 1.0f);
 
@@ -214,9 +214,10 @@ namespace Game
 		else
 			m_pScale->x = 1.0f;
 
-		D3DXVECTOR2* position = (D3DXVECTOR2*)(&(*m_pPosition));
-		D3DXVECTOR2* scale = (D3DXVECTOR2*)(&(*m_pScale));
+		Sprite->SetTranslation(*m_pPosition);
+		Sprite->SetRotation(nullptr);
+		Sprite->SetScale(*m_pScale);
 
-		return Sprite->Draw(texture->GetTexture(), &rect, scale, nullptr, position, &Offset, D3DCOLOR_XRGB(255, 255, 255));
+		return Sprite->Draw(texture->GetTexture(), &rect, &Offset, D3DCOLOR_XRGB(255, 255, 255));
 	}
 }

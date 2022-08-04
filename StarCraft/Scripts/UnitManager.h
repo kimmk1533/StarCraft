@@ -15,67 +15,6 @@ namespace Game
 	template <class TManager, class TUnit>
 	class C_UnitManager : public C_Singleton<TManager>, public IFrameWork, public IUpdatable, public IRenderable
 	{
-	protected:
-		C_UnitManager()
-		{
-			m_pUnitTexture = nullptr;
-			m_pUnitTextureRect = nullptr;
-			m_pUnitPool = nullptr;
-		}
-		virtual ~C_UnitManager()
-		{
-			Destroy();
-		}
-
-		C_UnitManager(const C_UnitManager& _other) = delete;
-		void operator=(const C_UnitManager& _other) = delete;
-
-	public:
-		virtual HRESULT Create() override
-		{
-			if (!std::is_base_of_v<C_Unit, TUnit>)
-				return E_FAIL;
-
-			m_pUnitPool = new C_ObjectPool<TUnit>(100);
-			if (FAILED(m_pUnitPool->Create()))
-				return E_FAIL;
-
-			m_pUnitTextureRect = new std::unordered_map<std::pair<E_UnitState, E_Direction>, std::pair<WORD, RECT>, Pair_Hash>();
-
-			return S_OK;
-		}
-		virtual void	Destroy() override
-		{
-			SAFE_DELETE(m_pUnitPool);
-			SAFE_DELETE(m_pUnitTextureRect);
-			m_pUnitTexture.reset();
-		}
-
-		virtual HRESULT Update(const FLOAT& _deltaTime) override
-		{
-			static_assert(std::is_base_of_v<IUpdatable, TUnit>, "UnitManager TUnit is not base of IUpdatable");
-
-			const std::vector<std::shared_ptr<TUnit>>* list = m_pUnitPool->GetSpawnedObjList();
-			for (unsigned int i = 0; i < list->size(); ++i)
-			{
-				(*list)[i]->Update(_deltaTime);
-			}
-
-			return S_OK;
-		}
-		virtual HRESULT Render() override
-		{
-			static_assert(std::is_base_of_v<IRenderable, TUnit>, "UnitManager TUnit is not base of IRenderable");
-
-			const std::vector<std::shared_ptr<TUnit>>* list = m_pUnitPool->GetSpawnedObjList();
-			for (unsigned int i = 0; i < list->size(); ++i)
-			{
-				(*list)[i]->Render();
-			}
-
-			return S_OK;
-		}
-
 	protected: // Unit
 		RECT m_rcUnitSize;
 		std::shared_ptr<C_Texture> m_pUnitTexture;
@@ -172,6 +111,64 @@ namespace Game
 			return unit_smtptr;
 		}
 		const std::vector<std::shared_ptr<TUnit>>* GetSpawnedObjList() { return m_pUnitPool->GetSpawnedObjList(); }
+
+	protected:
+		C_UnitManager()
+		{
+			m_pUnitTexture = nullptr;
+			m_pUnitTextureRect = nullptr;
+			m_pUnitPool = nullptr;
+		}
+		virtual ~C_UnitManager()
+		{
+			Destroy();
+		}
+
+	public:
+		virtual HRESULT Create() override
+		{
+			if (!std::is_base_of_v<C_Unit, TUnit>)
+				return E_FAIL;
+
+			m_pUnitPool = new C_ObjectPool<TUnit>(100);
+			if (FAILED(m_pUnitPool->Create()))
+				return E_FAIL;
+
+			m_pUnitTextureRect = new std::unordered_map<std::pair<E_UnitState, E_Direction>, std::pair<WORD, RECT>, Pair_Hash>();
+
+			return S_OK;
+		}
+		virtual void	Destroy() override
+		{
+			SAFE_DELETE(m_pUnitPool);
+			SAFE_DELETE(m_pUnitTextureRect);
+			m_pUnitTexture.reset();
+		}
+
+		virtual HRESULT Update(const FLOAT& _deltaTime) override
+		{
+			static_assert(std::is_base_of_v<IUpdatable, TUnit>, "UnitManager TUnit is not base of IUpdatable");
+
+			const std::vector<std::shared_ptr<TUnit>>* list = m_pUnitPool->GetSpawnedObjList();
+			for (unsigned int i = 0; i < list->size(); ++i)
+			{
+				(*list)[i]->Update(_deltaTime);
+			}
+
+			return S_OK;
+		}
+		virtual HRESULT Render() override
+		{
+			static_assert(std::is_base_of_v<IRenderable, TUnit>, "UnitManager TUnit is not base of IRenderable");
+
+			const std::vector<std::shared_ptr<TUnit>>* list = m_pUnitPool->GetSpawnedObjList();
+			for (unsigned int i = 0; i < list->size(); ++i)
+			{
+				(*list)[i]->Render();
+			}
+
+			return S_OK;
+		}
 
 	};
 }

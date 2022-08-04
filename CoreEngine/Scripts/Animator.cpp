@@ -1,17 +1,32 @@
 #include "stdafx_Core.h"
 #include "Animator.h"
 
-#include "Timer.h"
-
 namespace CoreEngine
 {
+	void C_Animator::SetSampleRate(const FLOAT& _sampleRate)
+	{
+		m_pAnimTimer->SetTime(_sampleRate);
+	}
+	void C_Animator::AddFunc(const DWORD& _index, function_update _func)
+	{
+		m_dwFuncCount = max(_index + 1, m_dwFuncCount);
+
+		m_pFuncDictionary->insert({ _index, _func });
+	}
+	void C_Animator::SetRenderFunc(function_render _func)
+	{
+		*m_pRenderFunc = _func;
+	}
+
 	C_Animator::C_Animator()
 	{
 		m_pAnimTimer = nullptr;
 
 		m_dwFuncIndex = 1;
 		m_dwFuncCount = 1;
-		m_pFuncList = nullptr;
+
+		m_pFuncDictionary = nullptr;
+		m_pRenderFunc = nullptr;
 	}
 	C_Animator::~C_Animator()
 	{
@@ -20,18 +35,24 @@ namespace CoreEngine
 
 	HRESULT C_Animator::Create()
 	{
-		m_pAnimTimer = new C_Timer();
+		m_pAnimTimer = std::make_unique<C_Timer>();
 		m_pAnimTimer->Play();
 
-		m_pFuncList = new std::unordered_multimap<DWORD, std::function<void()>>();
+		if (nullptr == m_pFuncDictionary)
+			m_pFuncDictionary = std::make_unique<std::unordered_multimap<DWORD, function_update>>();
+		if (nullptr == m_pRenderFunc)
+			m_pRenderFunc = std::make_unique<function_render>();
 
 		return S_OK;
 	}
 	void C_Animator::Destroy()
 	{
-		SAFE_DELETE(m_pFuncList);
+		m_pRenderFunc = nullptr;
 
-		SAFE_DELETE(m_pAnimTimer);
+		m_pFuncDictionary->clear();
+		m_pFuncDictionary = nullptr;
+
+		m_pAnimTimer = nullptr;
 	}
 
 	HRESULT C_Animator::Update(const FLOAT& _deltaTime)
@@ -42,11 +63,11 @@ namespace CoreEngine
 		if (FAILED(m_pAnimTimer->Update(_deltaTime)))
 			return S_OK;
 
-		for (auto iter = m_pFuncList->lower_bound(0); iter != m_pFuncList->upper_bound(0); ++iter)
+		for (auto iter = m_pFuncDictionary->lower_bound(0); iter != m_pFuncDictionary->upper_bound(0); ++iter)
 		{
 			(*iter).second();
 		}
-		for (auto iter = m_pFuncList->lower_bound(m_dwFuncIndex); iter != m_pFuncList->upper_bound(m_dwFuncIndex); ++iter)
+		for (auto iter = m_pFuncDictionary->lower_bound(m_dwFuncIndex); iter != m_pFuncDictionary->upper_bound(m_dwFuncIndex); ++iter)
 		{
 			(*iter).second();
 		}
@@ -58,17 +79,11 @@ namespace CoreEngine
 
 		return S_OK;
 	}
-
-	void C_Animator::SetSampleRate(const FLOAT& _sampleRate)
+	HRESULT C_Animator::Render()
 	{
-		m_pAnimTimer->SetTime(_sampleRate);
-	}
+		if (m_pRenderFunc != nullptr)
+			FAILED_CHECK_RETURN((*m_pRenderFunc)());
 
-	void C_Animator::AddFunc(DWORD _index, std::function<void()> _func)
-	{
-		if (_index + 1 > m_dwFuncCount)
-			m_dwFuncCount = _index + 1;
-
-		m_pFuncList->insert({ _index, _func});
+		return S_OK;
 	}
 }

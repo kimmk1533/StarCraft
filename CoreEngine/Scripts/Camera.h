@@ -37,6 +37,9 @@ namespace CoreEngine
 		GET(viewMatrix) { return m_pViewMatrix; }
 
 	public:
+		D3DXVECTOR3 WorldToScreenPoint(const D3DXVECTOR3& _pos);
+
+	public:
 		C_Camera();
 		~C_Camera();
 

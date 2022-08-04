@@ -1,40 +1,42 @@
 #pragma once
+#include "Timer.h"
 
 namespace CoreEngine
 {
-    class C_Timer;
-}
+	class C_Animator : public C_FrameWork, public IUpdatable, public IRenderable
+	{
+	protected:
+		using function_update = std::function<void()>;
+		using function_render = std::function<HRESULT()>;
 
-namespace CoreEngine
-{
-    class C_Animator : public C_FrameWork, public IUpdatable//, public IRenderable
-    {
-    public:
-        C_Animator();
-        virtual ~C_Animator();
+		std::unique_ptr<C_Timer> m_pAnimTimer;
 
-    public:
-        virtual HRESULT Create() override;
-        virtual void	Destroy() override;
+		DWORD m_dwFuncIndex;
+		DWORD m_dwFuncCount;
 
-        virtual HRESULT Update(const FLOAT& _deltaTime) override;
-        //virtual HRESULT Render() override;
+		std::unique_ptr<std::unordered_multimap<DWORD, function_update>> m_pFuncDictionary;
+		std::unique_ptr<function_render> m_pRenderFunc;
 
-    protected:
-        C_Timer* m_pAnimTimer;
+	public:
+		void SetSampleRate(const FLOAT& _sampleRate);
+		/// <summary>
+		/// 애니메이션 함수 추가
+		/// </summary>
+		/// <param name="_index">인덱스(0 == 매 프래임마다)</param>
+		/// <param name="_func">함수</param>
+		void AddFunc(const DWORD& _index, function_update _func);
+		void SetRenderFunc(function_render _func);
 
-        DWORD m_dwFuncIndex;
-        DWORD m_dwFuncCount;
-        std::unordered_multimap<DWORD, std::function<void()>>* m_pFuncList;
+	public:
+		C_Animator();
+		virtual ~C_Animator();
 
-    public:
-        void SetSampleRate(const FLOAT& _sampleRate);
+	public:
+		virtual HRESULT Create() override;
+		virtual void	Destroy() override;
 
-        /// <summary>
-        /// 애니메이션 함수 추가
-        /// </summary>
-        /// <param name="_index">인덱스(0 == 매 프래임마다)</param>
-        /// <param name="_func">함수</param>
-        void AddFunc(DWORD _index, std::function<void()> _func);
-    };
+		virtual HRESULT Update(const FLOAT& _deltaTime) override;
+		virtual HRESULT Render() override;
+
+	};
 }

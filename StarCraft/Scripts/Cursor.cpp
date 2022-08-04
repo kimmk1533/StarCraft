@@ -35,7 +35,7 @@ namespace Game
 	HRESULT C_Cursor::Create()
 	{
 		m_pHotspot = new D3DXVECTOR3(19.0f, 17.0f, 1.0f);
-		m_pPosition = new D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		m_pPosition = new D3DXVECTOR3();
 
 		m_pAnimator = new C_Animator();
 		SAFE_CREATE(m_pAnimator);
@@ -92,18 +92,15 @@ namespace Game
 		else
 			rect = C_SelectManager::GetI()->GetTextureRect(m_CursorState, m_AnimIndex);
 
-		D3DXVECTOR2 temp = (D3DXVECTOR2)(*m_pPosition + (D3DXVECTOR3)(Camera->position));
+		Sprite->SetTranslation(Camera->WorldToScreenPoint(*m_pPosition));
+		Sprite->SetRotation(nullptr);
+		Sprite->SetScale(nullptr);
 
-		Sprite->Draw(
+		return Sprite->Draw(
 			texture->GetTexture(),
 			&rect,
-			nullptr,
-			nullptr,
-			&temp,
 			m_pHotspot,
-			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)
+			D3DCOLOR_XRGB(255, 255, 255)
 		);
-
-		return S_OK;
 	}
 }

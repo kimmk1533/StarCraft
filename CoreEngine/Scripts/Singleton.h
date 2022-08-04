@@ -8,16 +8,6 @@ namespace CoreEngine
 	private:
 		static T* m_Instance;
 
-	protected:
-		C_Singleton() {	}
-		virtual ~C_Singleton() { }
-
-		C_Singleton(const C_Singleton<T>& _other) = delete;
-		void operator=(const C_Singleton<T>& _other) = delete;
-
-	protected:
-		bool CheckInstance() { return m_Instance == nullptr; }
-
 	public:
 		static T* GetI()
 		{
@@ -30,6 +20,14 @@ namespace CoreEngine
 		{
 			SAFE_DELETE(m_Instance);
 		}
+
+	protected:
+		C_Singleton() {	}
+		virtual ~C_Singleton() { Destroy(); }
+
+		C_Singleton(const C_Singleton<T>& _other) = delete;
+		void operator=(const C_Singleton<T>& _other) = delete;
+
 	};
 
 	template <class T>

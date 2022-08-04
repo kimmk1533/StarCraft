@@ -28,15 +28,15 @@ namespace CoreEngine
 #endif // UNICODE
 
 		D3DXIMAGE_INFO		m_Img;		// 이미지 정보
-		LPDIRECT3DTEXTURE9	m_pTex;		// 텍스처
+		LPD3DXTEXTURE9	m_pTex;		// 텍스처
 
 	public:
 		INT		GetImageWidth();
 		INT		GetImageHeight();
 		void	GetImageRect(RECT* pRc);
 
-		LPDIRECT3DTEXTURE9	GetTexture();
-		LPDIRECT3DTEXTURE9	GetTexture() const;
+		LPD3DXTEXTURE9	GetTexture();
+		LPD3DXTEXTURE9	GetTexture() const;
 
 	};
 }

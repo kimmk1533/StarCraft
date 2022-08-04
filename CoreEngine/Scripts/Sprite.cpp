@@ -2,8 +2,113 @@
 
 namespace CoreEngine
 {
-	HRESULT C_Sprite::Draw(
-		LPDIRECT3DTEXTURE9	_pTex,
+	HRESULT C_Sprite::SetTranslation(const D3DXVECTOR2& _pos)
+	{
+		return SetTranslation(_pos.x, _pos.y, 0.0f);
+	}
+	HRESULT C_Sprite::SetTranslation(const D3DXVECTOR3& _pos)
+	{
+		return SetTranslation(_pos.x, _pos.y, _pos.z);
+	}
+	HRESULT C_Sprite::SetTranslation(const D3DXVECTOR3* _pos)
+	{
+		if (nullptr == _pos)
+			return SetTranslation(0.0f, 0.0f, 0.0f);
+
+		return SetTranslation(_pos->x, _pos->y, _pos->z);
+	}
+	HRESULT C_Sprite::SetTranslation(const FLOAT& _x, const FLOAT& _y, const FLOAT& _z)
+	{
+		D3DXMatrixTranslation(m_pMtPosition, _x, _y, _z);
+
+		return E_NOTIMPL;
+	}
+
+	HRESULT	C_Sprite::SetRotation(const D3DXVECTOR2& _rotCenter, const FLOAT& _angle)
+	{
+		if (_angle == 0.0f)
+			return SetRotation(0.0f, 0.0f, 0.0f);
+
+		return SetRotation(_rotCenter.x, _rotCenter.y, _angle);
+	}
+	HRESULT C_Sprite::SetRotation(const D3DXVECTOR2* _rotCenter, const FLOAT& _angle)
+	{
+		if (nullptr == _rotCenter || _angle == 0.0f)
+			return SetRotation(0.0f, 0.0f, 0.0f);
+
+		return SetRotation(_rotCenter->x, _rotCenter->y, _angle);
+	}
+	HRESULT C_Sprite::SetRotation(const D3DXVECTOR3& _rot)
+	{
+		if (_rot.z == 0.0f)
+			return SetRotation(0.0f, 0.0f, 0.0f);
+
+		return SetRotation(_rot.x, _rot.y, _rot.z);
+	}
+	HRESULT C_Sprite::SetRotation(const D3DXVECTOR3* _rot)
+	{
+		if (nullptr == _rot || _rot->z == 0.0f)
+			return SetRotation(0.0f, 0.0f, 0.0f);
+
+		return SetRotation(_rot->x, _rot->y, _rot->z);
+	}
+	HRESULT C_Sprite::SetRotation(const FLOAT& _cx, const FLOAT& _cy, const FLOAT& _angle)
+	{
+		D3DXMatrixTranslation(m_pMtRotation, _cx, _cy, 0.0f);
+		D3DXMatrixRotationZ(m_pMtRotation, _angle);
+
+		return S_OK;
+	}
+
+	HRESULT C_Sprite::SetScale(const D3DXVECTOR2& _scale)
+	{
+		return SetScale(_scale.x, _scale.y, 1.0f);
+	}
+	HRESULT C_Sprite::SetScale(const D3DXVECTOR3& _scale)
+	{
+		return SetScale(_scale.x, _scale.y, _scale.z);
+	}
+	HRESULT C_Sprite::SetScale(const D3DXVECTOR3* _scale)
+	{
+		if (nullptr == _scale)
+			return SetScale(1.0f, 1.0f, 1.0f);
+
+		return SetScale(_scale->x, _scale->y, _scale->z);
+	}
+	HRESULT C_Sprite::SetScale(const FLOAT& _x, const FLOAT& _y, const FLOAT& _z)
+	{
+		D3DXMatrixScaling(m_pMtScale, _x, _y, _z);
+
+		return S_OK;
+	}
+
+	HRESULT C_Sprite::Draw(LPD3DXTEXTURE9 _pTex, const RECT* _pSrcRect, const D3DXVECTOR3* _pCenter, const D3DCOLOR _color)
+	{
+		NULL_CHECK_WITH_MSG(m_pDxSprite, "m_pDxSprite is nullptr");
+
+		m_pDxSprite->Begin(D3DXSPRITE_ALPHABLEND);
+
+		D3DXMatrixIdentity(m_pMtSRT);
+		D3DXMatrixIdentity(m_pMtResult);
+
+		*m_pMtSRT = (*m_pMtScale) * (*m_pMtRotation) * (*m_pMtPosition);
+
+		*m_pMtResult = *m_pMtSRT * (*Camera->viewMatrix);
+
+		m_pDxSprite->SetTransform(m_pMtResult);
+
+		m_pDxSprite->Draw(_pTex, _pSrcRect, _pCenter, nullptr, _color);
+
+		D3DXMatrixIdentity(m_pMtResult);
+		m_pDxSprite->SetTransform(m_pMtResult);
+
+		m_pDxSprite->End();
+
+		return S_OK;
+	}
+
+	/*HRESULT C_Sprite::Draw(
+		LPD3DXTEXTURE9	_pTex,
 		const RECT* _pSrcRect,
 		const D3DXVECTOR2* _pScale,	// Scaling
 		const D3DXVECTOR2* _pCenter,	// Rotation Center
@@ -67,7 +172,7 @@ namespace CoreEngine
 		return S_OK;
 	}
 	HRESULT C_Sprite::Draw(
-		LPDIRECT3DTEXTURE9	_pTex,
+		LPD3DXTEXTURE9	_pTex,
 		const RECT* _pSrcRect,
 		const D3DXVECTOR2* _pScale,	// Scaling
 		const D3DXVECTOR3* _pRotation,	// Rotation
@@ -83,7 +188,7 @@ namespace CoreEngine
 
 		D3DXVECTOR2 rotation(_pRotation->x, _pRotation->y);
 		return this->Draw(_pTex, _pSrcRect, _pScale, &rotation, _pRotation->z, _pPosition, _pOffset, _color);
-	}
+	}*/
 
 	HRESULT C_Sprite::DrawLine(
 		const D3DXVECTOR2* _pVertexList,
@@ -242,13 +347,40 @@ namespace CoreEngine
 	{
 		m_pDxSprite = nullptr;
 		m_pDxLine = nullptr;
+
+		m_pMtPosition = nullptr;
+		m_pMtRotation = nullptr;
+		m_pMtScale = nullptr;
+		m_pMtSRT = nullptr;
+		m_pMtResult = nullptr;
 	}
 	C_Sprite::~C_Sprite()
 	{
-
+		Destroy();
 	}
 
-	HRESULT C_Sprite::Create(LPD3DXSPRITE _pSprite, LPD3DXLINE _pLine)
+	HRESULT C_Sprite::Create()
+	{
+		FAILED_CHECK_RETURN(D3DXCreateSprite(m_pd3dDevice, &m_pDxSprite));
+		FAILED_CHECK_RETURN(D3DXCreateLine(m_pd3dDevice, &m_pDxLine));
+		m_pDxLine->SetAntialias(false);
+		m_pDxLine->SetWidth(1.0f);
+
+		m_pMtPosition = new D3DXMATRIX();
+		m_pMtRotation = new D3DXMATRIX();
+		m_pMtScale = new D3DXMATRIX();
+		m_pMtSRT = new D3DXMATRIX();
+		m_pMtResult = new D3DXMATRIX();
+
+		D3DXMatrixIdentity(m_pMtPosition);
+		D3DXMatrixIdentity(m_pMtRotation);
+		D3DXMatrixIdentity(m_pMtScale);
+		D3DXMatrixIdentity(m_pMtSRT);
+		D3DXMatrixIdentity(m_pMtResult);
+
+		return S_OK;
+	}
+	HRESULT C_Sprite::Create(const LPD3DXSPRITE _pSprite, const LPD3DXLINE _pLine)
 	{
 		NULL_CHECK_WITH_MSG(_pSprite, "_pSprite is nullptr");
 		NULL_CHECK_WITH_MSG(_pLine, "_pLine is nullptr");
@@ -256,6 +388,26 @@ namespace CoreEngine
 		m_pDxSprite = _pSprite;
 		m_pDxLine = _pLine;
 
+		m_pMtPosition = new D3DXMATRIX();
+		m_pMtRotation = new D3DXMATRIX();
+		m_pMtScale = new D3DXMATRIX();
+		m_pMtSRT = new D3DXMATRIX();
+		m_pMtResult = new D3DXMATRIX();
+
+		D3DXMatrixIdentity(m_pMtPosition);
+		D3DXMatrixIdentity(m_pMtRotation);
+		D3DXMatrixIdentity(m_pMtScale);
+		D3DXMatrixIdentity(m_pMtSRT);
+		D3DXMatrixIdentity(m_pMtResult);
+
 		return S_OK;
+	}
+	void C_Sprite::Destroy()
+	{
+		SAFE_DELETE(m_pMtResult);
+		SAFE_DELETE(m_pMtSRT);
+		SAFE_DELETE(m_pMtScale);
+		SAFE_DELETE(m_pMtRotation);
+		SAFE_DELETE(m_pMtPosition);
 	}
 }

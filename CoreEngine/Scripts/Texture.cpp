@@ -108,11 +108,11 @@ namespace CoreEngine
 		pRc->bottom = m_Img.Height;
 	}
 
-	LPDIRECT3DTEXTURE9 C_Texture::GetTexture()
+	LPD3DXTEXTURE9 C_Texture::GetTexture()
 	{
 		return m_pTex;
 	}
-	LPDIRECT3DTEXTURE9 C_Texture::GetTexture() const
+	LPD3DXTEXTURE9 C_Texture::GetTexture() const
 	{
 		return m_pTex;
 	}

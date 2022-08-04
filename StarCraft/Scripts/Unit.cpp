@@ -3,8 +3,6 @@
 
 namespace Game
 {
-	WORD C_Unit::m_UnitCount = 0;
-
 	C_Unit::C_Unit()
 	{
 		m_pPosition = nullptr;

@@ -3,6 +3,11 @@
 
 namespace CoreEngine
 {
+	D3DXVECTOR3 C_Camera::WorldToScreenPoint(const D3DXVECTOR3& _pos)
+	{
+		return _pos + (*m_pEye + D3DXVECTOR3(0.0f, 0.0f, -m_pEye->z));
+	}
+
 	C_Camera::C_Camera()
 	{
 		m_pEye = nullptr;

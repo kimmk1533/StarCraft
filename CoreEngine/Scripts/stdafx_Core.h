@@ -58,7 +58,12 @@ struct Pair_Hash
 
 #pragma endregion
 
-#pragma region D3DXVECTOR operator
+#pragma region D3D
+
+using LPD3DXTEXTURE9 = LPDIRECT3DTEXTURE9;
+
+#pragma region VECTOR
+
 D3DXVECTOR2 operator+(const D3DXVECTOR2& _lhs, const D3DXVECTOR3& _rhs);
 D3DXVECTOR3 operator+(const D3DXVECTOR3& _lhs, const D3DXVECTOR2& _rhs);
 
@@ -73,6 +78,9 @@ D3DXVECTOR3& operator-=(D3DXVECTOR3& _lhs, const D3DXVECTOR2& _rhs);
 
 std::ostream& operator<<(std::ostream& _out, const D3DXVECTOR2& _vector);
 std::ostream& operator<<(std::ostream& _out, const D3DXVECTOR3& _vector);
+
+#pragma endregion
+
 #pragma endregion
 
 #include "CoreUtil.h"
