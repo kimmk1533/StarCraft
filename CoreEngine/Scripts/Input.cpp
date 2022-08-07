@@ -129,7 +129,7 @@ namespace CoreEngine
 		::ScreenToClient(m_hWnd, &pt);
 
 		m_vcCur.x = FLOAT(pt.x);
-		m_vcCur.y = FLOAT(pt.y);
+		m_vcCur.y = FLOAT(-pt.y);
 
 		m_vcEps = m_vcCur - m_vcOld;
 
@@ -195,11 +195,11 @@ namespace CoreEngine
 		{
 		case WM_MOUSEWHEEL:
 		{
-			INT c = HIWORD(wParam);
+			/*INT c = HIWORD(wParam);
 			INT d = LOWORD(wParam);
 
 			c = short(c);
-			m_vcCur.z += FLOAT(c);
+			m_vcCur.z += FLOAT(c);*/
 			break;
 		}
 		}

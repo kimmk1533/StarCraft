@@ -19,9 +19,9 @@ namespace CoreEngine
 	}
 	HRESULT C_Sprite::SetTranslation(const FLOAT& _x, const FLOAT& _y, const FLOAT& _z)
 	{
-		D3DXMatrixTranslation(m_pMtPosition, _x, _y, _z);
+		D3DXMatrixTranslation(m_pMtTranslation, _x, -_y, _z);
 
-		return E_NOTIMPL;
+		return S_OK;
 	}
 
 	HRESULT	C_Sprite::SetRotation(const D3DXVECTOR2& _rotCenter, const FLOAT& _angle)
@@ -91,14 +91,19 @@ namespace CoreEngine
 		D3DXMatrixIdentity(m_pMtSRT);
 		D3DXMatrixIdentity(m_pMtResult);
 
-		*m_pMtSRT = (*m_pMtScale) * (*m_pMtRotation) * (*m_pMtPosition);
+		// World Matrix
+		*m_pMtSRT = (*m_pMtScale) * (*m_pMtRotation) * (*m_pMtTranslation);
 
+		// View Matrix
 		*m_pMtResult = *m_pMtSRT * (*Camera->viewMatrix);
 
+		// Apply
 		m_pDxSprite->SetTransform(m_pMtResult);
 
+		// Draw
 		m_pDxSprite->Draw(_pTex, _pSrcRect, _pCenter, nullptr, _color);
 
+		// Init
 		D3DXMatrixIdentity(m_pMtResult);
 		m_pDxSprite->SetTransform(m_pMtResult);
 
@@ -206,7 +211,19 @@ namespace CoreEngine
 
 		m_pDxLine->Begin();
 
-		m_pDxLine->Draw(_pVertexList, _dwVertexListCount, _color);
+		D3DXMATRIX mtV = (*Camera->viewMatrix);
+
+		D3DXVECTOR2* TempPos = new D3DXVECTOR2[_dwVertexListCount], * LinePos = new D3DXVECTOR2[_dwVertexListCount];
+
+		for (size_t i = 0; i < _dwVertexListCount; ++i)
+		{
+			D3DXVec2TransformCoord(&LinePos[i], &TempPos[i], &mtV);
+		}
+
+		m_pDxLine->Draw(LinePos, _dwVertexListCount, _color);
+
+		delete[] TempPos;
+		delete[] LinePos;
 
 		m_pDxLine->End();
 
@@ -237,8 +254,21 @@ namespace CoreEngine
 		}
 
 		D3DXVECTOR2 TempPos[2], LinePos[2];
-		const D3DXVECTOR2 LeftTop = D3DXVECTOR2(_rect.left, _rect.top);
-		const D3DXVECTOR2 RightBottom = D3DXVECTOR2(_rect.right, _rect.bottom);
+		D3DXVECTOR2 LeftTop = D3DXVECTOR2(_rect.left, _rect.top);
+		D3DXVECTOR2 RightBottom = D3DXVECTOR2(_rect.right, _rect.bottom);
+
+		D3DXMatrixIdentity(m_pMtSRT);
+		D3DXMatrixIdentity(m_pMtResult);
+
+		// World Matrix
+		*m_pMtSRT = (*m_pMtScale) * (*m_pMtRotation) * (*m_pMtTranslation);
+
+		// View Matrix
+		*m_pMtResult = *m_pMtSRT * (*Camera->viewMatrix);
+
+		D3DXVec2TransformCoord(&LinePos[0], &LinePos[0], m_pMtResult);
+		D3DXVec2TransformCoord(&LinePos[1], &LinePos[1], m_pMtResult);
+
 
 		D3DXMATRIX mtV = (*Camera->viewMatrix);
 
@@ -246,8 +276,8 @@ namespace CoreEngine
 		TempPos[1] = TempPos[0] = LeftTop;
 		TempPos[1].x = RightBottom.x;
 
-		D3DXVec2TransformCoord(&LinePos[0], &TempPos[0], &mtV);
-		D3DXVec2TransformCoord(&LinePos[1], &TempPos[1], &mtV);
+		D3DXVec2TransformCoord(&LinePos[0], &TempPos[0], m_pMtResult);
+		D3DXVec2TransformCoord(&LinePos[1], &TempPos[1], m_pMtResult);
 
 		FAILED_CHECK_RETURN(m_pDxLine->Draw(LinePos, 2, _color));
 
@@ -256,8 +286,8 @@ namespace CoreEngine
 		TempPos[0] = TempPos[1];
 		TempPos[1] = RightBottom;
 
-		D3DXVec2TransformCoord(&LinePos[0], &TempPos[0], &mtV);
-		D3DXVec2TransformCoord(&LinePos[1], &TempPos[1], &mtV);
+		D3DXVec2TransformCoord(&LinePos[0], &TempPos[0], m_pMtResult);
+		D3DXVec2TransformCoord(&LinePos[1], &TempPos[1], m_pMtResult);
 
 		FAILED_CHECK_RETURN(m_pDxLine->Draw(LinePos, 2, _color));
 
@@ -265,8 +295,8 @@ namespace CoreEngine
 		TempPos[0] = TempPos[1];
 		TempPos[1].x = LeftTop.x;
 
-		D3DXVec2TransformCoord(&LinePos[0], &TempPos[0], &mtV);
-		D3DXVec2TransformCoord(&LinePos[1], &TempPos[1], &mtV);
+		D3DXVec2TransformCoord(&LinePos[0], &TempPos[0], m_pMtResult);
+		D3DXVec2TransformCoord(&LinePos[1], &TempPos[1], m_pMtResult);
 
 		FAILED_CHECK_RETURN(m_pDxLine->Draw(LinePos, 2, _color));
 
@@ -275,8 +305,8 @@ namespace CoreEngine
 		TempPos[0] = TempPos[1];
 		TempPos[1] = LeftTop;
 
-		D3DXVec2TransformCoord(&LinePos[0], &TempPos[0], &mtV);
-		D3DXVec2TransformCoord(&LinePos[1], &TempPos[1], &mtV);
+		D3DXVec2TransformCoord(&LinePos[0], &TempPos[0], m_pMtResult);
+		D3DXVec2TransformCoord(&LinePos[1], &TempPos[1], m_pMtResult);
 
 		FAILED_CHECK_RETURN(m_pDxLine->Draw(LinePos, 2, _color));
 
@@ -295,6 +325,8 @@ namespace CoreEngine
 	)
 	{
 		// 출처: https://www.unknowncheats.me/forum/direct3d/467770-directx-9-function-draw-ellipse.html
+		m_pDxLine->Begin();
+
 		float theta = 2.0f * D3DX_PI / _fNumSides;
 		float c = cosf(theta); // precalculate the sine and cosine
 		float s = sinf(theta);
@@ -303,15 +335,20 @@ namespace CoreEngine
 		float x = 1; // we start at angle = 0 
 		float y = 0;
 
-		D3DXVECTOR2 TempPos[2], LinePos[2];
+		D3DXVECTOR2 LinePos[2];
 
 		m_pDxLine->SetWidth(_fThickness);
 		m_pDxLine->SetAntialias(false);
 		m_pDxLine->SetGLLines(true);
 
-		D3DXMATRIX mtV = (*Camera->viewMatrix);
+		D3DXMatrixIdentity(m_pMtSRT);
+		D3DXMatrixIdentity(m_pMtResult);
 
-		m_pDxLine->Begin();
+		// World Matrix
+		*m_pMtSRT = (*m_pMtScale) * (*m_pMtRotation) * (*m_pMtTranslation);
+
+		// View Matrix
+		*m_pMtResult = *m_pMtSRT * (*Camera->viewMatrix);
 
 		for (int i = 0; i < _fNumSides; ++i)
 		{
@@ -328,13 +365,14 @@ namespace CoreEngine
 			float x2 = x * _fWidth + _fCenterX;
 			float y2 = y * _fHeight + _fCenterY;
 
+			LinePos[0].x = x1; LinePos[0].y = y1;
+			LinePos[1].x = x2; LinePos[1].y = y2;
+
+			// apply matrix
+			D3DXVec2TransformCoord(&LinePos[0], &LinePos[0], m_pMtResult);
+			D3DXVec2TransformCoord(&LinePos[1], &LinePos[1], m_pMtResult);
+
 			// draw the line
-			TempPos[0].x = x1; TempPos[0].y = y1;
-			TempPos[1].x = x2; TempPos[1].y = y2;
-
-			D3DXVec2TransformCoord(&LinePos[0], &TempPos[0], &mtV);
-			D3DXVec2TransformCoord(&LinePos[1], &TempPos[1], &mtV);
-
 			m_pDxLine->Draw(LinePos, 2, _color);
 		}
 
@@ -348,7 +386,7 @@ namespace CoreEngine
 		m_pDxSprite = nullptr;
 		m_pDxLine = nullptr;
 
-		m_pMtPosition = nullptr;
+		m_pMtTranslation = nullptr;
 		m_pMtRotation = nullptr;
 		m_pMtScale = nullptr;
 		m_pMtSRT = nullptr;
@@ -366,13 +404,13 @@ namespace CoreEngine
 		m_pDxLine->SetAntialias(false);
 		m_pDxLine->SetWidth(1.0f);
 
-		m_pMtPosition = new D3DXMATRIX();
+		m_pMtTranslation = new D3DXMATRIX();
 		m_pMtRotation = new D3DXMATRIX();
 		m_pMtScale = new D3DXMATRIX();
 		m_pMtSRT = new D3DXMATRIX();
 		m_pMtResult = new D3DXMATRIX();
 
-		D3DXMatrixIdentity(m_pMtPosition);
+		D3DXMatrixIdentity(m_pMtTranslation);
 		D3DXMatrixIdentity(m_pMtRotation);
 		D3DXMatrixIdentity(m_pMtScale);
 		D3DXMatrixIdentity(m_pMtSRT);
@@ -388,13 +426,13 @@ namespace CoreEngine
 		m_pDxSprite = _pSprite;
 		m_pDxLine = _pLine;
 
-		m_pMtPosition = new D3DXMATRIX();
+		m_pMtTranslation = new D3DXMATRIX();
 		m_pMtRotation = new D3DXMATRIX();
 		m_pMtScale = new D3DXMATRIX();
 		m_pMtSRT = new D3DXMATRIX();
 		m_pMtResult = new D3DXMATRIX();
 
-		D3DXMatrixIdentity(m_pMtPosition);
+		D3DXMatrixIdentity(m_pMtTranslation);
 		D3DXMatrixIdentity(m_pMtRotation);
 		D3DXMatrixIdentity(m_pMtScale);
 		D3DXMatrixIdentity(m_pMtSRT);
@@ -408,6 +446,6 @@ namespace CoreEngine
 		SAFE_DELETE(m_pMtSRT);
 		SAFE_DELETE(m_pMtScale);
 		SAFE_DELETE(m_pMtRotation);
-		SAFE_DELETE(m_pMtPosition);
+		SAFE_DELETE(m_pMtTranslation);
 	}
 }

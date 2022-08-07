@@ -66,7 +66,7 @@ namespace Game
 		m_pAnimator->Update(_deltaTime);
 
 #pragma region Mouse Position
-		(*m_pPosition) = Input->GetMousePos();
+		(*m_pPosition) = Camera->WorldToScreenPoint(Input->GetMousePos());
 #pragma endregion
 		
 #pragma region Mouse Click
@@ -92,7 +92,7 @@ namespace Game
 		else
 			rect = C_SelectManager::GetI()->GetTextureRect(m_CursorState, m_AnimIndex);
 
-		Sprite->SetTranslation(Camera->WorldToScreenPoint(*m_pPosition));
+		Sprite->SetTranslation(*m_pPosition);
 		Sprite->SetRotation(nullptr);
 		Sprite->SetScale(nullptr);
 

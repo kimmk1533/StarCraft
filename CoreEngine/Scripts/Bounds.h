@@ -61,8 +61,8 @@ namespace CoreEngine
 		}
 
 	public:
-		void SetSize(std::shared_ptr<D3DXVECTOR3> _size) { m_pSize = nullptr; m_pSize = _size; }
-		void SetCenter(std::shared_ptr<D3DXVECTOR3> _center) { m_pCenter = nullptr; m_pCenter = _center; }
+		void SetSharedSize(std::shared_ptr<D3DXVECTOR3> _size) { m_pSize = nullptr; m_pSize = _size; }
+		void SetSharedCenter(std::shared_ptr<D3DXVECTOR3> _center) { m_pCenter = nullptr; m_pCenter = _center; }
 
 	public:
 		S_Bounds();

@@ -65,7 +65,7 @@ namespace Game
 
 		// 바운딩 박스
 		m_pBoxCollider->bounds->size = D3DXVECTOR3(17.0f, 20.0f, 0.0f);		// 충돌 크기
-		m_pBoxCollider->bounds->SetCenter(m_pPosition);
+		m_pBoxCollider->bounds->SetSharedCenter(m_pPosition);
 #pragma endregion
 
 		m_pAnimator->AddFunc(0, [&]() -> void
@@ -79,11 +79,11 @@ namespace Game
 				FLOAT length = D3DXVec3Length(&d);
 
 				FLOAT radian = atan2f(dx, dy);
-				FLOAT theta = 180.0f + g_DegreeUnit * 0.5f - D3DXToDegree(radian);
+				FLOAT theta = g_DegreeUnit * 0.5f + D3DXToDegree(radian);
 
 				// % 연산자는 성능을 많이 잡아 먹으니 비교 연산이 더 나을 것.
-				if (theta >= 360.0f)
-					theta -= 360.0f;
+				if (theta >= 360.0f) theta -= 360.0f;
+				if (theta <= 0.0f) theta += 360.0f;
 
 				FLOAT target = theta / g_DegreeUnit;
 #pragma endregion
@@ -145,7 +145,7 @@ namespace Game
 #pragma endregion
 
 #pragma region UnitState
-				if (length <= 0.0f)
+				if (length <= 1e-5f)
 				{
 					m_UnitState = E_UnitState::Idle;
 				}
@@ -165,7 +165,7 @@ namespace Game
 
 		if (Input->GetMouseDown(E_MouseCode::Right))
 		{
-			(*m_pTargetPos) = Input->GetMousePos() + (D3DXVECTOR3)(Camera->position);
+			(*m_pTargetPos) = Camera->WorldToScreenPoint(Input->GetMousePos());
 
 			D3DXVECTOR3 d = (*m_pTargetPos) - (*m_pPosition);
 			FLOAT dx = d.x;
@@ -176,11 +176,12 @@ namespace Game
 			// 현재 방향과 명령 방향의 각도(라디안) 구하기
 			FLOAT radian = atan2f(dx, dy);
 			// 현재 방향과 명령 방향의 각도(세타) 구하기
-			FLOAT theta = 180.0f + g_DegreeUnit * 0.5f - D3DXToDegree(radian);
+			FLOAT theta = g_DegreeUnit * 0.5f + D3DXToDegree(radian);
 
 			// % 연산자는 성능을 많이 잡아 먹으니 비교 연산이 더 나을 것.
 			// 360도 회전 예외 처리
 			if (theta >= 360.0f) theta -= 360.0f;
+			if (theta <= 0.0f) theta += 360.0f;
 
 			// 목표 방향에 해당하는 Enum 값 구하기
 			FLOAT target = theta / g_DegreeUnit;
@@ -193,10 +194,10 @@ namespace Game
 		}
 
 		// 임시 코드
-		if (Input->GetKeyDown(E_KeyCode::S))
+		/*if (Input->GetKeyDown(E_KeyCode::S))
 		{
 			(*m_pTargetPos) = (*m_pPosition);
-		}
+		}*/
 
 		return S_OK;
 	}
@@ -204,7 +205,7 @@ namespace Game
 	{
 		FAILED_CHECK_RETURN(C_Unit::Render());
 
-		static const D3DXVECTOR3 Offset(32, 32, 1.0f);
+		static const D3DXVECTOR3 Offset(32, 32, 0.5f);
 
 		std::shared_ptr<C_Texture> texture = C_MarineManager::GetI()->GetTexture();
 		RECT rect = C_MarineManager::GetI()->GetTextureRect({ m_UnitState, m_Direction }, m_AnimIndex);

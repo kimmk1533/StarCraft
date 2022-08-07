@@ -17,6 +17,8 @@ namespace Game
 		m_pCursorTextureRect = nullptr;
 		m_pCursor = nullptr;
 
+		m_pDragStartPos = nullptr;
+		m_pDragEndPos = nullptr;
 		m_pDragCollider = nullptr;
 		m_pSelectedUnitList = nullptr;
 	}
@@ -38,6 +40,10 @@ namespace Game
 
 			return E_FAIL;
 		}
+
+		m_pCursor = new C_Cursor();
+		SAFE_CREATE(m_pCursor);
+		m_pCursor->SetCursorState(E_CursorState::Idle);
 
 		m_rcCursorSize = RECT{ 0, 0, 41, 41 };
 
@@ -66,10 +72,8 @@ namespace Game
 			this->SetTextureRect(E_CursorState::Move, rect);
 		}
 
-		m_pCursor = new C_Cursor();
-		SAFE_CREATE(m_pCursor);
-		m_pCursor->SetCursorState(E_CursorState::Idle);
-
+		m_pDragStartPos = new D3DXVECTOR3();
+		m_pDragEndPos = new D3DXVECTOR3();
 		m_pDragCollider = new C_BoxCollider();
 		SAFE_CREATE(m_pDragCollider);
 
@@ -90,42 +94,53 @@ namespace Game
 	{
 		if (Input->GetMouseDown(E_MouseCode::Left))
 		{
+			(*m_pDragStartPos) = Camera->WorldToScreenPoint(Input->GetMousePos());
+
 			// ┌
-			m_DragRect.left = Input->GetMousePos().x + Camera->position.x;
-			m_DragRect.top = Input->GetMousePos().y + Camera->position.y;
+			m_DragRect.left	= 0;
+			m_DragRect.top	= 0;
 		}
 		else if (Input->GetMouse(E_MouseCode::Left))
 		{
+			(*m_pDragEndPos) = Camera->WorldToScreenPoint(Input->GetMousePos());
+
 			// ┘
-			m_DragRect.right = Input->GetMousePos().x + Camera->position.x;
-			m_DragRect.bottom = Input->GetMousePos().y + Camera->position.y;
+			m_DragRect.right = m_pDragEndPos->x - m_pDragStartPos->x;
+			m_DragRect.bottom = -(m_pDragEndPos->y - m_pDragStartPos->y);
 		}
 		else if (Input->GetMouseUp(E_MouseCode::Left))
 		{
-			if (m_DragRect.left > m_DragRect.right)
-				swap(m_DragRect.left, m_DragRect.right);
-			if (m_DragRect.top > m_DragRect.bottom)
-				swap(m_DragRect.top, m_DragRect.bottom);
+			m_DragRect.bottom = m_pDragEndPos->y - m_pDragStartPos->y;
 
+			m_DragRect.left += m_pDragStartPos->x; m_DragRect.right += m_pDragStartPos->x;
+			m_DragRect.top += m_pDragStartPos->y; m_DragRect.bottom += m_pDragStartPos->y;
+
+			// 선택 충돌 검사 다시 해야 함
 			// 유닛 선택
 			m_pDragCollider->bounds->size = D3DXVECTOR3(
-				m_DragRect.right - m_DragRect.left,
-				m_DragRect.bottom - m_DragRect.top,
+				abs(m_DragRect.right - m_DragRect.left),
+				abs(m_DragRect.top - m_DragRect.bottom),
 				0.0f
 			);
 			m_pDragCollider->bounds->center = D3DXVECTOR3(
 				m_DragRect.left + m_DragRect.right,
-				m_DragRect.top + m_DragRect.bottom,
+				m_DragRect.bottom + m_DragRect.top,
 				0.0f
 			) * 0.5f;
 
+			if (m_DragRect.left > m_DragRect.right)
+				swap(m_DragRect.left, m_DragRect.right);
+			if (m_DragRect.bottom > m_DragRect.top)
+				swap(m_DragRect.bottom, m_DragRect.top);
+
+			// 임시 충돌 검사
 			auto marineList = C_MarineManager::GetI()->GetSpawnedObjList();
 			for (size_t i = 0; i < marineList->size(); ++i)
 			{
 				if (Physics::CollisionCheck(*m_pDragCollider->bounds, (*(*marineList)[i]->collider->bounds)))
 					std::cout << "충돌\n";
 
-#ifdef TEST
+#ifdef DEBUG_SelectManager_PRINT
 				if (i == 0)
 				{
 					S_Bounds* bounds = (*marineList)[i]->collider->bounds;
@@ -134,7 +149,7 @@ namespace Game
 					std::cout << "m_arrDragPos[0] (" << m_arrDragPos[0].x << ", " << m_arrDragPos[0].y << ")\n";
 					std::cout << "m_arrDragPos[1] (" << m_arrDragPos[1].x << ", " << m_arrDragPos[1].y << ")\n\n";
 				}
-#endif // TEST
+#endif // DEBUG_SelectManager_PRINT
 
 			} // for (size_t i = 0; i < marineList->size(); ++i)
 		} // else if (Input->GetMouseUp(E_MouseCode::Left))
@@ -147,6 +162,10 @@ namespace Game
 	{
 		if (Input->GetMouse(E_MouseCode::Left))
 		{
+			Sprite->SetTranslation(m_pDragStartPos);
+			Sprite->SetRotation(nullptr);
+			Sprite->SetScale(nullptr);
+
 			FAILED_CHECK_RETURN(Sprite->DrawRect(
 				m_DragRect,
 				1.0f,

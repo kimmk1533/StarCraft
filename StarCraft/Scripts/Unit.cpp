@@ -27,8 +27,8 @@ namespace Game
 
 	HRESULT C_Unit::Create()
 	{
-		m_pPosition = std::make_shared<D3DXVECTOR3>(100.0f, 100.0f, 0.0f);
-		m_pTargetPos = std::make_shared<D3DXVECTOR3>(100.0f, 100.0f, 0.0f);
+		m_pPosition = std::make_shared<D3DXVECTOR3>(0.0f, 0.0f, 0.0f);
+		m_pTargetPos = std::make_shared<D3DXVECTOR3>(0.0f, 0.0f, 0.0f);
 		m_pScale = std::make_shared<D3DXVECTOR3>(1.0f, 1.0f, 1.0f);
 
 		m_Info = new S_UnitInfo();
@@ -76,25 +76,25 @@ namespace Game
 		float width = bounds->size.x * 0.8f;
 		float height_half = bounds->size.y * 0.3f;
 
+		Sprite->SetTranslation(*m_pPosition);
+		Sprite->SetRotation(nullptr);
+		Sprite->SetScale(*m_pScale);
+
 		FAILED_CHECK_RETURN(Sprite->DrawEllipse(
-			m_pPosition->x, m_pPosition->y + height_half + 5,
+			0, height_half + 5,
 			width, height_half,
 			30,
 			1.0f,
 			D3DCOLOR_XRGB(0, 255, 0)
 		));
 
-//#define HITBOX
-#ifdef HITBOX
-		D3DXVECTOR2 min = D3DXVECTOR2(bounds->min);
-		D3DXVECTOR2 max = D3DXVECTOR2(bounds->max);
-
+#ifdef DEBUG_Unit_HITBOX
 		RECT rc;
 
-		rc.left = min.x;
-		rc.top = min.y;
-		rc.right = max.x;
-		rc.bottom = max.y;
+		rc.left = lroundf(-bounds->size.x * 0.5f);
+		rc.bottom = lroundf(-bounds->size.y * 0.5f);
+		rc.right = bounds->size.x * 0.5f;
+		rc.top = bounds->size.y * 0.5f;
 
 		FAILED_CHECK_RETURN(Sprite->DrawRect(
 			rc,
@@ -102,7 +102,7 @@ namespace Game
 			false,
 			D3DCOLOR_XRGB(255, 255, 255)
 		));
-#endif // HITBOX
+#endif // DEBUG_Unit_HITBOX
 
 		return S_OK;
 	}

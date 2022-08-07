@@ -8,7 +8,7 @@ namespace CoreEngine
 		LPD3DXSPRITE	m_pDxSprite;		// 2D DX Sprite
 		LPD3DXLINE		m_pDxLine;
 
-		D3DXMATRIX*		m_pMtPosition;
+		D3DXMATRIX*		m_pMtTranslation;
 		D3DXMATRIX*		m_pMtRotation;
 		D3DXMATRIX*		m_pMtScale;
 		D3DXMATRIX*		m_pMtSRT;

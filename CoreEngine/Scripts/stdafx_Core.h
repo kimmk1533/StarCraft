@@ -3,7 +3,12 @@
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
 
-//#define TEST
+#pragma region Define DEBUG
+
+//#define DEBUG_QuadTree_PRINT
+#define DEBUG_QuadTree_RENDER
+
+#pragma endregion
 
 #include <Windows.h>
 // d3d 다음 x는 Extended의 의미로 Direct3D의 기본에 대한 확장을 의미

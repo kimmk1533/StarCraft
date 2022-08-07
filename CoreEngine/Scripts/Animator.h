@@ -22,7 +22,7 @@ namespace CoreEngine
 		/// <summary>
 		/// 애니메이션 함수 추가
 		/// </summary>
-		/// <param name="_index">인덱스(0 == 매 프래임마다)</param>
+		/// <param name="_index">인덱스(0 == 매 키 프래임마다)</param>
 		/// <param name="_func">함수</param>
 		void AddFunc(const DWORD& _index, function_update _func);
 		void SetRenderFunc(function_render _func);

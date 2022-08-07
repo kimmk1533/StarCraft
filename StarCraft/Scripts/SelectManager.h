@@ -46,6 +46,8 @@ namespace Game
 		std::unordered_map<E_CursorState, std::pair<WORD, RECT>>* m_pCursorTextureRect;
 
 	private: // Drag
+		D3DXVECTOR3* m_pDragStartPos;
+		D3DXVECTOR3* m_pDragEndPos;
 		RECT m_DragRect;
 		C_BoxCollider* m_pDragCollider;
 

@@ -36,6 +36,14 @@ namespace CoreEngine
 		READONLY_PROPERTY(const D3DXMATRIX*, viewMatrix);
 		GET(viewMatrix) { return m_pViewMatrix; }
 
+	private:
+		void Calculate_U_Vector();
+		void Calculate_V_Vector();
+		void Calculate_W_Vector();
+		void Calculate_R_Matrix();
+		void Calculate_T_Matrix();
+		void Calculate_View_Matrix();
+
 	public:
 		D3DXVECTOR3 WorldToScreenPoint(const D3DXVECTOR3& _pos);
 

@@ -3,12 +3,21 @@
 #include "BoxCollider.h"
 
 //#define USE_SHARED_PTR
-#define DEBUG_RENDER
-//#define DEBUG_PRINT
 
 namespace CoreEngine
 {
-	enum class E_NodeType : char;
+	enum class E_NodeType : char
+	{
+		None = 0,
+
+		LeftTop = 1,
+		RightTop = 2,
+		LeftBottom = 3,
+		RightBottom = 4,
+		Root = 5,
+
+		Max
+	};
 }
 
 namespace CoreEngine
@@ -79,14 +88,14 @@ namespace CoreEngine
 			D3DXVECTOR3 childCenter = _center;
 			D3DXVECTOR3 childSize = _size * 0.5f;
 
-#ifdef DEBUG_PRINT
+#ifdef DEBUG_QuadTree_PRINT
 			std::cout << "[ depth " << 0 << " ]\n";
-#endif // DEBUG_PRINT
+#endif // DEBUG_QuadTree_PRINT
 
 			// 자식 노드 생성
 			for (WORD i = 0; i < Quad; ++i)
 			{
-#ifdef DEBUG_PRINT
+#ifdef DEBUG_QuadTree_PRINT
 				switch (static_cast<E_NodeType>(i))
 				{
 				case E_NodeType::LeftTop:
@@ -102,25 +111,25 @@ namespace CoreEngine
 					std::cout << " Right  Bottom\n";
 					break;
 				}
-#endif // DEBUG_PRINT
+#endif // DEBUG_QuadTree_PRINT
 
 				offset.x = ((i & 1) ? childSize.x : -childSize.x);
 				offset.y = ((i & 2) ? childSize.y : -childSize.y);
 
 				offset *= 0.5f;
 
-#ifdef DEBUG_PRINT
+#ifdef DEBUG_QuadTree_PRINT
 				std::cout << "  offset.x = " << offset.x << "\n";
 				std::cout << "  offset.y = " << offset.y << "\n\n";
-#endif // DEBUG_PRINT
+#endif // DEBUG_QuadTree_PRINT
 
 				childCenter.x = offset.x + _center.x;
 				childCenter.y = offset.y + _center.y;
 
-#ifdef DEBUG_PRINT
+#ifdef DEBUG_QuadTree_PRINT
 				std::cout << "  childCenter.x = " << childCenter.x << "\n";
 				std::cout << "  childCenter.y = " << childCenter.y << "\n\n";
-#endif // DEBUG_PRINT
+#endif // DEBUG_QuadTree_PRINT
 
 				root->AddChildNode(root->BuildChildTree(root, childCenter, childSize, static_cast<E_NodeType>(i), _depth));
 			}
@@ -155,14 +164,14 @@ namespace CoreEngine
 			D3DXVECTOR3 childCenter;
 			D3DXVECTOR3 childSize = _size * 0.5f;
 
-#ifdef DEBUG_PRINT
+#ifdef DEBUG_QuadTree_PRINT
 			std::cout << "[ depth " << Quad - _depth << " ]\n";
-#endif // DEBUG_PRINT
+#endif // DEBUG_QuadTree_PRINT
 
 			// 자식 노드 생성
 			for (WORD i = 0; i < Quad; ++i)
 			{
-#ifdef DEBUG_PRINT
+#ifdef DEBUG_QuadTree_PRINT
 				switch (static_cast<E_NodeType>(i))
 				{
 				case E_NodeType::LeftTop:
@@ -178,25 +187,25 @@ namespace CoreEngine
 					std::cout << " Right  Bottom\n";
 					break;
 				}
-#endif // DEBUG_PRINT
+#endif // DEBUG_QuadTree_PRINT
 
 				offset.x = ((i & 1) ? childSize.x : -childSize.x);
 				offset.y = ((i & 2) ? childSize.y : -childSize.y);
 
 				offset *= 0.5f;
 
-#ifdef DEBUG_PRINT
+#ifdef DEBUG_QuadTree_PRINT
 				std::cout << "  offset.x = " << offset.x << "\n";
 				std::cout << "  offset.y = " << offset.y << "\n\n";
-#endif // DEBUG_PRINT
+#endif // DEBUG_QuadTree_PRINT
 
 				childCenter.x = offset.x + _center.x;
 				childCenter.y = offset.y + _center.y;
 
-#ifdef DEBUG_PRINT
+#ifdef DEBUG_QuadTree_PRINT
 				std::cout << "  childCenter.x = " << childCenter.x << "\n";
 				std::cout << "  childCenter.y = " << childCenter.y << "\n\n";
-#endif // DEBUG_PRINT
+#endif // DEBUG_QuadTree_PRINT
 
 				PtrType child = node->BuildChildTree(_root, childCenter, childSize, static_cast<E_NodeType>(i), _depth - 1);
 				if (child == nullptr)
@@ -241,19 +250,6 @@ namespace CoreEngine
 		HRESULT Update(const FLOAT& _deltaTime) override;
 		HRESULT Debug_Render(size_t _depth = 0);
 
-	};
-
-	enum class E_NodeType : char
-	{
-		Root = -2,
-		None = -1,
-
-		LeftTop = 0,
-		RightTop = 1,
-		LeftBottom = 2,
-		RightBottom = 3,
-
-		Max
 	};
 
 	template<class T>
@@ -328,7 +324,7 @@ namespace CoreEngine
 	C_QuadTreeNode<T>::C_QuadTreeNode()
 	{
 		m_Type = E_NodeType::None;
-		m_MaxDepth = m_Depth = -1;		
+		m_MaxDepth = m_Depth = -1;
 		m_pBoxCollider = nullptr;
 		m_pParentNode = nullptr;
 		m_pRootNode = nullptr;
@@ -401,7 +397,7 @@ namespace CoreEngine
 	template<class T>
 	inline HRESULT C_QuadTreeNode<T>::Debug_Render(size_t _depth)
 	{
-#ifdef DEBUG_RENDER
+#ifdef DEBUG_QuadTree_RENDER
 		if (_depth > m_MaxDepth)
 			return S_OK;
 
@@ -413,21 +409,25 @@ namespace CoreEngine
 
 		S_Bounds* bounds = m_pBoxCollider->bounds;
 		RECT rc;
-		rc.left = bounds->min.x;
-		rc.top = bounds->min.y;
-		rc.right = bounds->max.x - 1;
-		rc.bottom = bounds->max.y - 1;
+		rc.left = lroundf(-bounds->size.x * 0.5f);
+		rc.bottom = lroundf(-bounds->size.y * 0.5f);
+		rc.right = bounds->size.x * 0.5f - 1;
+		rc.top = bounds->size.y * 0.5f - 1;
+
+		Sprite->SetTranslation(bounds->center);
+		Sprite->SetRotation(nullptr);
+		Sprite->SetScale(nullptr);
 
 		Sprite->DrawRect(rc, 1.0f, false, D3DCOLOR_XRGB(255, 255, 255));
 
 		if (m_pObjList->size() > 0)
 		{
-			++rc.left; ++rc.top;
-			--rc.right; --rc.bottom;
+			++rc.left; --rc.top;
+			--rc.right; ++rc.bottom;
 
 			Sprite->DrawRect(rc, 1.0f, false, D3DCOLOR_XRGB(255, 0, 0));
 		}
-#endif // DEBUG_RENDER
+#endif // DEBUG_QuadTree_RENDER
 
 		return S_OK;
 	}
