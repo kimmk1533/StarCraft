@@ -1,10 +1,14 @@
 #include "Func.h"
 #include "gif.h"
+#include "png.h"
 #include <iomanip>
 
 // 참고: https://blog.naver.com/PostView.naver?blogId=cjdeka3123&logNo=220845487707&parentCategoryNo=&categoryNo=1&viewDate=&isShowPopularPosts=false&from=postList
-void export_megatiles(std::string _name)
+void export_megatiles(const std::string& _name, const bool& _make_gif, const bool& _make_png)
 {
+	if (_make_gif == false && _make_png == false)
+		return;
+
 	size_t total_megatiles = 0;
 	int length = 0;
 	std::vector<uint16_t> vx4_array;
@@ -174,17 +178,24 @@ void export_megatiles(std::string _name)
 	int percentage = 0;
 	int last_percentage = 0;
 
-	std::vector<uint8_t> rgb0;
+	std::vector<uint8_t> rgba;
 
 	// mega tile 이미지 저장할 변수
-	GifWriter g1, g2;
+	GifWriter g, g_all;
 
-	const std::string savePath1(SavePath + _name);
-	const std::string savePath2(SavePath + _name + "/");
+	const std::string savePath(SavePath + _name);
 
-	mkdir(savePath2);
+	mkdir(savePath);
+	if (_make_gif == true)
+	{
+		mkdir(savePath + "/gif");
 
-	GifBegin(&g1, savePath1 + ".gif", width, height, delay);
+		GifBegin(&g_all, savePath + "/" + _name, width, height, delay);
+	}
+	if (_make_png == true)
+	{
+		mkdir(savePath + "/png");
+	}
 
 	std::cout << _name << ": " << "Exporting Images...\n\n";
 
@@ -200,7 +211,7 @@ void export_megatiles(std::string _name)
 		// image initialize
 		for (size_t i = 0; i < 4096; ++i)
 		{
-			rgb0.push_back(0);
+			rgba.push_back(0);
 		}
 
 		// one mega tile -> 4 * 4 mini tiles
@@ -236,32 +247,47 @@ void export_megatiles(std::string _name)
 						uint8_t r = (uint8_t)(wpe_array[wpe_data << 2 ^ 0]);
 						uint8_t g = (uint8_t)(wpe_array[wpe_data << 2 ^ 1]);
 						uint8_t b = (uint8_t)(wpe_array[wpe_data << 2 ^ 2]);
+						uint8_t a = 0;
 
 						// 현재 mega tile 이미지에 한 픽셀 쓰기
 						int rgb_index = (draw_y * 32 + draw_x) * 4;
-						rgb0[rgb_index + 0] = r;
-						rgb0[rgb_index + 1] = g;
-						rgb0[rgb_index + 2] = b;
-						/*rgb0.push_back(r);
-						rgb0.push_back(g);
-						rgb0.push_back(b);
-						rgb0.push_back(0);*/
+						rgba[rgb_index + 0] = r;
+						rgba[rgb_index + 1] = g;
+						rgba[rgb_index + 2] = b;
+						rgba[rgb_index + 3] = a;
 					}
 				}
 			}
 		}
 
-		GifBegin(&g2, savePath2 + _name + " (" + mega_tile_index + ")" + ".gif", width, height, delay);
+		if (_make_gif == true)
+		{
+			GifBegin(&g, savePath + "/gif/" + _name + " (" + mega_tile_index + ")", width, height, delay);
+			GifWriteFrame(&g, rgba.data(), width, height, delay);
+			GifEnd(&g);
 
-		// 다른 이름으로 저장
-		GifWriteFrame(&g1, rgb0.data(), width, height, delay);
-		GifWriteFrame(&g2, rgb0.data(), width, height, delay);
-		rgb0.clear();
+			GifWriteFrame(&g_all, rgba.data(), width, height, delay);
+		}
 
-		GifEnd(&g2);
+		if (_make_png == true)
+		{
+			PngWriter p;
+
+			PngBegin(&p, savePath + "/png/" + _name + " (" + mega_tile_index + ")", width, height, E_ColorType::IndexedColor, true);
+
+			// 다른 이름으로 저장
+			PngWrite(&p, rgba.data(), width, height);
+
+			PngEnd(&p);
+		}
+
+		rgba.clear();
 	}
 
-	GifEnd(&g1);
+	if (_make_gif == true)
+	{
+		GifEnd(&g_all);
+	}
 
 	std::cout << "\n";
 }
