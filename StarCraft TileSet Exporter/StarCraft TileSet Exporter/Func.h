@@ -7,6 +7,6 @@ void export_megatiles(const std::string& _name, const bool& _make_gif, const boo
 bool mkdir(const std::string& _path);
 std::string operator + (const std::string& _lhs, const size_t& _rhs);
 
-extern const uint32_t width;
-extern const uint32_t height;
-extern const uint32_t delay;
+extern const uint32_t g_width;
+extern const uint32_t g_height;
+extern const uint32_t g_delay;

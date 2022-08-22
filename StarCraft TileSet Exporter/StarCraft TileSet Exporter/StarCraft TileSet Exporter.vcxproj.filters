@@ -21,6 +21,9 @@
     <ClCompile Include="Func.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="lodepng.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gif.h">
@@ -39,6 +42,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="zlib.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="lodepng.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

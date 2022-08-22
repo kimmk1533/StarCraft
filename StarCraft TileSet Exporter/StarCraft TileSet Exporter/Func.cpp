@@ -1,6 +1,6 @@
 #include "Func.h"
 #include "gif.h"
-#include "png.h"
+#include "lodepng.h"
 #include <iomanip>
 
 // 참고: https://blog.naver.com/PostView.naver?blogId=cjdeka3123&logNo=220845487707&parentCategoryNo=&categoryNo=1&viewDate=&isShowPopularPosts=false&from=postList
@@ -190,7 +190,7 @@ void export_megatiles(const std::string& _name, const bool& _make_gif, const boo
 	{
 		mkdir(savePath + "/gif");
 
-		GifBegin(&g_all, savePath + "/" + _name, width, height, delay);
+		GifBegin(&g_all, savePath + "/" + _name, g_width, g_height, g_delay);
 	}
 	if (_make_png == true)
 	{
@@ -262,23 +262,26 @@ void export_megatiles(const std::string& _name, const bool& _make_gif, const boo
 
 		if (_make_gif == true)
 		{
-			GifBegin(&g, savePath + "/gif/" + _name + " (" + mega_tile_index + ")", width, height, delay);
-			GifWriteFrame(&g, rgba.data(), width, height, delay);
+			GifBegin(&g, savePath + "/gif/" + _name + " (" + mega_tile_index + ")", g_width, g_height, g_delay);
+			GifWriteFrame(&g, rgba.data(), g_width, g_height, g_delay);
 			GifEnd(&g);
 
-			GifWriteFrame(&g_all, rgba.data(), width, height, delay);
+			GifWriteFrame(&g_all, rgba.data(), g_width, g_height, g_delay);
 		}
 
 		if (_make_png == true)
 		{
-			PngWriter p;
+			std::vector<uint8_t> ImageBuffer;
+			lodepng::encode(ImageBuffer, rgba, g_width, g_height);
+			lodepng::save_file(ImageBuffer, savePath + "/png/" + _name + " (" + mega_tile_index + ")");
+			//PngWriter p;
 
-			PngBegin(&p, savePath + "/png/" + _name + " (" + mega_tile_index + ")", width, height, E_ColorType::IndexedColor, true);
+			//PngBegin(&p, savePath + "/png/" + _name + " (" + mega_tile_index + ")", width, height, E_ColorType::IndexedColor, true);
 
-			// 다른 이름으로 저장
-			PngWrite(&p, rgba.data(), width, height);
+			//// 다른 이름으로 저장
+			//PngWrite(&p, rgba.data(), width, height);
 
-			PngEnd(&p);
+			//PngEnd(&p);
 		}
 
 		rgba.clear();

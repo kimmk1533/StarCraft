@@ -1,42 +1,24 @@
 #include "Global.h"
-//#include "Func.h"
-#include "png.h"
+#include "Func.h"
+#include "lodepng.h"
 
-const uint32_t width = 32;
-const uint32_t height = 32;
-const uint32_t delay = 10;
+const uint32_t g_width = 32;
+const uint32_t g_height = 32;
+const uint32_t g_delay = 10;
 
 int main()
 {
-	PngWriter p;
-	std::string rgba;
-	rgba += 0xff;
-	rgba += '\0';
-	rgba += '\0';
-	rgba += '\0';
-
-	rgba += '\0';
-	rgba += 0xff;
-	rgba += '\0';
-	rgba += '\0';
-
-	rgba += '\0';
-	rgba += '\0';
-	rgba += 0xff;
-	rgba += '\0';
-	PngBegin(&p, "test", 3, 1, E_ColorType::IndexedColor, true);
-	// 다른 이름으로 저장
-	PngWrite(&p, (uint8_t*)rgba.data(), 3, 1);
-	PngEnd(&p);
-
-	/*mkdir(FolderPath);
+	mkdir(FolderPath);
 	mkdir(LoadPath);
 
-	export_megatiles("ashworld",		false,	true);
-	export_megatiles("badlands",		false,	true);
-	export_megatiles("install",			false,	true);
-	export_megatiles("jungle",			false,	true);
-	export_megatiles("platform",		false,	true);*/
+	bool make_gif = true;
+	bool make_png = true;
+
+	export_megatiles("ashworld", make_gif, make_png);
+	export_megatiles("badlands", make_gif, make_png);
+	export_megatiles("install" , make_gif, make_png);
+	export_megatiles("jungle"  , make_gif, make_png);
+	export_megatiles("platform", make_gif, make_png);
 
 	return 0;
 }
