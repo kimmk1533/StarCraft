@@ -11,7 +11,7 @@ int main()
 	mkdir(FolderPath);
 	mkdir(LoadPath);
 
-	bool make_gif = true;
+	bool make_gif = false;
 	bool make_png = true;
 
 	export_megatiles("ashworld", make_gif, make_png);

@@ -247,7 +247,7 @@ void export_megatiles(const std::string& _name, const bool& _make_gif, const boo
 						uint8_t r = (uint8_t)(wpe_array[wpe_data << 2 ^ 0]);
 						uint8_t g = (uint8_t)(wpe_array[wpe_data << 2 ^ 1]);
 						uint8_t b = (uint8_t)(wpe_array[wpe_data << 2 ^ 2]);
-						uint8_t a = 0;
+						uint8_t a = 255;
 
 						// 현재 mega tile 이미지에 한 픽셀 쓰기
 						int rgb_index = (draw_y * 32 + draw_x) * 4;
