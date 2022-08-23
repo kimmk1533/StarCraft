@@ -46,6 +46,12 @@
     <Filter Include="Game\SelectManager\Cursor">
       <UniqueIdentifier>{aa15dcf4-e177-4815-94bf-45527df41e7c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Map">
+      <UniqueIdentifier>{72fd5c14-7fbe-42c9-80c0-a56fd4e7cbaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Map\Manager">
+      <UniqueIdentifier>{9539ee1c-d75a-4dda-944e-2cd7e73018f8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scripts\Unit.cpp">
@@ -78,6 +84,9 @@
     <ClCompile Include="Scripts\MarineManager.cpp">
       <Filter>Game\Unit\UnitManager\Terran</Filter>
     </ClCompile>
+    <ClCompile Include="Scripts\MapManager.cpp">
+      <Filter>Game\Map\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scripts\Unit.h">
@@ -106,6 +115,9 @@
     </ClInclude>
     <ClInclude Include="Scripts\UnitInfo.h">
       <Filter>Game\Unit\UnitInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\MapManager.h">
+      <Filter>Game\Map\Manager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
