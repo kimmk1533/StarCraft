@@ -2,23 +2,33 @@
 #include "Func.h"
 #include "lodepng.h"
 
-const uint32_t g_width = 32;
-const uint32_t g_height = 32;
-const uint32_t g_delay = 10;
-
 int main()
 {
 	mkdir(FolderPath);
 	mkdir(LoadPath);
 
-	bool make_gif = false;
-	bool make_png = true;
+	ImageOption imageOption;
 
-	export_megatiles("ashworld", make_gif, make_png);
-	export_megatiles("badlands", make_gif, make_png);
-	export_megatiles("install" , make_gif, make_png);
-	export_megatiles("jungle"  , make_gif, make_png);
-	export_megatiles("platform", make_gif, make_png);
+	imageOption.option = 0;
+	//imageOption.option |= Option::make_gif;
+	imageOption.option |= Option::make_png;
+	imageOption.option |= Option::gif_sheet;
+	imageOption.option |= Option::png_sheet;
+
+	imageOption.width = 32;
+	imageOption.height = 32;
+
+	imageOption.auto_sheet = true;
+	imageOption.sheet_width = 128;
+	imageOption.sheet_height = 128;
+
+	imageOption.gifOption.delay = 25;
+
+	export_megatiles("ashworld", imageOption);
+	export_megatiles("badlands", imageOption);
+	export_megatiles("install" , imageOption);
+	export_megatiles("jungle"  , imageOption);
+	export_megatiles("platform", imageOption);
 
 	return 0;
 }

@@ -3,10 +3,21 @@
 #include "lodepng.h"
 #include <iomanip>
 
-// 참고: https://blog.naver.com/PostView.naver?blogId=cjdeka3123&logNo=220845487707&parentCategoryNo=&categoryNo=1&viewDate=&isShowPopularPosts=false&from=postList
-void export_megatiles(const std::string& _name, const bool& _make_gif, const bool& _make_png)
+bool operator&(const uint8_t& _lhs, const Option& _rhs)
 {
-	if (_make_gif == false && _make_png == false)
+	return _lhs & (const uint8_t)_rhs;
+}
+bool operator|=(uint8_t& _lhs, const Option& _rhs)
+{
+	return _lhs |= (const uint8_t)_rhs;
+}
+
+// 참고: https://blog.naver.com/PostView.naver?blogId=cjdeka3123&logNo=220845487707&parentCategoryNo=&categoryNo=1&viewDate=&isShowPopularPosts=false&from=postList
+void export_megatiles(const std::string& _name, const ImageOption& _imageOption)
+{
+	uint8_t option = _imageOption.option;
+
+	if (!(option & Option::make_gif) && !(option & Option::make_png))
 		return;
 
 	size_t total_megatiles = 0;
@@ -178,21 +189,31 @@ void export_megatiles(const std::string& _name, const bool& _make_gif, const boo
 	int percentage = 0;
 	int last_percentage = 0;
 
-	std::vector<uint8_t> rgba;
+	uint32_t width = _imageOption.width;
+	uint32_t height = _imageOption.height;
+	uint32_t sheet_width = (_imageOption.auto_sheet ? 100 : _imageOption.sheet_width);
+	uint32_t sheet_height = (_imageOption.auto_sheet ? total_megatiles / 100 + 1 : _imageOption.sheet_height);
+	uint32_t delay = _imageOption.gifOption.delay;
 
 	// mega tile 이미지 저장할 변수
-	GifWriter g, g_all;
+	std::vector<uint8_t> rgba(width * height * 4, 0);
+	std::vector<uint8_t> rgba_sheet(width * height * sheet_width * sheet_height * 4, 0);
+
+	GifWriter g, g_all, g_sheet;
 
 	const std::string savePath(SavePath + _name);
 
 	mkdir(savePath);
-	if (_make_gif == true)
+	if (option & Option::make_gif)
 	{
 		mkdir(savePath + "/gif");
 
-		GifBegin(&g_all, savePath + "/" + _name, g_width, g_height, g_delay);
+		if ((option & Option::make_gif) && (option & Option::gif_all))
+		{
+			GifBegin(&g_all, savePath + "/" + _name, width, height, delay);
+		}
 	}
-	if (_make_png == true)
+	if (option & Option::make_png)
 	{
 		mkdir(savePath + "/png");
 	}
@@ -202,18 +223,6 @@ void export_megatiles(const std::string& _name, const bool& _make_gif, const boo
 	// 모든 mega tile을 추출
 	for (size_t mega_tile_index = 0; mega_tile_index < total_megatiles; ++mega_tile_index)
 	{
-		// 퍼센트 계산
-		percentage = (float)(mega_tile_index + 1) / total_megatiles * 20;
-		if (percentage != last_percentage)
-			std::cout << _name << ": " << percentage * 5 << "% completed\n";
-		last_percentage = percentage;
-
-		// image initialize
-		for (size_t i = 0; i < 4096; ++i)
-		{
-			rgba.push_back(0);
-		}
-
 		// one mega tile -> 4 * 4 mini tiles
 		for (size_t y = 0; y < 4; ++y)
 		{
@@ -237,6 +246,9 @@ void export_megatiles(const std::string& _name, const bool& _make_gif, const boo
 						uint32_t draw_x = draw_offset_x + (is_flipped ? 7 - i : i);
 						uint32_t draw_y = draw_offset_y + j;
 
+						uint32_t draw_sheet_x = mega_tile_index % sheet_width;
+						uint32_t draw_sheet_y = mega_tile_index / sheet_width;
+
 #ifdef USE_1DIMENSION_VECTOR
 						uint8_t wpe_data = vr4_array[(mini_tile_index << 6) ^ (j << 3) ^ i];
 #else
@@ -250,30 +262,42 @@ void export_megatiles(const std::string& _name, const bool& _make_gif, const boo
 						uint8_t a = 255;
 
 						// 현재 mega tile 이미지에 한 픽셀 쓰기
-						int rgb_index = (draw_y * 32 + draw_x) * 4;
-						rgba[rgb_index + 0] = r;
-						rgba[rgb_index + 1] = g;
-						rgba[rgb_index + 2] = b;
-						rgba[rgb_index + 3] = a;
+						int rgba_index = (draw_y * 32 + draw_x) * 4;
+						rgba[rgba_index + 0] = r;
+						rgba[rgba_index + 1] = g;
+						rgba[rgba_index + 2] = b;
+						rgba[rgba_index + 3] = a;
+
+						// 인덱스 값 수정해야함.
+						// 시트 이미지에 한 픽셀 쓰기
+						int rgba_sheet_index = ((draw_sheet_y * 32 + draw_y) * (32 * sheet_width) + draw_x + draw_sheet_x * 32) * 4;
+						rgba_sheet[rgba_sheet_index + 0] = r;
+						rgba_sheet[rgba_sheet_index + 1] = g;
+						rgba_sheet[rgba_sheet_index + 2] = b;
+						rgba_sheet[rgba_sheet_index + 3] = a;
 					}
 				}
 			}
 		}
 
-		if (_make_gif == true)
+		if ((option & Option::make_gif) && (option & Option::gif_one))
 		{
-			GifBegin(&g, savePath + "/gif/" + _name + " (" + mega_tile_index + ")", g_width, g_height, g_delay);
-			GifWriteFrame(&g, rgba.data(), g_width, g_height, g_delay);
+			GifBegin(&g, savePath + "/gif/" + _name + " (" + mega_tile_index + ")", width, height, 0);
+			GifWriteFrame(&g, rgba.data(), width, height, 0);
 			GifEnd(&g);
-
-			GifWriteFrame(&g_all, rgba.data(), g_width, g_height, g_delay);
 		}
 
-		if (_make_png == true)
+		if ((option & Option::make_gif) && (option & Option::gif_all))
+		{
+			GifWriteFrame(&g_all, rgba.data(), width, height, delay);
+		}
+
+		if ((option & Option::make_png) && (option & Option::png_one))
 		{
 			std::vector<uint8_t> ImageBuffer;
-			lodepng::encode(ImageBuffer, rgba, g_width, g_height);
+			lodepng::encode(ImageBuffer, rgba, width, height, LodePNGColorType::LCT_RGBA, 8U);
 			lodepng::save_file(ImageBuffer, savePath + "/png/" + _name + " (" + mega_tile_index + ")");
+
 			//PngWriter p;
 
 			//PngBegin(&p, savePath + "/png/" + _name + " (" + mega_tile_index + ")", width, height, E_ColorType::IndexedColor, true);
@@ -284,12 +308,34 @@ void export_megatiles(const std::string& _name, const bool& _make_gif, const boo
 			//PngEnd(&p);
 		}
 
-		rgba.clear();
+		// 퍼센트 계산
+		percentage = (float)(mega_tile_index + 1) / total_megatiles * 20;
+		if (percentage != last_percentage)
+			std::cout << _name << ": " << percentage * 5 << "% completed.\n";
+		last_percentage = percentage;
 	}
 
-	if (_make_gif == true)
+	std::cout << "\n";
+
+	if ((option & Option::make_gif) && (option & Option::gif_all))
 	{
 		GifEnd(&g_all);
+	}
+	if ((option & Option::make_gif) && (option & Option::gif_sheet))
+	{
+		std::cout << _name << ": " << _name << "_sheet.gif writing...\n";
+		GifBegin(&g_sheet, savePath + "/" + _name + "_sheet", width * sheet_width, height * sheet_height, 0);
+		GifWriteFrame(&g_sheet, rgba_sheet.data(), width * sheet_width, height * sheet_height, 0);
+		GifEnd(&g_sheet);
+		std::cout << _name << ": " << _name << "_sheet.gif writing completed.\n\n";
+	}
+	if ((option & Option::make_png) && (option & Option::png_sheet))
+	{
+		std::cout << _name << ": " << _name << "_sheet.png writing...\n";
+		std::vector<uint8_t> ImageBuffer;
+		lodepng::encode(ImageBuffer, rgba_sheet, width * sheet_width, height * sheet_height, LodePNGColorType::LCT_RGBA, 8U);
+		lodepng::save_file(ImageBuffer, savePath + "/" + _name + "_sheet");
+		std::cout << _name << ": " << _name << "_sheet.png writing completed\n\n";
 	}
 
 	std::cout << "\n";
