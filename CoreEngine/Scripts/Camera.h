@@ -10,8 +10,9 @@ namespace CoreEngine
 		D3DXVECTOR3* m_pUp;
 
 	public:
-		READONLY_PROPERTY(D3DXVECTOR3, position);
+		PROPERTY(D3DXVECTOR3, position);
 		GET(position) { return *m_pEye; }
+		SET(position) { (*m_pEye) = _value; }
 
 		READONLY_PROPERTY(D3DXVECTOR3, forward);
 		GET(forward) { return *m_pLookAt; }

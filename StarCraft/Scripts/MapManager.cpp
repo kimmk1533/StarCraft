@@ -145,6 +145,8 @@ namespace Game
 		int buffer_index = MTXM_offset + 8;
 		int megatile_length = 0;
 
+		std::shared_ptr<C_Texture> texture = (*this->m_pTileSetList)[m_TileSetName];
+
 		for (int y = 0; y < m_MapHeight; ++y)
 		{
 			for (int x = 0; x < m_MapWidth; ++x)
@@ -165,23 +167,22 @@ namespace Game
 				int16_t checking_index = check[real_megatile_index];
 
 				// 이미 사용된 경우
-				if (checking_index != -1)
+				//if (checking_index != -1)
 				{
-					m_pTileSetIndex->push_back(checking_index);
+					//m_pTileSetIndex->push_back(checking_index);
 				}
 				// 아닌 경우 지정 위치에서 mega tile 을 읽어와 리스트에 추가
-				else
+				//else
 				{
-					std::shared_ptr<C_Texture> texture = std::make_shared<C_Texture>();
-					
-					std::string filepath = Path + "TileSet/" + m_TileSetName + "/png/" + 
-						m_TileSetName + " (" + std::to_string(real_megatile_index) + ").png";
+					uint32_t width = texture->GetImageWidth() / 32;
 
-					texture->Init(filepath);
-					texture->Create();
+					uint16_t real_x = real_megatile_index % width;
+					uint16_t real_y = real_megatile_index / width;
 
-					m_pTileSetList->push_back(texture);
-					m_pTileSetIndex->push_back(megatile_length);
+					RECT rc{ real_x * 32, real_y * 32, (real_x + 1) * 32, (real_y + 1) * 32 };
+
+					m_pTileSetIndexRect->push_back(rc);
+
 					check[real_megatile_index] = megatile_length++;
 				}
 
@@ -198,7 +199,7 @@ namespace Game
 	HRESULT C_MapManager::LoadMap(const std::string& _mapName)
 	{
 		m_MapName = _mapName;
-				
+
 		FAILED_CHECK_RETURN(Open_chk_File());
 		FAILED_CHECK_RETURN(SetMapSize());
 
@@ -218,7 +219,7 @@ namespace Game
 		m_pTileSetNameList = nullptr;
 		m_pMegaTileNumber = nullptr;
 		m_pTileSetList = nullptr;
-		m_pTileSetIndex = nullptr;
+		m_pTileSetIndexRect = nullptr;
 
 		m_pMapBuffer = nullptr;
 	}
@@ -233,27 +234,44 @@ namespace Game
 
 		m_pTileSetNameList = new std::vector<std::string>();
 		m_pTileSetNameList->push_back("badlands");
-		m_pTileSetNameList->push_back("space platform");
+		m_pTileSetNameList->push_back("platform");
 		m_pTileSetNameList->push_back("install");
 		m_pTileSetNameList->push_back("ashworld");
 		m_pTileSetNameList->push_back("jungle");
 
-		m_pMegaTileNumber = new std::map<std::string, uint16_t>();
+		m_pMegaTileNumber = new std::unordered_map<std::string, uint16_t>();
 		(*m_pMegaTileNumber)["badlands"] = 4844;
-		(*m_pMegaTileNumber)["space platform"] = 3055;
+		(*m_pMegaTileNumber)["platform"] = 3055;
 		(*m_pMegaTileNumber)["install"] = 1431;
 		(*m_pMegaTileNumber)["ashworld"] = 3497;
 		(*m_pMegaTileNumber)["jungle"] = 5046;
 
-		m_pTileSetList = new std::vector<std::shared_ptr<C_Texture>>();
-		m_pTileSetIndex = new std::vector<uint16_t>();
+		m_pTileSetList = new std::unordered_map<std::string, std::shared_ptr<C_Texture>>();
+
+		for (size_t i = 0; i < (*m_pTileSetNameList).size(); ++i)
+		{
+			std::shared_ptr<C_Texture> texture = std::make_shared<C_Texture>();
+
+			std::string filepath = Path + "TileSet/" + (*m_pTileSetNameList)[i] + "/" +	// Folder Path
+				(*m_pTileSetNameList)[i] + "_sheet.png";								// File Name
+
+			texture->Init(filepath);
+			texture->Create();
+
+			//std::cout << (*m_pTileSetNameList)[i] << " (" << texture->GetImageWidth() << ", " << texture->GetImageHeight() << ")\n";
+
+			(*m_pTileSetList)[(*m_pTileSetNameList)[i]] = texture;
+		}
+
+
+		m_pTileSetIndexRect = new std::vector<RECT>();
 
 		return S_OK;
 	}
 	void C_MapManager::Destroy()
 	{
 		SAFE_DELETE(m_pMapBuffer);
-		SAFE_DELETE(m_pTileSetIndex);
+		SAFE_DELETE(m_pTileSetIndexRect);
 		SAFE_DELETE(m_pTileSetList);
 		SAFE_DELETE(m_pMegaTileNumber);
 		SAFE_DELETE(m_pTileSetNameList);
@@ -268,7 +286,11 @@ namespace Game
 		Sprite->SetRotation(nullptr);
 		Sprite->SetScale(1.0f, 1.0f, 1.0f);
 
+		std::shared_ptr<C_Texture> texture = (*this->m_pTileSetList)[m_TileSetName];
+
 		static const D3DXVECTOR3 center(0.0f, 0.0f, 0.0f);
+
+		Sprite->Begin();
 
 		for (size_t y = 0; y < m_MapHeight; ++y)
 		{
@@ -276,19 +298,14 @@ namespace Game
 			{
 				size_t index = y * m_MapWidth + x;
 
-				std::shared_ptr<C_Texture> tile = (*m_pTileSetList)[(*m_pTileSetIndex)[index]];
-
 				Sprite->SetTranslation(x * 32, (m_MapHeight - y) * 32, 0.0f);
 
-				Sprite->Draw(tile->GetTexture(), &m_TileSetSize, &center, D3DCOLOR_XRGB(255, 255, 255));
+				Sprite->Draw(texture->GetTexture(), &(*m_pTileSetIndexRect)[index], &center, D3DCOLOR_XRGB(255, 255, 255));
 			}
 		}
 
-		Sprite->SetTranslation(nullptr);
-		Sprite->SetRotation(nullptr);
-		Sprite->SetScale(nullptr);
-
-
+		Sprite->End();
+		
 		return S_OK;
 	}
 }

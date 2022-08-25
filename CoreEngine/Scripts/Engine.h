@@ -13,7 +13,6 @@ namespace CoreEngine
 #endif // UNICODE
 
 		static HINSTANCE			m_hInst;
-		static HWND					m_hWnd;
 
 		static LPD3DXSPRITE			m_pd3dSprite;		// 2D Sprite
 		static LPD3DXLINE			m_pd3dLine;			// 2D Line
@@ -26,6 +25,7 @@ namespace CoreEngine
 		static DWORD				m_dwWinStyle;
 		static DWORD				m_dwScreenX;		// Screen Width
 		static DWORD				m_dwScreenY;		// Screen Height
+		static RECT					m_rcScreenRect;		// Screen Rect
 		static bool					m_bWindow;			// WindowMode
 		static bool					m_bShowCusor;		// Show Cusor
 

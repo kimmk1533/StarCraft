@@ -24,6 +24,8 @@ namespace CoreEngine
 		static LPDIRECT3D9				m_pD3D;				// D3D
 		static LPDIRECT3DDEVICE9		m_pd3dDevice;		// Device
 
+		static HWND						m_hWnd;
+
 	public:
 		// 게임 관련 함수들
 		virtual HRESULT Create() override = 0;

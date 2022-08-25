@@ -76,7 +76,7 @@ namespace CoreEngine
 		m_pLookAt = new D3DXVECTOR3(-400.0f, 300.0f, 0.0f);
 		m_pUp = new D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
-		m_fCameraSpeed = 1.0f;
+		m_fCameraSpeed = 100.0f;
 
 		m_pU = new D3DXVECTOR3(1.0f, 0.0f, 0.0f);
 		m_pV = new D3DXVECTOR3(0.0f, 1.0f, 0.0f);
@@ -111,19 +111,19 @@ namespace CoreEngine
 		{
 			if (Input->GetKey(E_KeyCode::LeftArrow) || Input->GetKey(E_KeyCode::A))
 			{
-				m_pLookAt->x = m_pEye->x -= m_fCameraSpeed;
+				m_pLookAt->x = m_pEye->x -= m_fCameraSpeed * _deltaTime;
 			}
 			if (Input->GetKey(E_KeyCode::RightArrow) || Input->GetKey(E_KeyCode::D))
 			{
-				m_pLookAt->x = m_pEye->x += m_fCameraSpeed;
+				m_pLookAt->x = m_pEye->x += m_fCameraSpeed * _deltaTime;
 			}
 			if (Input->GetKey(E_KeyCode::UpArrow) || Input->GetKey(E_KeyCode::W))
 			{
-				m_pLookAt->y = m_pEye->y += m_fCameraSpeed;
+				m_pLookAt->y = m_pEye->y += m_fCameraSpeed * _deltaTime;
 			}
 			if (Input->GetKey(E_KeyCode::DownArrow) || Input->GetKey(E_KeyCode::S))
 			{
-				m_pLookAt->y = m_pEye->y -= m_fCameraSpeed;
+				m_pLookAt->y = m_pEye->y -= m_fCameraSpeed * _deltaTime;
 			}
 
 			//m_pEye->z += Input->GetMouseEps().z;

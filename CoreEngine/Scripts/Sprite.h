@@ -31,6 +31,9 @@ namespace CoreEngine
 		HRESULT		SetScale(const D3DXVECTOR3* _scale);
 		HRESULT		SetScale(const FLOAT& _x, const FLOAT& _y, const FLOAT& _z);
 
+		HRESULT		Begin();
+		HRESULT		End();
+
 		HRESULT		Draw(LPD3DXTEXTURE9 _pTex, const RECT* _pSrcRect, const D3DXVECTOR3* _pCenter, const D3DCOLOR _color);
 		/*HRESULT		Draw(
 			LPD3DXTEXTURE9	_pTex,

@@ -205,8 +205,6 @@ namespace Game
 	{
 		FAILED_CHECK_RETURN(C_Unit::Render());
 
-		static const D3DXVECTOR3 Offset(32, 32, 0.5f);
-
 		std::shared_ptr<C_Texture> texture = C_MarineManager::GetI()->GetTexture();
 		RECT rect = C_MarineManager::GetI()->GetTextureRect({ m_UnitState, m_Direction }, m_AnimIndex);
 
@@ -215,10 +213,16 @@ namespace Game
 		else
 			m_pScale->x = 1.0f;
 
+		Sprite->Begin();
+
 		Sprite->SetTranslation(*m_pPosition);
 		Sprite->SetRotation(nullptr);
 		Sprite->SetScale(*m_pScale);
 
-		return Sprite->Draw(texture->GetTexture(), &rect, &Offset, D3DCOLOR_XRGB(255, 255, 255));
+		Sprite->Draw(texture->GetTexture(), &rect, C_MarineManager::GetI()->offset, D3DCOLOR_XRGB(255, 255, 255));
+
+		Sprite->End();
+
+		return S_OK;
 	}
 }

@@ -2,6 +2,7 @@
 #include <cassert>
 
 #include "Physics.h"
+#include "Bounds.h"
 
 namespace CoreEngine
 {
@@ -14,7 +15,6 @@ namespace CoreEngine
 #endif
 
 	HINSTANCE		C_Engine::m_hInst = nullptr;
-	HWND			C_Engine::m_hWnd = nullptr;
 
 	LPD3DXSPRITE	C_Engine::m_pd3dSprite = nullptr;				// 2D Sprite
 	LPD3DXLINE		C_Engine::m_pd3dLine = nullptr;					// 2D Line
@@ -27,6 +27,7 @@ namespace CoreEngine
 	DWORD			C_Engine::m_dwWinStyle = WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU | WS_VISIBLE;
 	DWORD			C_Engine::m_dwScreenX = 800;					// Screen Width
 	DWORD			C_Engine::m_dwScreenY = 600;					// Screen Height
+	RECT			C_Engine::m_rcScreenRect = RECT{};				// Screen Rect
 	bool			C_Engine::m_bWindow = true;						// WindowMode
 	bool			C_Engine::m_bShowCusor = true;					// Show Cusor
 
@@ -209,6 +210,8 @@ namespace CoreEngine
 
 	HRESULT C_Engine::Create()
 	{
+		FAILED_CHECK_RETURN(Physics::Create());
+
 		m_pCamera = new C_Camera();
 		SAFE_CREATE(m_pCamera);
 
@@ -218,7 +221,7 @@ namespace CoreEngine
 		m_pInput = new C_Input();
 		FAILED_CHECK_RETURN(m_pInput->Create(m_hWnd));
 
-		FAILED_CHECK_RETURN(Physics::Create());
+		m_rcScreenRect = RECT{ 0, 0, (long)m_dwScreenX, (long)m_dwScreenY };
 
 		return S_OK;
 	}
@@ -227,6 +230,8 @@ namespace CoreEngine
 		SAFE_DELETE(m_pInput);
 		SAFE_DELETE(m_pSprite);
 		SAFE_DELETE(m_pCamera);
+
+		Physics::Destroy();
 	}
 
 	HRESULT C_Engine::Update(const FLOAT& _deltaTime)
@@ -271,6 +276,8 @@ namespace CoreEngine
 			//m_d3dpp.BackBufferWidth = m_dwScreenX;
 			//m_d3dpp.BackBufferHeight = m_dwScreenY;
 
+			m_rcScreenRect = RECT{ 0, 0, (long)m_dwScreenX, (long)m_dwScreenY };
+
 			return 0;
 		}
 		case WM_KEYDOWN:
@@ -303,7 +310,7 @@ namespace CoreEngine
 
 	RECT C_Engine::GetScreenRect()
 	{
-		return RECT{ 0, 0, (long)m_dwScreenX, (long)m_dwScreenY };
+		return m_rcScreenRect;
 	}
 	/*const*/ C_Camera* C_Engine::GetCamera()
 	{

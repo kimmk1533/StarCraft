@@ -82,15 +82,30 @@ namespace CoreEngine
 		return S_OK;
 	}
 
-	HRESULT C_Sprite::Draw(LPD3DXTEXTURE9 _pTex, const RECT* _pSrcRect, const D3DXVECTOR3* _pCenter, const D3DCOLOR _color)
+	HRESULT C_Sprite::Begin()
 	{
-		NULL_CHECK_WITH_MSG(m_pDxSprite, "m_pDxSprite is nullptr");
+		//NULL_CHECK_WITH_MSG(m_pDxSprite, "m_pDxSprite is nullptr");
+		FAILED_CHECK_RETURN(m_pDxSprite == nullptr);
 
-		m_pDxSprite->Begin(D3DXSPRITE_ALPHABLEND);
+		Sprite->SetTranslation(nullptr);
+		Sprite->SetRotation(nullptr);
+		Sprite->SetScale(nullptr);
 
 		D3DXMatrixIdentity(m_pMtSRT);
 		D3DXMatrixIdentity(m_pMtResult);
 
+		return m_pDxSprite->Begin(D3DXSPRITE_ALPHABLEND);
+	}
+
+	HRESULT C_Sprite::End()
+	{
+		m_pDxSprite->Flush();
+
+		return m_pDxSprite->End();
+	}
+
+	HRESULT C_Sprite::Draw(LPD3DXTEXTURE9 _pTex, const RECT* _pSrcRect, const D3DXVECTOR3* _pCenter, const D3DCOLOR _color)
+	{
 		// World Matrix
 		*m_pMtSRT = (*m_pMtScale) * (*m_pMtRotation) * (*m_pMtTranslation);
 
@@ -101,15 +116,7 @@ namespace CoreEngine
 		m_pDxSprite->SetTransform(m_pMtResult);
 
 		// Draw
-		m_pDxSprite->Draw(_pTex, _pSrcRect, _pCenter, nullptr, _color);
-
-		// Init
-		D3DXMatrixIdentity(m_pMtResult);
-		m_pDxSprite->SetTransform(m_pMtResult);
-
-		m_pDxSprite->End();
-
-		return S_OK;
+		return m_pDxSprite->Draw(_pTex, _pSrcRect, _pCenter, nullptr, _color);
 	}
 
 	/*HRESULT C_Sprite::Draw(
@@ -205,27 +212,39 @@ namespace CoreEngine
 	{
 		NULL_CHECK_WITH_MSG(m_pDxLine, "m_pDxLine is nullptr");
 
-		m_pDxLine->SetGLLines(false);
-		m_pDxLine->SetAntialias(_bAntialias);
-		m_pDxLine->SetWidth(_fThickness);
+		if (m_pDxLine->GetGLLines())
+			FAILED_CHECK_RETURN(m_pDxLine->SetGLLines(false));
 
-		m_pDxLine->Begin();
+		if (m_pDxLine->GetAntialias() != _bAntialias)
+			FAILED_CHECK_RETURN(m_pDxLine->SetAntialias(_bAntialias));
 
-		D3DXMATRIX mtV = (*Camera->viewMatrix);
+		if (m_pDxLine->GetWidth() != _fThickness)
+			FAILED_CHECK_RETURN(m_pDxLine->SetWidth(_fThickness));
 
-		D3DXVECTOR2* TempPos = new D3DXVECTOR2[_dwVertexListCount], * LinePos = new D3DXVECTOR2[_dwVertexListCount];
+		if (FAILED(m_pDxLine->Begin()))
+		{
+			FAILED_CHECK_WITH_MSG(m_pDxLine->End(), "m_pDxLine's Begin() and m_pDxLine's End() failed.");
+			return E_FAIL;
+		}
+
+		// World Matrix
+		*m_pMtSRT = (*m_pMtScale) * (*m_pMtRotation) * (*m_pMtTranslation);
+
+		// View Matrix
+		*m_pMtResult = *m_pMtSRT * (*Camera->viewMatrix);
+
+		D3DXVECTOR2* LinePos = new D3DXVECTOR2[_dwVertexListCount];
 
 		for (size_t i = 0; i < _dwVertexListCount; ++i)
 		{
-			D3DXVec2TransformCoord(&LinePos[i], &TempPos[i], &mtV);
+			D3DXVec2TransformCoord(&LinePos[i], &_pVertexList[i], m_pMtResult);
 		}
 
 		m_pDxLine->Draw(LinePos, _dwVertexListCount, _color);
 
-		delete[] TempPos;
 		delete[] LinePos;
 
-		m_pDxLine->End();
+		FAILED_CHECK_RETURN(m_pDxLine->End());
 
 		return S_OK;
 	}
@@ -265,12 +284,6 @@ namespace CoreEngine
 
 		// View Matrix
 		*m_pMtResult = *m_pMtSRT * (*Camera->viewMatrix);
-
-		D3DXVec2TransformCoord(&LinePos[0], &LinePos[0], m_pMtResult);
-		D3DXVec2TransformCoord(&LinePos[1], &LinePos[1], m_pMtResult);
-
-
-		D3DXMATRIX mtV = (*Camera->viewMatrix);
 
 		// ┌─┐
 		TempPos[1] = TempPos[0] = LeftTop;

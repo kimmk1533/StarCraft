@@ -6,6 +6,9 @@ namespace Game
 
 	class C_Main : public C_Engine
 	{
+	private:
+		virtual void ClipCursor(HWND _hWnd);
+
 	public:
 		virtual HRESULT	Create() override;
 		virtual void	Destroy() override;

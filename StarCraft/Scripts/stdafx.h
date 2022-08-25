@@ -10,7 +10,7 @@ namespace Game
 
 //#define DEBUG_SelectManager_PRINT
 
-#define DEBUG_Unit_HITBOX
+//#define DEBUG_Unit_HITBOX
 
 #pragma endregion
 

@@ -22,9 +22,9 @@ namespace Game
 		RECT m_TileSetSize;
 
 		std::vector<std::string>* m_pTileSetNameList;
-		std::map<std::string, uint16_t>* m_pMegaTileNumber;
-		std::vector<std::shared_ptr<C_Texture>>* m_pTileSetList;
-		std::vector<uint16_t>* m_pTileSetIndex;
+		std::unordered_map<std::string, uint16_t>* m_pMegaTileNumber;
+		std::unordered_map<std::string, std::shared_ptr<C_Texture>>* m_pTileSetList;
+		std::vector<RECT>* m_pTileSetIndexRect;
 		
 		std::vector<uint8_t>* m_pMapBuffer;
 

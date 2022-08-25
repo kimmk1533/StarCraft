@@ -19,8 +19,13 @@ namespace Game
 		RECT m_rcUnitSize;
 		std::shared_ptr<C_Texture> m_pUnitTexture;
 		std::unordered_map<std::pair<E_UnitState, E_Direction>, std::pair<WORD, RECT>, Pair_Hash>* m_pUnitTextureRect;
+		std::shared_ptr<D3DXVECTOR3> m_pOffset;
 
 		C_ObjectPool<TUnit>* m_pUnitPool;
+
+	public:
+		READONLY_PROPERTY(const D3DXVECTOR3*, offset);
+		GET(offset) const { return &(*m_pOffset); }
 
 	protected:
 		void SetTextureRect(const E_UnitState& _state, const E_Direction& _direction, const RECT& _rect)
@@ -142,7 +147,8 @@ namespace Game
 		{
 			SAFE_DELETE(m_pUnitPool);
 			SAFE_DELETE(m_pUnitTextureRect);
-			m_pUnitTexture.reset();
+			m_pUnitTexture = nullptr;
+			m_pOffset = nullptr;
 		}
 
 		virtual HRESULT Update(const FLOAT& _deltaTime) override

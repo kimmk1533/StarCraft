@@ -4,6 +4,7 @@ namespace CoreEngine
 {
 	C_Texture::C_Texture()
 	{
+		m_FileName = TEXT("");
 		m_pTex = NULL;
 		ZeroMemory(&m_Img, sizeof(m_Img));
 	}
@@ -16,7 +17,8 @@ namespace CoreEngine
 	{
 		DWORD	dColorKey = 0x00FFFFFF;
 
-		std::wstring file = TEXT("Resources/") + std::wstring(m_pFileName);
+		std::wstring file = TEXT("./Resources/");
+		file += m_FileName;
 
 		if (FAILED
 		(
@@ -44,7 +46,7 @@ namespace CoreEngine
 				D3DXCreateTextureFromFileEx
 				(
 					m_pd3dDevice,			// 디바이스 포인터
-					m_pFileName,			// 텍스처 파일 이름
+					m_FileName.c_str(),		// 텍스처 파일 이름
 					D3DX_DEFAULT,
 					D3DX_DEFAULT,
 					1,						// 밉 레벨(2D에서는 반드시 1)
@@ -77,21 +79,19 @@ namespace CoreEngine
 		SAFE_RELEASE(m_pTex);
 	}
 
-#ifdef UNICODE
-	HRESULT C_Texture::Init(LPCWSTR sFile)
+	HRESULT C_Texture::Init(const std::string& _file)
 	{
-		m_pFileName = sFile;
+		m_FileName.assign(_file.begin(), _file.end());
 
 		return S_OK;
 	}
-#else
-	HRESULT C_Texture::Init(LPCSTR sFile)
+	HRESULT C_Texture::Init(const std::wstring& _file)
 	{
-		m_pFileName = sFile;
+		m_FileName = _file;
 
 		return S_OK;
 	}
-#endif // UNICODE
+
 	INT C_Texture::GetImageWidth()
 	{
 		return m_Img.Width;

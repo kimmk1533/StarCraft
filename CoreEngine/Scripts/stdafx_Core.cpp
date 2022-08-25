@@ -25,10 +25,25 @@ D3DXVECTOR2& operator+=(D3DXVECTOR2& _lhs, const D3DXVECTOR3& _rhs)
 
 	return _lhs;
 }
+D3DXVECTOR2& operator+=(D3DXVECTOR2& _lhs, const FLOAT& _rhs)
+{
+	_lhs.x += _rhs;
+	_lhs.y += _rhs;
+
+	return _lhs;
+}
 D3DXVECTOR3& operator+=(D3DXVECTOR3& _lhs, const D3DXVECTOR2& _rhs)
 {
 	_lhs.x += _rhs.x;
 	_lhs.y += _rhs.y;
+
+	return _lhs;
+}
+D3DXVECTOR3& operator+=(D3DXVECTOR3& _lhs, const FLOAT& _rhs)
+{
+	_lhs.x += _rhs;
+	_lhs.y += _rhs;
+	_lhs.z += _rhs;
 
 	return _lhs;
 }
@@ -40,10 +55,25 @@ D3DXVECTOR2& operator-=(D3DXVECTOR2& _lhs, const D3DXVECTOR3& _rhs)
 
 	return _lhs;
 }
+D3DXVECTOR2& operator-=(D3DXVECTOR2& _lhs, const FLOAT& _rhs)
+{
+	_lhs.x -= _rhs;
+	_lhs.y -= _rhs;
+
+	return _lhs;
+}
 D3DXVECTOR3& operator-=(D3DXVECTOR3& _lhs, const D3DXVECTOR2& _rhs)
 {
 	_lhs.x -= _rhs.x;
 	_lhs.y -= _rhs.y;
+
+	return _lhs;
+}
+D3DXVECTOR3& operator-=(D3DXVECTOR3& _lhs, const FLOAT& _rhs)
+{
+	_lhs.x -= _rhs;
+	_lhs.y -= _rhs;
+	_lhs.z -= _rhs;
 
 	return _lhs;
 }

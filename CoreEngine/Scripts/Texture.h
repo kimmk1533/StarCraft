@@ -14,20 +14,13 @@ namespace CoreEngine
 		virtual void	Destroy() override;
 		
 	public:
-#ifdef UNICODE
-		HRESULT	Init(LPCWSTR sFile);
-#else
-		HRESULT	Init(LPCSTR sFile);
-#endif // UNICODE
+		HRESULT	Init(const std::string& _file);
+		HRESULT	Init(const std::wstring& _file);
 
 	protected:
-#ifdef UNICODE
-		LPCWSTR	m_pFileName;			// 파일 이름
-#else
-		LPCSTR	m_pFileName;			// 파일 이름
-#endif // UNICODE
+		std::wstring m_FileName;		// 파일 이름
 
-		D3DXIMAGE_INFO		m_Img;		// 이미지 정보
+		D3DXIMAGE_INFO	m_Img;		// 이미지 정보
 		LPD3DXTEXTURE9	m_pTex;		// 텍스처
 
 	public:

@@ -6,7 +6,7 @@
 #pragma region Define DEBUG
 
 //#define DEBUG_QuadTree_PRINT
-#define DEBUG_QuadTree_RENDER
+//#define DEBUG_QuadTree_RENDER
 
 #pragma endregion
 
@@ -25,6 +25,10 @@
 #include <tchar.h>
 #include <mmsystem.h>
 #include <iostream>
+#include <fstream>
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <experimental/filesystem>
+namespace filesystem = std::experimental::filesystem;
 #include <utility>
 #include <functional>
 
@@ -76,10 +80,14 @@ D3DXVECTOR2 operator-(const D3DXVECTOR2& _lhs, const D3DXVECTOR3& _rhs);
 D3DXVECTOR3 operator-(const D3DXVECTOR3& _lhs, const D3DXVECTOR2& _rhs);
 
 D3DXVECTOR2& operator+=(D3DXVECTOR2& _lhs, const D3DXVECTOR3& _rhs);
+D3DXVECTOR2& operator+=(D3DXVECTOR2& _lhs, const FLOAT& _rhs);
 D3DXVECTOR3& operator+=(D3DXVECTOR3& _lhs, const D3DXVECTOR2& _rhs);
+D3DXVECTOR3& operator+=(D3DXVECTOR3& _lhs, const FLOAT& _rhs);
 
 D3DXVECTOR2& operator-=(D3DXVECTOR2& _lhs, const D3DXVECTOR3& _rhs);
+D3DXVECTOR2& operator-=(D3DXVECTOR2& _lhs, const FLOAT& _rhs);
 D3DXVECTOR3& operator-=(D3DXVECTOR3& _lhs, const D3DXVECTOR2& _rhs);
+D3DXVECTOR3& operator-=(D3DXVECTOR3& _lhs, const FLOAT& _rhs);
 
 std::ostream& operator<<(std::ostream& _out, const D3DXVECTOR2& _vector);
 std::ostream& operator<<(std::ostream& _out, const D3DXVECTOR3& _vector);

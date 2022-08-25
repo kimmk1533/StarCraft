@@ -14,8 +14,8 @@ namespace CoreEngine
 	}
 	HRESULT S_Bounds::Create()
 	{
-		m_pSize = std::make_shared<D3DXVECTOR3>();
-		m_pCenter = std::make_shared<D3DXVECTOR3>();
+		m_pSize = std::make_shared<D3DXVECTOR3>(0.0f, 0.0f, 0.0f);
+		m_pCenter = std::make_shared<D3DXVECTOR3>(0.0f, 0.0f, 0.0f);
 
 		return S_OK;
 	}

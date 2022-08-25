@@ -10,6 +10,8 @@ namespace Game
 {
 	using namespace CoreEngine;
 
+	const WORD C_Cursor::m_wCursorMoveOffset = 10;
+
 	void C_Cursor::SetCursorState(E_CursorState _state)
 	{
 		m_CursorState = _state;
@@ -23,9 +25,8 @@ namespace Game
 		m_pAnimator = nullptr;
 
 		m_AnimIndex = 0;
-		m_pGameFrameTimer = nullptr;
 		m_CursorState = E_CursorState::Idle;
-		m_CursorDir = E_CursorDir::Down;
+		m_CursorDir = E_CursorDir::Up;
 	}
 	C_Cursor::~C_Cursor()
 	{
@@ -45,15 +46,10 @@ namespace Game
 				++m_AnimIndex;
 			});
 
-		m_pGameFrameTimer = new C_Timer();
-		m_pGameFrameTimer->SetTime(g_FPS * 2);
-		m_pGameFrameTimer->Play();
-
 		return S_OK;
 	}
 	void C_Cursor::Destroy()
 	{
-		SAFE_DELETE(m_pGameFrameTimer);
 
 		SAFE_DELETE(m_pAnimator);
 
@@ -65,11 +61,66 @@ namespace Game
 	{
 		m_pAnimator->Update(_deltaTime);
 
+		D3DXVECTOR3 mousePos = Input->GetMousePos();
+
 #pragma region Mouse Position
-		(*m_pPosition) = Camera->WorldToScreenPoint(Input->GetMousePos());
+		(*m_pPosition) = Camera->WorldToScreenPoint(mousePos);
 #pragma endregion
-		
-#pragma region Mouse Click
+
+#pragma region Mouse State
+
+#pragma region Move
+
+		if (m_CursorState != E_CursorState::Drag)
+		{
+			RECT rc = C_Engine::GetScreenRect();
+
+			if (rc.left + m_wCursorMoveOffset <= mousePos.x &&
+				rc.right - m_wCursorMoveOffset >= mousePos.x &&
+				-rc.bottom + m_wCursorMoveOffset <= mousePos.y &&
+				rc.top - m_wCursorMoveOffset >= mousePos.y)
+			{
+				this->SetCursorState(E_CursorState::Idle);
+			}
+			else
+			{
+				this->SetCursorState(E_CursorState::Move);
+
+				static const E_CursorDir Dir[3][3] =
+				{
+					{ E_CursorDir::Up_Left,		E_CursorDir::Up,	E_CursorDir::Up_Right	},
+					{ E_CursorDir::Left,		E_CursorDir::Max,	E_CursorDir::Right		},
+					{ E_CursorDir::Down_Left,	E_CursorDir::Down,	E_CursorDir::Down_Right }
+				};
+
+				enum TempXY
+				{
+					x = 0,
+					y
+				};
+
+				if (rc.left + m_wCursorMoveOffset > mousePos.x)
+					m_CursorDirIndex[x] = -1;
+				else if (rc.right - m_wCursorMoveOffset < mousePos.x)
+					m_CursorDirIndex[x] = 1;
+				else
+					m_CursorDirIndex[x] = 0;
+
+				if (-rc.bottom + m_wCursorMoveOffset > mousePos.y)
+					m_CursorDirIndex[y] = 1;
+				else if (rc.top - m_wCursorMoveOffset < mousePos.y)
+					m_CursorDirIndex[y] = -1;
+				else
+					m_CursorDirIndex[y] = 0;
+
+				m_CursorDir = Dir[m_CursorDirIndex[y] + 1][m_CursorDirIndex[x] + 1];
+			}
+		}
+
+#pragma endregion
+
+#pragma region Drag
+
 		if (Input->GetMouseDown(E_MouseCode::Left))
 		{
 			this->SetCursorState(E_CursorState::Drag);
@@ -78,7 +129,11 @@ namespace Game
 		{
 			this->SetCursorState(E_CursorState::Idle);
 		}
-#pragma endregion
+
+#pragma endregion // Drag
+
+#pragma endregion // Mouse State
+
 
 		return S_OK;
 	}
@@ -92,15 +147,21 @@ namespace Game
 		else
 			rect = C_SelectManager::GetI()->GetTextureRect(m_CursorState, m_AnimIndex);
 
+		Sprite->Begin();
+
 		Sprite->SetTranslation(*m_pPosition);
 		Sprite->SetRotation(nullptr);
 		Sprite->SetScale(nullptr);
 
-		return Sprite->Draw(
+		Sprite->Draw(
 			texture->GetTexture(),
 			&rect,
 			m_pHotspot,
 			D3DCOLOR_XRGB(255, 255, 255)
 		);
+
+		Sprite->End();
+
+		return S_OK;
 	}
 }
