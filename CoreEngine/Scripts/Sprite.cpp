@@ -94,7 +94,7 @@ namespace CoreEngine
 		D3DXMatrixIdentity(m_pMtSRT);
 		D3DXMatrixIdentity(m_pMtResult);
 
-		return m_pDxSprite->Begin(D3DXSPRITE_ALPHABLEND);
+		return m_pDxSprite->Begin(D3DXSPRITE_ALPHABLEND | D3DXSPRITE_SORT_TEXTURE | D3DXSPRITE_DO_NOT_ADDREF_TEXTURE);
 	}
 
 	HRESULT C_Sprite::End()

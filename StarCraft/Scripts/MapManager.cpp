@@ -167,12 +167,12 @@ namespace Game
 				int16_t checking_index = check[real_megatile_index];
 
 				// 이미 사용된 경우
-				//if (checking_index != -1)
+				if (checking_index != -1)
 				{
-					//m_pTileSetIndex->push_back(checking_index);
+					m_pTileSetIndex->push_back(checking_index);
 				}
 				// 아닌 경우 지정 위치에서 mega tile 을 읽어와 리스트에 추가
-				//else
+				else
 				{
 					uint32_t width = texture->GetImageWidth() / 32;
 
@@ -181,8 +181,8 @@ namespace Game
 
 					RECT rc{ real_x * 32, real_y * 32, (real_x + 1) * 32, (real_y + 1) * 32 };
 
-					m_pTileSetIndexRect->push_back(rc);
-
+					m_pTileSetRect->push_back(rc);
+					m_pTileSetIndex->push_back(megatile_length);
 					check[real_megatile_index] = megatile_length++;
 				}
 
@@ -219,7 +219,8 @@ namespace Game
 		m_pTileSetNameList = nullptr;
 		m_pMegaTileNumber = nullptr;
 		m_pTileSetList = nullptr;
-		m_pTileSetIndexRect = nullptr;
+		m_pTileSetRect = nullptr;
+		m_pTileSetIndex = nullptr;
 
 		m_pMapBuffer = nullptr;
 	}
@@ -264,14 +265,17 @@ namespace Game
 		}
 
 
-		m_pTileSetIndexRect = new std::vector<RECT>();
+		m_pTileSetRect = new std::vector<RECT>();
+		m_pTileSetIndex = new std::vector<uint16_t>();
 
 		return S_OK;
 	}
 	void C_MapManager::Destroy()
 	{
 		SAFE_DELETE(m_pMapBuffer);
-		SAFE_DELETE(m_pTileSetIndexRect);
+		SAFE_DELETE(m_pTileSetIndex);
+		SAFE_DELETE(m_pTileSetRect);
+		m_pTileSetRect->clear();
 		SAFE_DELETE(m_pTileSetList);
 		SAFE_DELETE(m_pMegaTileNumber);
 		SAFE_DELETE(m_pTileSetNameList);
@@ -297,10 +301,11 @@ namespace Game
 			for (size_t x = 0; x < m_MapWidth; ++x)
 			{
 				size_t index = y * m_MapWidth + x;
+				uint16_t rect_index = (*m_pTileSetIndex)[index];
 
 				Sprite->SetTranslation(x * 32, (m_MapHeight - y) * 32, 0.0f);
 
-				Sprite->Draw(texture->GetTexture(), &(*m_pTileSetIndexRect)[index], &center, D3DCOLOR_XRGB(255, 255, 255));
+				Sprite->Draw(texture->GetTexture(), &(*m_pTileSetRect)[rect_index], &center, D3DCOLOR_XRGB(255, 255, 255));
 			}
 		}
 

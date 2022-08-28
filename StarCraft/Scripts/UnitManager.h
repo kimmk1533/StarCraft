@@ -111,7 +111,7 @@ namespace Game
 			std::shared_ptr<TUnit> unit_smtptr = m_pUnitPool->Spawn();
 			C_Unit* unit_ptr = static_cast<C_Unit*>(unit_smtptr.get());
 
-			Physics::AddCollision(unit_ptr->collider);
+			//Physics::AddCollision(unit_ptr->collider);
 
 			return unit_smtptr;
 		}
@@ -168,10 +168,15 @@ namespace Game
 			static_assert(std::is_base_of_v<IRenderable, TUnit>, "UnitManager TUnit is not base of IRenderable");
 
 			const std::vector<std::shared_ptr<TUnit>>* list = m_pUnitPool->GetSpawnedObjList();
+
+			Sprite->Begin();
+
 			for (unsigned int i = 0; i < list->size(); ++i)
 			{
 				(*list)[i]->Render();
 			}
+
+			Sprite->End();
 
 			return S_OK;
 		}

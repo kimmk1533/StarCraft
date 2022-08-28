@@ -24,9 +24,13 @@ namespace Game
 		std::vector<std::string>* m_pTileSetNameList;
 		std::unordered_map<std::string, uint16_t>* m_pMegaTileNumber;
 		std::unordered_map<std::string, std::shared_ptr<C_Texture>>* m_pTileSetList;
-		std::vector<RECT>* m_pTileSetIndexRect;
+		std::vector<RECT>* m_pTileSetRect;
+		std::vector<uint16_t>* m_pTileSetIndex;
 		
 		std::vector<uint8_t>* m_pMapBuffer;
+
+	private:
+		
 
 	public:
 		READONLY_PROPERTY(uint16_t, width);

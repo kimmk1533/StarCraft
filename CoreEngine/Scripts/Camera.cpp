@@ -109,22 +109,28 @@ namespace CoreEngine
 	{
 		if (!Input->GetMouse(E_MouseCode::Left))
 		{
+			static FLOAT speed = 0.0f;
+			
+			speed += m_fCameraSpeed * _deltaTime;
+
 			if (Input->GetKey(E_KeyCode::LeftArrow) || Input->GetKey(E_KeyCode::A))
 			{
-				m_pLookAt->x = m_pEye->x -= m_fCameraSpeed * _deltaTime;
+				m_pLookAt->x = m_pEye->x -= (int)speed;
 			}
 			if (Input->GetKey(E_KeyCode::RightArrow) || Input->GetKey(E_KeyCode::D))
 			{
-				m_pLookAt->x = m_pEye->x += m_fCameraSpeed * _deltaTime;
+				m_pLookAt->x = m_pEye->x += (int)speed;
 			}
 			if (Input->GetKey(E_KeyCode::UpArrow) || Input->GetKey(E_KeyCode::W))
 			{
-				m_pLookAt->y = m_pEye->y += m_fCameraSpeed * _deltaTime;
+				m_pLookAt->y = m_pEye->y += (int)speed;
 			}
 			if (Input->GetKey(E_KeyCode::DownArrow) || Input->GetKey(E_KeyCode::S))
 			{
-				m_pLookAt->y = m_pEye->y -= m_fCameraSpeed * _deltaTime;
+				m_pLookAt->y = m_pEye->y -= (int)speed;
 			}
+
+			speed -= (int)speed;
 
 			//m_pEye->z += Input->GetMouseEps().z;
 		}
