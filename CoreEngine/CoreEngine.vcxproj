@@ -155,6 +155,7 @@
     <ClInclude Include="Scripts\FrameWork.h" />
     <ClInclude Include="Scripts\GameObject.h" />
     <ClInclude Include="Scripts\Input.h" />
+    <ClInclude Include="Scripts\lodepng.h" />
     <ClInclude Include="Scripts\Physics.h" />
     <ClInclude Include="Scripts\QuadTree.h" />
     <ClInclude Include="Scripts\QuadTreeNode.h" />
@@ -178,6 +179,7 @@
     <ClCompile Include="Scripts\FrameWork.cpp" />
     <ClCompile Include="Scripts\GameObject.cpp" />
     <ClCompile Include="Scripts\Input.cpp" />
+    <ClCompile Include="Scripts\lodepng.cpp" />
     <ClCompile Include="Scripts\ObjectPool.cpp" />
     <ClCompile Include="Scripts\Physics.cpp" />
     <ClCompile Include="Scripts\QuadTree.cpp" />

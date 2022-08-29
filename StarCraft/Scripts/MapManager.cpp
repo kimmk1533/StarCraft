@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MapManager.h"
 
+#include <lodepng.h>
 namespace Game
 {
 	const std::string C_MapManager::Path = ".//Resources/Map/";
@@ -112,9 +113,12 @@ namespace Game
 		uint16_t tileset_offset = (*m_pMapBuffer)[offset + 8] & 0x7; // 뒤의 3비트만 읽으면 됨
 		m_TileSetName = (*m_pTileSetNameList)[tileset_offset];
 
+		std::string tileSetPath = Path + "TileSet/" + m_TileSetName + "/" + m_TileSetName;
+
+#pragma region cv5
 		// 해당하는 CV5 파일 열기
 		std::ifstream fin_cv5;
-		fin_cv5.open(Path + "TileSet/" + m_TileSetName + ".cv5", std::ios::binary);
+		fin_cv5.open(tileSetPath + ".cv5", std::ios::binary);
 		if (!fin_cv5)
 		{
 			fin_cv5.close();
