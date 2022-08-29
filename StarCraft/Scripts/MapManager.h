@@ -30,7 +30,7 @@ namespace Game
 		std::vector<uint8_t>* m_pMapBuffer;
 
 	private:
-		
+		bool** m_pWalkAbility;
 
 	public:
 		READONLY_PROPERTY(uint16_t, width);
@@ -48,6 +48,8 @@ namespace Game
 	public:
 		HRESULT LoadMap(const std::string& _mapName);
 		HRESULT CreateTerrain();
+
+		std::vector<D3DXVECTOR3> GetPath(const D3DXVECTOR3& _start, const D3DXVECTOR3& _end);
 
 	private:
 		C_MapManager();

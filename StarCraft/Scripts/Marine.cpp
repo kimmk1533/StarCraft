@@ -68,90 +68,6 @@ namespace Game
 		m_pBoxCollider->bounds->SetSharedCenter(m_pPosition);
 #pragma endregion
 
-		m_pAnimator->AddFunc(0, [&]() -> void
-			{
-#pragma region Variables
-				D3DXVECTOR3 d = (*m_pTargetPos) - (*m_pPosition);
-				FLOAT dx = d.x;
-				FLOAT dy = d.y;
-				d.z = 0.0f;
-
-				FLOAT length = D3DXVec3Length(&d);
-
-				FLOAT radian = atan2f(dx, dy);
-				FLOAT theta = g_DegreeUnit * 0.5f + D3DXToDegree(radian);
-
-				// % 연산자는 성능을 많이 잡아 먹으니 비교 연산이 더 나을 것.
-				if (theta >= 360.0f) theta -= 360.0f;
-				if (theta <= 0.0f) theta += 360.0f;
-
-				FLOAT target = theta / g_DegreeUnit;
-#pragma endregion
-
-#pragma region Rotation
-				if (m_Direction != m_TargetDir)
-				{
-					int direction = static_cast<int>(m_Direction);
-
-					D3DXVECTOR2 target_dir(sinf(target * g_RadianUnit), cosf(target * g_RadianUnit));
-					D3DXVECTOR2 dir(sinf(direction * g_RadianUnit), cosf(direction * g_RadianUnit));
-
-					D3DXVECTOR2 target_normal, dir_normal;
-
-					D3DXVec2Normalize(&target_normal, &target_dir);
-					D3DXVec2Normalize(&dir_normal, &dir);
-
-					// 회전 방향 계산
-					FLOAT ccw = D3DXVec2CCW(&dir_normal, &target_normal);
-
-					// 1칸 차이 나는 경우
-					if (abs((int)target - direction) == 1)
-						// 1칸 이동
-						ccw < 0 ? ++direction : --direction;
-					// 2칸 이상 차이 나는 경우
-					else
-						// 2칸 이동
-						ccw < 0 ? direction += 2 : direction -= 2;
-
-					direction = (static_cast<int>(E_Direction::Max) + direction) % static_cast<int>(E_Direction::Max);
-					m_Direction = static_cast<E_Direction>(direction);
-				}
-#pragma endregion
-
-#pragma region Move
-				if (m_Info->m_bIsMovable == false &&
-					m_Direction == m_TargetDir)
-				{
-					m_Info->m_bIsMovable = true;
-				}
-
-				if (m_Info->m_bIsMovable && length > 0.01f)
-				{
-					// 최종 속도 = 이동 속도
-					FLOAT speed = m_Info->m_fMoveSpeed;
-
-					D3DXVECTOR3 vcMove;
-
-					FLOAT move = fminf(length, speed);
-
-					vcMove.x = move * sinf(radian);
-					vcMove.y = move * cosf(radian);
-					vcMove.z = 0.0f;
-
-					(*m_pPosition) += vcMove;
-
-					m_UnitState = E_UnitState::Walking;
-				}
-#pragma endregion
-
-#pragma region UnitState
-				if (length <= 1e-5f)
-				{
-					m_UnitState = E_UnitState::Idle;
-				}
-#pragma endregion
-			});
-
 		return S_OK;
 	}
 	void C_Marine::Destroy()
@@ -162,36 +78,6 @@ namespace Game
 	HRESULT C_Marine::Update(const FLOAT& _deltaTime)
 	{
 		C_Unit::Update(_deltaTime);
-
-		if (Input->GetMouseDown(E_MouseCode::Right))
-		{
-			(*m_pTargetPos) = Camera->WorldToScreenPoint(Input->GetMousePos());
-
-			D3DXVECTOR3 d = (*m_pTargetPos) - (*m_pPosition);
-			FLOAT dx = d.x;
-			FLOAT dy = d.y;
-			d.z = 0.0f;
-
-			// 명령 방향: 현재 위치에서 우클릭한 위치로 에 해당하는 방향
-			// 현재 방향과 명령 방향의 각도(라디안) 구하기
-			FLOAT radian = atan2f(dx, dy);
-			// 현재 방향과 명령 방향의 각도(세타) 구하기
-			FLOAT theta = g_DegreeUnit * 0.5f + D3DXToDegree(radian);
-
-			// % 연산자는 성능을 많이 잡아 먹으니 비교 연산이 더 나을 것.
-			// 360도 회전 예외 처리
-			if (theta >= 360.0f) theta -= 360.0f;
-			if (theta <= 0.0f) theta += 360.0f;
-
-			// 목표 방향에 해당하는 Enum 값 구하기
-			FLOAT target = theta / g_DegreeUnit;
-
-			// 목표 방향 설정
-			m_TargetDir = static_cast<E_Direction>(target);
-
-			// 회전하는 도중 이동 금지
-			m_Info->m_bIsMovable = false;
-		}
 
 		// 임시 코드
 		/*if (Input->GetKeyDown(E_KeyCode::S))

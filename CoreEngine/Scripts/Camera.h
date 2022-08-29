@@ -21,7 +21,8 @@ namespace CoreEngine
 		GET(up) { return *m_pUp; }
 
 	private:
-		FLOAT m_fCameraSpeed;
+		FLOAT m_CameraSpeed;
+		RECT m_ClipingRect;
 
 		// 참고: https://vitacpp.tistory.com/43?category=961147
 	private:
@@ -45,8 +46,11 @@ namespace CoreEngine
 		void Calculate_T_Matrix();
 		void Calculate_View_Matrix();
 
+		void Cliping(const RECT& _rect);
+
 	public:
 		D3DXVECTOR3 WorldToScreenPoint(const D3DXVECTOR3& _pos);
+		void SetClipingRect(const RECT& _rect);
 
 	public:
 		C_Camera();

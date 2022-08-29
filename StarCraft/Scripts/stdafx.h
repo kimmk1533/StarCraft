@@ -12,6 +12,8 @@ namespace Game
 
 //#define DEBUG_Unit_HITBOX
 
+//#define DEBUG_MapManager_SAVE_WALKABILITY_IMAGE
+
 #pragma endregion
 
 	static const FLOAT g_InGameFPS = 1.0f / DEBUG_GAME_SPEED;

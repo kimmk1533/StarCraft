@@ -2,6 +2,8 @@
 #include "MapManager.h"
 
 #include <lodepng.h>
+#include <AStar.h>
+
 namespace Game
 {
 	const std::string C_MapManager::Path = ".//Resources/Map/";
@@ -31,23 +33,6 @@ namespace Game
 		}
 
 		return -1;
-
-		/*if (!m_pMapBuffer)
-			return -1;
-
-		std::vector<std::string> temp;
-		for (size_t i = 0; i < m_pMapBuffer->size(); ++i)
-		{
-			std::string str;
-			str += (*m_pMapBuffer)[i];
-			temp.push_back(str);
-		}
-
-		auto offset_iter = std::find(temp.begin(), temp.end(), "DIM ");
-		if (offset_iter == temp.end())
-			return -1;
-
-		return offset_iter - temp.begin();*/
 	}
 	HRESULT C_MapManager::Open_chk_File()
 	{
@@ -85,6 +70,9 @@ namespace Game
 	}
 	HRESULT C_MapManager::SetMapSize()
 	{
+		if (!m_pMapBuffer)
+			return E_FAIL;
+
 		int offset = FindOffset("DIM ");
 		if (offset == -1)
 			return E_FAIL;
@@ -94,6 +82,9 @@ namespace Game
 
 		m_WidthPixel = m_MapWidth * 32;
 		m_HeightPixel = m_MapHeight * 32;
+
+		RECT clipingRect = RECT{ 0, m_HeightPixel, m_WidthPixel - C_Engine::GetScreenRect().right, C_Engine::GetScreenRect().bottom };
+		Camera->SetClipingRect(clipingRect);
 
 		return S_OK;
 	}
@@ -105,7 +96,6 @@ namespace Game
 		//
 		// 1. ERA - tileset type->prepare megatile set
 		//
-
 		int offset = FindOffset("ERA ");
 		if (offset == -1)
 			return E_FAIL;
@@ -133,6 +123,38 @@ namespace Game
 		// 전체 파일 읽기
 		char* cv5_buffer = new char[length];
 		fin_cv5.read((char*)cv5_buffer, length);
+#pragma endregion
+
+#pragma region vf4
+		std::ifstream fin_vf4;
+		fin_vf4.open(tileSetPath + ".vf4", std::ios::binary);
+		if (!fin_vf4)
+		{
+			fin_vf4.close();
+			return E_FAIL;
+		}
+
+		// 파일 크기 구하기
+		fin_vf4.seekg(0, fin_vf4.end);
+		length = (int)fin_vf4.tellg();
+		fin_vf4.seekg(0, fin_vf4.beg);
+
+		// 전체 파일 읽기
+		char* vf4_buffer = new char[length];
+		fin_vf4.read((char*)vf4_buffer, length);
+
+		if (nullptr == m_pWalkAbility)
+		{
+			m_pWalkAbility = new bool* [m_MapHeight * 4];
+			for (uint16_t i = 0; i < m_MapHeight * 4; ++i)
+			{
+				m_pWalkAbility[i] = new bool[m_MapWidth * 4];
+			}
+		}
+#pragma endregion
+#ifdef DEBUG_MapManager_SAVE_WALKABILITY_IMAGE
+		std::vector<uint8_t> walkability(m_MapHeight * 4 * m_MapWidth * 4 * 4, 0xff);
+#endif // DEBUG_MapManager_SAVE_WALKABILITY_IMAGE
 
 		// 사용한 mega tile index 저장할 배열
 		// -1 -> 사용 X
@@ -143,13 +165,13 @@ namespace Game
 		//           CV5에서 몇번째 group이고
 		//           group 내에서 몇 번째인지
 		//
-
 		int MTXM_offset = FindOffset("MTXM");
 
 		int buffer_index = MTXM_offset + 8;
 		int megatile_length = 0;
 
 		std::shared_ptr<C_Texture> texture = (*this->m_pTileSetList)[m_TileSetName];
+		uint32_t width = texture->GetImageWidth() / 32;
 
 		for (int y = 0; y < m_MapHeight; ++y)
 		{
@@ -178,8 +200,6 @@ namespace Game
 				// 아닌 경우 지정 위치에서 mega tile 을 읽어와 리스트에 추가
 				else
 				{
-					uint32_t width = texture->GetImageWidth() / 32;
-
 					uint16_t real_x = real_megatile_index % width;
 					uint16_t real_y = real_megatile_index / width;
 
@@ -190,15 +210,69 @@ namespace Game
 					check[real_megatile_index] = megatile_length++;
 				}
 
+#pragma region WalkAbility
+				// 하나의 megatile을 이루는 4 * 4
+				// 총 16개의 mini tile 들의 flag 확인
+				for (size_t i = 0; i < 4; ++i)
+				{
+					for (size_t j = 0; j < 4; ++j)
+					{
+						uint16_t flag = vf4_buffer[(real_megatile_index << 5) ^ (i << 3) ^ (j << 1)];
+
+						uint16_t index_x = x * 4 + j;
+						uint16_t index_y = y * 4 + i;
+
+						if (flag % 2 == 1)
+						{
+							m_pWalkAbility[index_y][index_x] = true;
+						}
+						else
+						{
+							m_pWalkAbility[index_y][index_x] = false;
+
+#ifdef DEBUG_MapManager_SAVE_WALKABILITY_IMAGE
+							walkability[(index_y * 512 + index_x) * 4 + 0] = 0xff; // r
+							walkability[(index_y * 512 + index_x) * 4 + 1] = 0x00; // g
+							walkability[(index_y * 512 + index_x) * 4 + 2] = 0x00; // b
+							walkability[(index_y * 512 + index_x) * 4 + 3] = 0xff; // a
+#endif // DEBUG_MapManager_SAVE_WALKABILITY_IMAGE
+						}
+					}
+				}
+#pragma endregion
+
 				buffer_index += 2;
 			}
 		}
 
+#ifdef DEBUG_MapManager_SAVE_WALKABILITY_IMAGE
+		std::vector<uint8_t> imageBuffer;
+		lodepng::encode(imageBuffer, walkability, m_MapWidth * 4, m_MapHeight * 4, LodePNGColorType::LCT_RGBA, 8);
+		lodepng::save_file(imageBuffer, Path + m_MapName + "_walkAbility" + ".png");
+#endif // DEBUG_MapManager_SAVE_WALKABILITY_IMAGE
+
 		m_pMapBuffer->clear();
+		SAFE_DELETE(m_pMapBuffer);
+
 		delete[] cv5_buffer;
 		fin_cv5.close();
 
+		delete[] vf4_buffer;
+		fin_vf4.close();
+
 		return S_OK;
+	}
+	std::vector<D3DXVECTOR3> C_MapManager::GetPath(const D3DXVECTOR3& _start, const D3DXVECTOR3& _end)
+	{
+		uint32_t width = m_MapWidth * 4;
+		uint32_t height = m_MapHeight * 4;
+
+		uint32_t startX = (int32_t)_start.x >> 3;
+		uint32_t startY = (height - 1) - ((int32_t)_start.y >> 3);
+		uint32_t endX = (int32_t)_end.x >> 3;
+		uint32_t endY = (height - 1) - ((int32_t)_end.y >> 3);
+
+		return AStar::AStarFindPath(m_pWalkAbility, width, height, startX, startY, endX, endY);
 	}
 	HRESULT C_MapManager::LoadMap(const std::string& _mapName)
 	{
@@ -227,6 +301,8 @@ namespace Game
 		m_pTileSetIndex = nullptr;
 
 		m_pMapBuffer = nullptr;
+
+		m_pWalkAbility = nullptr;
 	}
 	C_MapManager::~C_MapManager()
 	{
@@ -276,10 +352,14 @@ namespace Game
 	}
 	void C_MapManager::Destroy()
 	{
+		for (uint16_t i = 0; i < m_MapHeight * 4; ++i)
+		{
+			SAFE_DELETE_ARRAY(m_pWalkAbility[i]);
+		}
+		SAFE_DELETE_ARRAY(m_pWalkAbility);
 		SAFE_DELETE(m_pMapBuffer);
 		SAFE_DELETE(m_pTileSetIndex);
 		SAFE_DELETE(m_pTileSetRect);
-		m_pTileSetRect->clear();
 		SAFE_DELETE(m_pTileSetList);
 		SAFE_DELETE(m_pMegaTileNumber);
 		SAFE_DELETE(m_pTileSetNameList);
@@ -314,7 +394,7 @@ namespace Game
 		}
 
 		Sprite->End();
-		
+
 		return S_OK;
 	}
 }

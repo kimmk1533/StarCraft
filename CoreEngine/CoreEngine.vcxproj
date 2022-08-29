@@ -147,6 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Scripts\Animator.h" />
+    <ClInclude Include="Scripts\AStar.h" />
     <ClInclude Include="Scripts\Bounds.h" />
     <ClInclude Include="Scripts\BoxCollider.h" />
     <ClInclude Include="Scripts\Camera.h" />
@@ -172,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scripts\Animator.cpp" />
+    <ClCompile Include="Scripts\AStar.cpp" />
     <ClCompile Include="Scripts\Bounds.cpp" />
     <ClCompile Include="Scripts\BoxCollider.cpp" />
     <ClCompile Include="Scripts\Camera.cpp" />

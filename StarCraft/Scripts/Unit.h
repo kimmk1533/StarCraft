@@ -63,7 +63,10 @@ namespace Game
 	protected:
 		std::shared_ptr<D3DXVECTOR3> m_pPosition;
 		std::shared_ptr<D3DXVECTOR3> m_pTargetPos;
+		std::list<D3DXVECTOR3>* m_pMovingPosList;
 		std::shared_ptr<D3DXVECTOR3> m_pScale;
+
+		std::vector<D3DXVECTOR2> m_Test;
 
 		S_UnitInfo* m_Info;
 		C_BoxCollider* m_pBoxCollider;
@@ -84,6 +87,9 @@ namespace Game
 
 		READONLY_PROPERTY(C_BoxCollider*, collider);
 		GET(collider) { return m_pBoxCollider; }
+
+	private:
+		void Move();
 
 	public:
 		C_Unit();

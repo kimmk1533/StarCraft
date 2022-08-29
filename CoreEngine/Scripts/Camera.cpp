@@ -44,9 +44,26 @@ namespace CoreEngine
 		D3DXMatrixMultiply(m_pViewMatrix, m_pTMatrix, m_pRMatrix);
 	}
 
+	void C_Camera::Cliping(const RECT& _rect)
+	{
+		if (m_pEye->x < _rect.left)		m_pEye->x = _rect.left;
+		if (m_pEye->x > _rect.right)	m_pEye->x = _rect.right;
+		if (m_pEye->y < _rect.bottom)	m_pEye->y = _rect.bottom;
+		if (m_pEye->y > _rect.top)		m_pEye->y = _rect.top;
+
+		if (m_pLookAt->x < _rect.left)		m_pLookAt->x = _rect.left;
+		if (m_pLookAt->x > _rect.right)		m_pLookAt->x = _rect.right;
+		if (m_pLookAt->y < _rect.bottom)	m_pLookAt->y = _rect.bottom;
+		if (m_pLookAt->y > _rect.top)		m_pLookAt->y = _rect.top;
+	}
+
 	D3DXVECTOR3 C_Camera::WorldToScreenPoint(const D3DXVECTOR3& _pos)
 	{
 		return _pos + (*m_pEye + D3DXVECTOR3(0.0f, 0.0f, -m_pEye->z));
+	}
+	void C_Camera::SetClipingRect(const RECT& _rect)
+	{
+		m_ClipingRect = _rect;
 	}
 
 	C_Camera::C_Camera()
@@ -55,7 +72,8 @@ namespace CoreEngine
 		m_pLookAt = nullptr;
 		m_pUp = nullptr;
 
-		m_fCameraSpeed = 1.0f;
+		m_CameraSpeed = 0.0f;
+		m_ClipingRect = RECT{ 0, 0, 0, 0 };
 
 		m_pU = nullptr;
 		m_pV = nullptr;
@@ -72,11 +90,12 @@ namespace CoreEngine
 
 	HRESULT C_Camera::Create()
 	{
-		m_pEye = new D3DXVECTOR3(-400.0f, 300.0f, -1.0f);
-		m_pLookAt = new D3DXVECTOR3(-400.0f, 300.0f, 0.0f);
+		m_pEye = new D3DXVECTOR3(0.0f, 600, -1.0f);
+		m_pLookAt = new D3DXVECTOR3(0.0f, 600, 0.0f);
 		m_pUp = new D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
-		m_fCameraSpeed = 100.0f;
+		m_CameraSpeed = 250.0f;
+		SetClipingRect(C_Engine::GetScreenRect());
 
 		m_pU = new D3DXVECTOR3(1.0f, 0.0f, 0.0f);
 		m_pV = new D3DXVECTOR3(0.0f, 1.0f, 0.0f);
@@ -111,7 +130,7 @@ namespace CoreEngine
 		{
 			static FLOAT speed = 0.0f;
 			
-			speed += m_fCameraSpeed * _deltaTime;
+			speed += m_CameraSpeed * _deltaTime;
 
 			if (Input->GetKey(E_KeyCode::LeftArrow) || Input->GetKey(E_KeyCode::A))
 			{
@@ -136,6 +155,8 @@ namespace CoreEngine
 		}
 
 		//std::cout << *m_pEye << "\n";
+
+		Cliping(m_ClipingRect);
 
 		Calculate_View_Matrix();
 

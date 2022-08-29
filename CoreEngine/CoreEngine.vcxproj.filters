@@ -46,6 +46,9 @@
     <Filter Include="Library">
       <UniqueIdentifier>{3a8ad8c4-dc53-4128-9380-1f16479d7d77}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Physics\AStar">
+      <UniqueIdentifier>{7ee397a6-aaf9-48ff-9355-ea6a328b5fc9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scripts\Animator.h">
@@ -117,6 +120,9 @@
     <ClInclude Include="Scripts\lodepng.h">
       <Filter>Library</Filter>
     </ClInclude>
+    <ClInclude Include="Scripts\AStar.h">
+      <Filter>Engine\Physics\AStar</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scripts\Animator.cpp">
@@ -181,6 +187,9 @@
     </ClCompile>
     <ClCompile Include="Scripts\lodepng.cpp">
       <Filter>Library</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\AStar.cpp">
+      <Filter>Engine\Physics\AStar</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
