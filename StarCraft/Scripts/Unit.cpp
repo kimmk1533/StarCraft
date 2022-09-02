@@ -7,62 +7,63 @@ namespace Game
 {
 	void C_Unit::Move()
 	{
-//		if (!m_pMovingPosList->empty())
-//		{
-//			D3DXVECTOR3 d = (*m_pMovingPosList)[0] - (*m_pPosition);
-//			FLOAT dx = d.x;
-//			FLOAT dy = d.y;
-//			d.z = 0.0f;
-//
-//			FLOAT length = D3DXVec3Length(&d);
-//
-//			FLOAT radian = atan2f(dx, dy);
-//			FLOAT theta = g_DegreeUnit * 0.5f + D3DXToDegree(radian);
-//
-//			// % 연산자는 성능을 많이 잡아 먹으니 비교 연산이 더 나을 것.
-//			if (theta >= 360.0f) theta -= 360.0f;
-//			if (theta <= 0.0f) theta += 360.0f;
-//
-//			FLOAT target = theta / g_DegreeUnit;
-//
-//			if (m_Info->m_bIsMovable == false &&
-//				m_Direction == m_TargetDir)
-//			{
-//				m_Info->m_bIsMovable = true;
-//			}
-//
-//#pragma region Move
-//			if (m_Info->m_bIsMovable == false &&
-//				m_Direction == m_TargetDir)
-//			{
-//				m_Info->m_bIsMovable = true;
-//			}
-//
-//			if (m_Info->m_bIsMovable && length > 0.01f)
-//			{
-//				// 최종 속도 = 이동 속도
-//				FLOAT speed = m_Info->m_fMoveSpeed;
-//
-//				D3DXVECTOR3 vcMove;
-//
-//				FLOAT move = fminf(length, speed);
-//
-//				vcMove.x = move * sinf(radian);
-//				vcMove.y = move * cosf(radian);
-//				vcMove.z = 0.0f;
-//
-//				(*m_pPosition) += vcMove;
-//
-//				m_UnitState = E_UnitState::Walking;
-//			}
-//#pragma endregion
-//		}
+		//		if (!m_pMovingPosList->empty())
+		//		{
+		//			D3DXVECTOR3 d = (*m_pMovingPosList)[0] - (*m_pPosition);
+		//			FLOAT dx = d.x;
+		//			FLOAT dy = d.y;
+		//			d.z = 0.0f;
+		//
+		//			FLOAT length = D3DXVec3Length(&d);
+		//
+		//			FLOAT radian = atan2f(dx, dy);
+		//			FLOAT theta = g_DegreeUnit * 0.5f + D3DXToDegree(radian);
+		//
+		//			// % 연산자는 성능을 많이 잡아 먹으니 비교 연산이 더 나을 것.
+		//			if (theta >= 360.0f) theta -= 360.0f;
+		//			if (theta <= 0.0f) theta += 360.0f;
+		//
+		//			FLOAT target = theta / g_DegreeUnit;
+		//
+		//			if (m_Info->m_bIsMovable == false &&
+		//				m_Direction == m_TargetDir)
+		//			{
+		//				m_Info->m_bIsMovable = true;
+		//			}
+		//
+		//#pragma region Move
+		//			if (m_Info->m_bIsMovable == false &&
+		//				m_Direction == m_TargetDir)
+		//			{
+		//				m_Info->m_bIsMovable = true;
+		//			}
+		//
+		//			if (m_Info->m_bIsMovable && length > 0.01f)
+		//			{
+		//				// 최종 속도 = 이동 속도
+		//				FLOAT speed = m_Info->m_fMoveSpeed;
+		//
+		//				D3DXVECTOR3 vcMove;
+		//
+		//				FLOAT move = fminf(length, speed);
+		//
+		//				vcMove.x = move * sinf(radian);
+		//				vcMove.y = move * cosf(radian);
+		//				vcMove.z = 0.0f;
+		//
+		//				(*m_pPosition) += vcMove;
+		//
+		//				m_UnitState = E_UnitState::Walking;
+		//			}
+		//#pragma endregion
+		//		}
 	}
 
 	C_Unit::C_Unit()
 	{
 		m_pPosition = nullptr;
-		m_pTargetPos = nullptr;
+		m_pStartPos = nullptr;
+		m_pEndPos = nullptr;
 		m_pScale = nullptr;
 
 		m_Info = nullptr;
@@ -84,7 +85,8 @@ namespace Game
 	HRESULT C_Unit::Create()
 	{
 		m_pPosition = std::make_shared<D3DXVECTOR3>(500.0f, 100.0f, 0.0f);
-		m_pTargetPos = std::make_shared<D3DXVECTOR3>(500.0f, 100.0f, 0.0f);
+		m_pStartPos = std::make_shared<D3DXVECTOR3>(500.0f, 100.0f, 0.0f);
+		m_pEndPos = std::make_shared<D3DXVECTOR3>(500.0f, 100.0f, 0.0f);
 		m_pMovingPosList = new std::list<D3DXVECTOR3>();
 		m_pScale = std::make_shared<D3DXVECTOR3>(1.0f, 1.0f, 1.0f);
 
@@ -105,7 +107,7 @@ namespace Game
 				{
 #pragma region Variables
 					D3DXVECTOR3 d = (*m_pMovingPosList).back() - (*m_pPosition);
-					//D3DXVECTOR3 d = (*m_pTargetPos) - (*m_pPosition);
+					//D3DXVECTOR3 d = (*m_pEndPos) - (*m_pPosition);
 					FLOAT dx = d.x;
 					FLOAT dy = d.y;
 					d.z = 0.0f;
@@ -149,6 +151,11 @@ namespace Game
 
 						direction = (static_cast<int>(E_Direction::Max) + direction) % static_cast<int>(E_Direction::Max);
 						m_Direction = static_cast<E_Direction>(direction);
+
+						if (m_Direction > E_Direction::Down)
+							m_pScale->x = -1.0f;
+						else
+							m_pScale->x = 1.0f;
 					}
 #pragma endregion
 
@@ -183,16 +190,16 @@ namespace Game
 
 						if (!m_pMovingPosList->empty())
 						{
-							D3DXVECTOR3 d = (*m_pMovingPosList).back() - (*m_pPosition);
-							FLOAT dx = d.x;
-							FLOAT dy = d.y;
+							d = (*m_pMovingPosList).back() - (*m_pPosition);
+							dx = d.x;
+							dy = d.y;
 							d.z = 0.0f;
 
 							// 명령 방향: 현재 위치에서 우클릭한 위치로 에 해당하는 방향
 							// 현재 방향과 명령 방향의 각도(라디안) 구하기
-							FLOAT radian = atan2f(dx, dy);
+							radian = atan2f(dx, dy);
 							// 현재 방향과 명령 방향의 각도(세타) 구하기
-							FLOAT theta = g_DegreeUnit * 0.5f + D3DXToDegree(radian);
+							theta = g_DegreeUnit * 0.5f + D3DXToDegree(radian);
 
 							// % 연산자는 성능을 많이 잡아 먹으니 비교 연산이 더 나을 것.
 							// 360도 회전 예외 처리
@@ -200,7 +207,7 @@ namespace Game
 							if (theta <= 0.0f) theta += 360.0f;
 
 							// 목표 방향에 해당하는 Enum 값 구하기
-							FLOAT target = theta / g_DegreeUnit;
+							target = theta / g_DegreeUnit;
 
 							// 목표 방향 설정
 							m_TargetDir = static_cast<E_Direction>(target);
@@ -234,7 +241,8 @@ namespace Game
 
 		m_pScale = nullptr;
 		SAFE_DELETE(m_pMovingPosList);
-		m_pTargetPos = nullptr;
+		m_pEndPos = nullptr;
+		m_pStartPos = nullptr;
 		m_pPosition = nullptr;
 	}
 
@@ -246,20 +254,25 @@ namespace Game
 
 		if (Input->GetMouseDown(E_MouseCode::Right))
 		{
-			(*m_pTargetPos) = Camera->WorldToScreenPoint(Input->GetMousePos());
+			(*m_pStartPos) = (*m_pPosition);
+			(*m_pEndPos) = Camera->WorldToScreenPoint(Input->GetMousePos());
 
 			m_pMovingPosList->clear();
-			std::vector<D3DXVECTOR3> path = M_Map->GetPath(*m_pPosition, *m_pTargetPos);
+			std::vector<D3DXVECTOR3> path = M_Map->GetPath(*m_pPosition, *m_pEndPos);
 			m_pMovingPosList->insert(m_pMovingPosList->end(), path.begin(), path.end());
 
-			m_Test.clear();
-			m_Test.insert(m_Test.end(), path.begin(), path.end());
-			for (size_t i = 0; i < m_Test.size(); ++i)
+#ifdef DEBUG_Unit_Draw_MovingPath
+
+			m_DEBUG_MovingPathList.clear();
+			for (size_t i = 0; i < path.size(); ++i)
 			{
-				D3DXVECTOR3 item = D3DXVECTOR3(m_Test[i].x, m_Test[i].y, 0.0f);
-				item -= *m_pPosition;
-				m_Test[i] = D3DXVECTOR2(item.x, item.y);
+				D3DXVECTOR2 pos = D3DXVECTOR2(path[i] - *m_pStartPos);
+				pos.y *= -1;
+				m_DEBUG_MovingPathList.push_back(pos);
 			}
+			m_DEBUG_MovingPathList.push_back(D3DXVECTOR2(0.0f, 0.0f));
+
+#endif // DEBUG_Unit_Draw_MovingPath
 
 			if (m_pMovingPosList->empty())
 			{
@@ -307,6 +320,7 @@ namespace Game
 		float width = bounds->size.x * 0.8f;
 		float height_half = bounds->size.y * 0.3f;
 
+#pragma region Selected
 		Sprite->SetTranslation(*m_pPosition);
 		Sprite->SetRotation(nullptr);
 		Sprite->SetScale(nullptr);
@@ -318,28 +332,51 @@ namespace Game
 			1.0f,
 			D3DCOLOR_XRGB(0, 255, 0)
 		));
+#pragma endregion
 
-		if (!m_pMovingPosList->empty())
+#pragma region MovingPath
+#ifdef DEBUG_Unit_Draw_MovingPath
+
+		/*RECT rc;
+		rc.left = 0;
+		rc.top = 0;
+		rc.right = m_pEndPos->x - m_pStartPos->x;
+		rc.bottom = m_pEndPos->y - m_pStartPos->y;
+
+		Sprite->SetTranslation(*m_pStartPos);
+		for (int i = 0; i < 10000; ++i)
+			Sprite->DrawRect(rc, 1.0f, false, D3DCOLOR_XRGB(255, 0, 0));*/
+
+		if (!m_DEBUG_MovingPathList.empty())
 		{
-			Sprite->SetTranslation(nullptr);
-			Sprite->DrawLine(m_Test.data(), m_Test.size(), 1.0f, false, D3DCOLOR_XRGB(255, 0, 0));
+			Sprite->SetTranslation(*m_pStartPos);
+			Sprite->DrawLine(m_DEBUG_MovingPathList.data(), m_DEBUG_MovingPathList.size(), 1.0f, false, D3DCOLOR_XRGB(255, 0, 0));
 		}
 
-#ifdef DEBUG_Unit_HITBOX
-		RECT rc;
+#endif // DEBUG_Unit_Draw_MovingPath
+#pragma endregion
 
-		rc.left = lroundf(-bounds->size.x * 0.5f);
-		rc.bottom = lroundf(-bounds->size.y * 0.5f);
-		rc.right = bounds->size.x * 0.5f;
-		rc.top = bounds->size.y * 0.5f;
+#ifdef DEBUG_Unit_Draw_HitBox
+
+		Sprite->SetTranslation(*m_pPosition);
+
+		m_DEBUG_HitBoxRect.left = lroundf(-bounds->size.x * 0.5f);
+		m_DEBUG_HitBoxRect.bottom = lroundf(-bounds->size.y * 0.5f);
+		m_DEBUG_HitBoxRect.right = bounds->size.x * 0.5f;
+		m_DEBUG_HitBoxRect.top = bounds->size.y * 0.5f;
 
 		FAILED_CHECK_RETURN(Sprite->DrawRect(
-			rc,
+			m_DEBUG_HitBoxRect,
 			1.0f,
 			false,
 			D3DCOLOR_XRGB(255, 255, 255)
 		));
-#endif // DEBUG_Unit_HITBOX
+
+#endif // DEBUG_Unit_Draw_HitBox
+
+		Sprite->SetTranslation(nullptr);
+		Sprite->SetRotation(nullptr);
+		Sprite->SetScale(nullptr);
 
 		return S_OK;
 	}

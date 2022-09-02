@@ -30,6 +30,22 @@ namespace Game
 		std::vector<uint8_t>* m_pMapBuffer;
 
 	private:
+		enum class E_WalkAbilityRes : uint8_t
+		{
+			None = 0,
+
+			High = 1,
+			Middle = 2,
+			Low = 4,
+
+			Max = 4,
+
+		};
+
+		E_WalkAbilityRes m_WalkAbility_Res;
+		bool** m_pWalkAbility_HighRes;
+		bool** m_pWalkAbility_MidRes;
+		bool** m_pWalkAbility_LowRes;
 		bool** m_pWalkAbility;
 
 	public:

@@ -10,12 +10,13 @@ namespace Game
 
 	int C_MapManager::FindOffset(const std::string& _item) const
 	{
-		if (!m_pMapBuffer)
+		if (nullptr == m_pMapBuffer || m_pMapBuffer->empty())
 			return -1;
 
+		bool flag;
 		size_t item_size = _item.size();
 		size_t buffer_size = m_pMapBuffer->size() - item_size;
-		bool flag = true;
+
 		for (size_t i = 0; i < buffer_size; ++i)
 		{
 			flag = true;
@@ -36,10 +37,8 @@ namespace Game
 	}
 	HRESULT C_MapManager::Open_chk_File()
 	{
-		if (!m_pMapBuffer)
-		{
-			m_pMapBuffer = new std::vector<uint8_t>();
-		}
+		if (nullptr == m_pMapBuffer)
+			return E_FAIL;
 
 		std::ifstream fin_chk;
 		fin_chk.open(Path + m_MapName + ".chk", std::ios::binary);
@@ -70,7 +69,7 @@ namespace Game
 	}
 	HRESULT C_MapManager::SetMapSize()
 	{
-		if (!m_pMapBuffer)
+		if (nullptr == m_pMapBuffer || m_pMapBuffer->empty())
 			return E_FAIL;
 
 		int offset = FindOffset("DIM ");
@@ -83,6 +82,60 @@ namespace Game
 		m_WidthPixel = m_MapWidth * 32;
 		m_HeightPixel = m_MapHeight * 32;
 
+#pragma region WalkAbility
+
+		uint16_t w_low	= m_MapWidth  *	((uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::Low);
+		uint16_t h_low	= m_MapHeight *	((uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::Low);
+		uint16_t w_mid	= m_MapWidth  *	((uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::Middle);
+		uint16_t h_mid	= m_MapHeight *	((uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::Middle);
+		uint16_t w_high = m_MapWidth  *	((uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::High);
+		uint16_t h_high = m_MapHeight *	((uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::High);
+
+		for (uint16_t i = 0; i < h_high; ++i)
+		{
+			if (nullptr != m_pWalkAbility_LowRes && i < h_low)
+				SAFE_DELETE_ARRAY(m_pWalkAbility_LowRes[i]);
+
+			if (nullptr != m_pWalkAbility_MidRes && i < h_mid)
+				SAFE_DELETE_ARRAY(m_pWalkAbility_MidRes[i]);
+
+			if (nullptr != m_pWalkAbility_HighRes)
+				SAFE_DELETE_ARRAY(m_pWalkAbility_HighRes[i]);
+		}
+		SAFE_DELETE_ARRAY(m_pWalkAbility_LowRes);
+		SAFE_DELETE_ARRAY(m_pWalkAbility_MidRes);
+		SAFE_DELETE_ARRAY(m_pWalkAbility_HighRes);
+		m_pWalkAbility = nullptr;
+
+		m_pWalkAbility_LowRes = new bool* [h_low];
+		m_pWalkAbility_MidRes = new bool* [h_mid];
+		m_pWalkAbility_HighRes = new bool* [h_high];
+		for (uint16_t i = 0; i < h_high; ++i)
+		{
+			if (i < h_low)
+				m_pWalkAbility_LowRes[i] = new bool[w_low];
+
+			if (i < h_mid)
+				m_pWalkAbility_MidRes[i] = new bool[w_mid];
+
+			m_pWalkAbility_HighRes[i] = new bool[w_high];
+		}
+
+		switch (m_WalkAbility_Res)
+		{
+		case E_WalkAbilityRes::Low:
+			m_pWalkAbility = m_pWalkAbility_LowRes;
+			break;
+		case E_WalkAbilityRes::Middle:
+			m_pWalkAbility = m_pWalkAbility_MidRes;
+			break;
+		case E_WalkAbilityRes::High:
+			m_pWalkAbility = m_pWalkAbility_HighRes;
+			break;
+		}
+
+#pragma endregion
+
 		RECT clipingRect = RECT{ 0, m_HeightPixel, m_WidthPixel - C_Engine::GetScreenRect().right, C_Engine::GetScreenRect().bottom };
 		Camera->SetClipingRect(clipingRect);
 
@@ -90,7 +143,7 @@ namespace Game
 	}
 	HRESULT C_MapManager::CreateTerrain()
 	{
-		if (!m_pMapBuffer)
+		if (nullptr == m_pMapBuffer || m_pMapBuffer->empty())
 			return E_FAIL;
 
 		//
@@ -142,19 +195,11 @@ namespace Game
 		// 전체 파일 읽기
 		char* vf4_buffer = new char[length];
 		fin_vf4.read((char*)vf4_buffer, length);
-
-		if (nullptr == m_pWalkAbility)
-		{
-			m_pWalkAbility = new bool* [m_MapHeight * 4];
-			for (uint16_t i = 0; i < m_MapHeight * 4; ++i)
-			{
-				m_pWalkAbility[i] = new bool[m_MapWidth * 4];
-			}
-		}
 #pragma endregion
-#ifdef DEBUG_MapManager_SAVE_WALKABILITY_IMAGE
+
+#ifdef DEBUG_MapManager_SaveImage_WalkAbility
 		std::vector<uint8_t> walkability(m_MapHeight * 4 * m_MapWidth * 4 * 4, 0xff);
-#endif // DEBUG_MapManager_SAVE_WALKABILITY_IMAGE
+#endif // DEBUG_MapManager_SaveImage_WalkAbility
 
 		// 사용한 mega tile index 저장할 배열
 		// -1 -> 사용 X
@@ -173,9 +218,9 @@ namespace Game
 		std::shared_ptr<C_Texture> texture = (*this->m_pTileSetList)[m_TileSetName];
 		uint32_t width = texture->GetImageWidth() / 32;
 
-		for (int y = 0; y < m_MapHeight; ++y)
+		for (uint16_t y = 0; y < m_MapHeight; ++y)
 		{
-			for (int x = 0; x < m_MapWidth; ++x)
+			for (uint16_t x = 0; x < m_MapWidth; ++x)
 			{
 				uint8_t int_1 = (*m_pMapBuffer)[buffer_index];
 				uint8_t int_2 = (*m_pMapBuffer)[buffer_index + 1];
@@ -211,6 +256,8 @@ namespace Game
 				}
 
 #pragma region WalkAbility
+				uint8_t tileCount = 0;
+
 				// 하나의 megatile을 이루는 4 * 4
 				// 총 16개의 mini tile 들의 flag 확인
 				for (size_t i = 0; i < 4; ++i)
@@ -224,20 +271,30 @@ namespace Game
 
 						if (flag % 2 == 1)
 						{
-							m_pWalkAbility[index_y][index_x] = true;
+							m_pWalkAbility_HighRes[index_y][index_x] = true;
 						}
 						else
 						{
-							m_pWalkAbility[index_y][index_x] = false;
+							m_pWalkAbility_HighRes[index_y][index_x] = false;
+							++tileCount;
 
-#ifdef DEBUG_MapManager_SAVE_WALKABILITY_IMAGE
-							walkability[(index_y * 512 + index_x) * 4 + 0] = 0xff; // r
-							walkability[(index_y * 512 + index_x) * 4 + 1] = 0x00; // g
-							walkability[(index_y * 512 + index_x) * 4 + 2] = 0x00; // b
-							walkability[(index_y * 512 + index_x) * 4 + 3] = 0xff; // a
-#endif // DEBUG_MapManager_SAVE_WALKABILITY_IMAGE
+#ifdef DEBUG_MapManager_SaveImage_WalkAbility
+							walkability[(index_y * m_MapWidth * 4 + index_x) * 4 + 0] = 0xff; // r
+							walkability[(index_y * m_MapWidth * 4 + index_x) * 4 + 1] = 0x00; // g
+							walkability[(index_y * m_MapWidth * 4 + index_x) * 4 + 2] = 0x00; // b
+							walkability[(index_y * m_MapWidth * 4 + index_x) * 4 + 3] = 0xff; // a
+#endif // DEBUG_MapManager_SaveImage_WalkAbility
 						}
 					}
+				}
+
+				if (tileCount > 8)
+				{
+					m_pWalkAbility_LowRes[y][x] = false;
+				}
+				else
+				{
+					m_pWalkAbility_LowRes[y][x] = true;
 				}
 #pragma endregion
 
@@ -245,11 +302,35 @@ namespace Game
 			}
 		}
 
-#ifdef DEBUG_MapManager_SAVE_WALKABILITY_IMAGE
+#pragma region WalkAbility
+		for (uint16_t y = 0; y < m_MapHeight * 2; ++y)
+		{
+			for (uint16_t x = 0; x < m_MapWidth * 2; ++x)
+			{
+				uint8_t tileCount = 0;
+
+				for (uint8_t i = 0; i < 2; ++i)
+				{
+					for (uint8_t j = 0; j < 2; ++j)
+					{
+						if (!(m_pWalkAbility_HighRes[y * 2 + i][x * 2 + j]))
+							++tileCount;
+					}
+				}
+
+				if (tileCount > 2)
+					m_pWalkAbility_MidRes[y][x] = false;
+				else
+					m_pWalkAbility_MidRes[y][x] = true;
+			}
+		}
+#pragma endregion
+
+#ifdef DEBUG_MapManager_SaveImage_WalkAbility
 		std::vector<uint8_t> imageBuffer;
 		lodepng::encode(imageBuffer, walkability, m_MapWidth * 4, m_MapHeight * 4, LodePNGColorType::LCT_RGBA, 8);
 		lodepng::save_file(imageBuffer, Path + m_MapName + "_walkAbility" + ".png");
-#endif // DEBUG_MapManager_SAVE_WALKABILITY_IMAGE
+#endif // DEBUG_MapManager_SaveImage_WalkAbility
 
 		m_pMapBuffer->clear();
 		SAFE_DELETE(m_pMapBuffer);
@@ -264,15 +345,26 @@ namespace Game
 	}
 	std::vector<D3DXVECTOR3> C_MapManager::GetPath(const D3DXVECTOR3& _start, const D3DXVECTOR3& _end)
 	{
-		uint32_t width = m_MapWidth * 4;
-		uint32_t height = m_MapHeight * 4;
+		uint32_t width	= m_MapWidth  * ((uint8_t)E_WalkAbilityRes::Max / (uint8_t)m_WalkAbility_Res);
+		uint32_t height = m_MapHeight * ((uint8_t)E_WalkAbilityRes::Max / (uint8_t)m_WalkAbility_Res);
 
-		uint32_t startX = (int32_t)_start.x >> 3;
-		uint32_t startY = (height - 1) - ((int32_t)_start.y >> 3);
-		uint32_t endX = (int32_t)_end.x >> 3;
-		uint32_t endY = (height - 1) - ((int32_t)_end.y >> 3);
+		uint8_t m = 8 * (uint8_t)m_WalkAbility_Res;
 
-		return AStar::AStarFindPath(m_pWalkAbility, width, height, startX, startY, endX, endY);
+		int32_t startX = (int32_t)roundf(_start.x / m);
+		int32_t startY = (height - 1) - (int32_t)roundf(_start.y / m);
+		int32_t endX = (int32_t)roundf(_end.x / m);
+		int32_t endY = (height - 1) - (int32_t)roundf(_end.y / m);
+
+		auto path = AStar::AStarFindPath(m_pWalkAbility, width, height, startX, startY, endX, endY);
+		
+		for (size_t i = 0; i < path.size(); ++i)
+		{
+			path[i].x *= m;
+			path[i].y = (height - 1) - path[i].y;
+			path[i].y *= m;
+		}
+
+		return path;
 	}
 	HRESULT C_MapManager::LoadMap(const std::string& _mapName)
 	{
@@ -302,6 +394,10 @@ namespace Game
 
 		m_pMapBuffer = nullptr;
 
+		m_WalkAbility_Res = E_WalkAbilityRes::None;
+		m_pWalkAbility_HighRes = nullptr;
+		m_pWalkAbility_MidRes = nullptr;
+		m_pWalkAbility_LowRes = nullptr;
 		m_pWalkAbility = nullptr;
 	}
 	C_MapManager::~C_MapManager()
@@ -339,24 +435,38 @@ namespace Game
 			texture->Init(filepath);
 			texture->Create();
 
-			//std::cout << (*m_pTileSetNameList)[i] << " (" << texture->GetImageWidth() << ", " << texture->GetImageHeight() << ")\n";
-
 			(*m_pTileSetList)[(*m_pTileSetNameList)[i]] = texture;
 		}
 
-
 		m_pTileSetRect = new std::vector<RECT>();
 		m_pTileSetIndex = new std::vector<uint16_t>();
+
+		m_pMapBuffer = new std::vector<uint8_t>();
+
+		m_WalkAbility_Res = E_WalkAbilityRes::High;
 
 		return S_OK;
 	}
 	void C_MapManager::Destroy()
 	{
-		for (uint16_t i = 0; i < m_MapHeight * 4; ++i)
+		uint16_t low = m_MapHeight * (uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::Low;
+		uint16_t mid = m_MapHeight * (uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::Middle;
+		uint16_t high = m_MapHeight * (uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::High;
+		for (uint16_t i = 0; i < high; ++i)
 		{
-			SAFE_DELETE_ARRAY(m_pWalkAbility[i]);
+			if (i < low)
+				SAFE_DELETE_ARRAY(m_pWalkAbility_LowRes[i]);
+
+			if (i < mid)
+				SAFE_DELETE_ARRAY(m_pWalkAbility_MidRes[i]);
+
+			SAFE_DELETE_ARRAY(m_pWalkAbility_HighRes[i]);
 		}
-		SAFE_DELETE_ARRAY(m_pWalkAbility);
+		SAFE_DELETE_ARRAY(m_pWalkAbility_LowRes);
+		SAFE_DELETE_ARRAY(m_pWalkAbility_MidRes);
+		SAFE_DELETE_ARRAY(m_pWalkAbility_HighRes);
+		m_pWalkAbility = nullptr;
+
 		SAFE_DELETE(m_pMapBuffer);
 		SAFE_DELETE(m_pTileSetIndex);
 		SAFE_DELETE(m_pTileSetRect);
@@ -372,7 +482,7 @@ namespace Game
 	HRESULT C_MapManager::Render()
 	{
 		Sprite->SetRotation(nullptr);
-		Sprite->SetScale(1.0f, 1.0f, 1.0f);
+		Sprite->SetScale(nullptr);
 
 		std::shared_ptr<C_Texture> texture = (*this->m_pTileSetList)[m_TileSetName];
 

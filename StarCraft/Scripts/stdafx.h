@@ -6,17 +6,16 @@ namespace Game
 #pragma region Define DEBUG
 
 #define DEBUG
-#define DEBUG_GAME_SPEED 24
+#define DEBUG_Game_Speed 24
 
-//#define DEBUG_SelectManager_PRINT
+//#define DEBUG_Unit_Draw_HitBox
+#define DEBUG_Unit_Draw_MovingPath
 
-//#define DEBUG_Unit_HITBOX
-
-//#define DEBUG_MapManager_SAVE_WALKABILITY_IMAGE
+//#define DEBUG_MapManager_SaveImage_WalkAbility
 
 #pragma endregion
 
-	static const FLOAT g_InGameFPS = 1.0f / DEBUG_GAME_SPEED;
+	static const FLOAT g_InGameFPS = 1.0f / DEBUG_Game_Speed;
 	static const FLOAT g_FPS = 1.0f / 20;
 
 	enum class E_Direction : unsigned char

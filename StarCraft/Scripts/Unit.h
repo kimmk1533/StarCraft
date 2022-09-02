@@ -62,11 +62,18 @@ namespace Game
 	{
 	protected:
 		std::shared_ptr<D3DXVECTOR3> m_pPosition;
-		std::shared_ptr<D3DXVECTOR3> m_pTargetPos;
+		std::shared_ptr<D3DXVECTOR3> m_pStartPos;
+		std::shared_ptr<D3DXVECTOR3> m_pEndPos;
 		std::list<D3DXVECTOR3>* m_pMovingPosList;
 		std::shared_ptr<D3DXVECTOR3> m_pScale;
 
-		std::vector<D3DXVECTOR2> m_Test;
+#ifdef DEBUG_Unit_Draw_HitBox
+		RECT m_DEBUG_HitBoxRect;
+#endif // DEBUG_Unit_Draw_HitBox
+
+#ifdef DEBUG_Unit_Draw_MovingPath
+		std::vector<D3DXVECTOR2> m_DEBUG_MovingPathList;
+#endif // DEBUG_Unit_Draw_MovingPath
 
 		S_UnitInfo* m_Info;
 		C_BoxCollider* m_pBoxCollider;

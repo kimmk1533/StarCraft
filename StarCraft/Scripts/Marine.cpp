@@ -77,12 +77,12 @@ namespace Game
 
 	HRESULT C_Marine::Update(const FLOAT& _deltaTime)
 	{
-		C_Unit::Update(_deltaTime);
+		FAILED_CHECK_RETURN(C_Unit::Update(_deltaTime));
 
 		// 임시 코드
 		/*if (Input->GetKeyDown(E_KeyCode::S))
 		{
-			(*m_pTargetPos) = (*m_pPosition);
+			(*m_pEndPos) = (*m_pPosition);
 		}*/
 
 		return S_OK;
@@ -93,11 +93,6 @@ namespace Game
 
 		std::shared_ptr<C_Texture> texture = C_MarineManager::GetI()->GetTexture();
 		RECT rect = C_MarineManager::GetI()->GetTextureRect({ m_UnitState, m_Direction }, m_AnimIndex);
-
-		if (m_Direction > E_Direction::Down)
-			m_pScale->x = -1.0f;
-		else
-			m_pScale->x = 1.0f;
 
 		Sprite->SetTranslation(*m_pPosition);
 		Sprite->SetRotation(nullptr);

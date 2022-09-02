@@ -138,19 +138,9 @@ namespace Game
 			for (size_t i = 0; i < marineList->size(); ++i)
 			{
 				if (Physics::CollisionCheck(*m_pDragCollider->bounds, (*(*marineList)[i]->collider->bounds)))
-					std::cout << "충돌\n";
-
-#ifdef DEBUG_SelectManager_PRINT
-				if (i == 0)
 				{
-					S_Bounds* bounds = (*marineList)[i]->collider->bounds;
-					std::cout << "unit_min (" << bounds->min.x << ", " << bounds->min.y << ")\n";
-					std::cout << "unit_max (" << bounds->max.x << ", " << bounds->max.y << ")\n";
-					std::cout << "m_arrDragPos[0] (" << m_arrDragPos[0].x << ", " << m_arrDragPos[0].y << ")\n";
-					std::cout << "m_arrDragPos[1] (" << m_arrDragPos[1].x << ", " << m_arrDragPos[1].y << ")\n\n";
+					std::cout << "충돌\n";
 				}
-#endif // DEBUG_SelectManager_PRINT
-
 			} // for (size_t i = 0; i < marineList->size(); ++i)
 		} // else if (Input->GetMouseUp(E_MouseCode::Left))
 

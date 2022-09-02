@@ -9,10 +9,12 @@ namespace CoreEngine
 		D3DXVECTOR3* m_pLookAt;
 		D3DXVECTOR3* m_pUp;
 
+		FLOAT m_CameraSpeed;
+		RECT m_ClipingRect;
+
 	public:
-		PROPERTY(D3DXVECTOR3, position);
+		READONLY_PROPERTY(D3DXVECTOR3, position);
 		GET(position) { return *m_pEye; }
-		SET(position) { (*m_pEye) = _value; }
 
 		READONLY_PROPERTY(D3DXVECTOR3, forward);
 		GET(forward) { return *m_pLookAt; }
@@ -20,9 +22,9 @@ namespace CoreEngine
 		READONLY_PROPERTY(D3DXVECTOR3, up);
 		GET(up) { return *m_pUp; }
 
-	private:
-		FLOAT m_CameraSpeed;
-		RECT m_ClipingRect;
+		PROPERTY(FLOAT, speed);
+		GET(speed) { return m_CameraSpeed; }
+		SET(speed) { m_CameraSpeed = _value; }
 
 		// 참고: https://vitacpp.tistory.com/43?category=961147
 	private:
@@ -51,6 +53,10 @@ namespace CoreEngine
 	public:
 		D3DXVECTOR3 WorldToScreenPoint(const D3DXVECTOR3& _pos);
 		void SetClipingRect(const RECT& _rect);
+
+		void MoveCameraX(const FLOAT& _speed);
+		void MoveCameraY(const FLOAT& _speed);
+		void MoveCamera(const D3DXVECTOR2& _move, const bool& _pixelPerfect = true);
 
 	public:
 		C_Camera();

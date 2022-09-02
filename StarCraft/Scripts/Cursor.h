@@ -50,7 +50,6 @@ namespace Game
 		E_CursorState m_CursorState;
 		E_CursorDir m_CursorDir;
 		static const WORD m_wCursorMoveOffset;
-		short m_CursorDirIndex[2];
 
 	public:
 		void SetCursorState(E_CursorState _state);

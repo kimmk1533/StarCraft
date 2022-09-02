@@ -66,6 +66,35 @@ namespace CoreEngine
 		m_ClipingRect = _rect;
 	}
 
+	void C_Camera::MoveCameraX(const FLOAT& _speed)
+	{
+		this->MoveCamera(D3DXVECTOR2(_speed, 0.0f));
+	}
+	void C_Camera::MoveCameraY(const FLOAT& _speed)
+	{
+		this->MoveCamera(D3DXVECTOR2(0.0f, _speed));
+	}
+	void C_Camera::MoveCamera(const D3DXVECTOR2& _move, const bool& _pixelPerfect)
+	{
+		if (_pixelPerfect)
+		{
+			static D3DXVECTOR2 speed = D3DXVECTOR2(0.0f, 0.0f);
+
+			speed += _move;
+
+			m_pLookAt->x = m_pEye->x += (int)speed.x;
+			m_pLookAt->y = m_pEye->y += (int)speed.y;
+
+			speed.x -= (int)speed.x;
+			speed.y -= (int)speed.y;
+		}
+		else
+		{
+			m_pLookAt->x = m_pEye->x += _move.x;
+			m_pLookAt->y = m_pEye->y += _move.y;
+		}
+	}
+
 	C_Camera::C_Camera()
 	{
 		m_pEye = nullptr;
@@ -94,7 +123,7 @@ namespace CoreEngine
 		m_pLookAt = new D3DXVECTOR3(0.0f, 600, 0.0f);
 		m_pUp = new D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
-		m_CameraSpeed = 250.0f;
+		m_CameraSpeed = 500.0f;
 		SetClipingRect(C_Engine::GetScreenRect());
 
 		m_pU = new D3DXVECTOR3(1.0f, 0.0f, 0.0f);
@@ -128,28 +157,24 @@ namespace CoreEngine
 	{
 		if (!Input->GetMouse(E_MouseCode::Left))
 		{
-			static FLOAT speed = 0.0f;
-			
-			speed += m_CameraSpeed * _deltaTime;
+			FLOAT speed = m_CameraSpeed * _deltaTime;
 
-			if (Input->GetKey(E_KeyCode::LeftArrow) || Input->GetKey(E_KeyCode::A))
+			if (Input->GetKey(E_KeyCode::LeftArrow))
 			{
-				m_pLookAt->x = m_pEye->x -= (int)speed;
+				this->MoveCameraX(-speed);
 			}
-			if (Input->GetKey(E_KeyCode::RightArrow) || Input->GetKey(E_KeyCode::D))
+			if (Input->GetKey(E_KeyCode::RightArrow))
 			{
-				m_pLookAt->x = m_pEye->x += (int)speed;
+				this->MoveCameraX(speed);
 			}
-			if (Input->GetKey(E_KeyCode::UpArrow) || Input->GetKey(E_KeyCode::W))
+			if (Input->GetKey(E_KeyCode::UpArrow))
 			{
-				m_pLookAt->y = m_pEye->y += (int)speed;
+				this->MoveCameraY(speed);
 			}
-			if (Input->GetKey(E_KeyCode::DownArrow) || Input->GetKey(E_KeyCode::S))
+			if (Input->GetKey(E_KeyCode::DownArrow))
 			{
-				m_pLookAt->y = m_pEye->y -= (int)speed;
+				this->MoveCameraY(-speed);
 			}
-
-			speed -= (int)speed;
 
 			//m_pEye->z += Input->GetMouseEps().z;
 		}

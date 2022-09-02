@@ -227,6 +227,9 @@ namespace CoreEngine
 			return E_FAIL;
 		}
 
+		D3DXMatrixIdentity(m_pMtSRT);
+		D3DXMatrixIdentity(m_pMtResult);
+
 		// World Matrix
 		*m_pMtSRT = (*m_pMtScale) * (*m_pMtRotation) * (*m_pMtTranslation);
 

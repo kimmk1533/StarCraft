@@ -41,25 +41,25 @@ namespace CoreEngine
 		gMap[_startY][_startX] = 0;
 
 		// 8방향에 대한 x, y 변위 배열
-		int8_t direction_x[] = { 1, 1, 0, -1, -1, -1, 0, 1 };
-		int8_t direction_y[] = { 0, -1, -1, -1, 0, 1, 1, 1 };
+		static const int8_t direction_x[] = { 1, 1, 0, -1, -1, -1, 0, 1 };
+		static const int8_t direction_y[] = { 0, -1, -1, -1, 0, 1, 1, 1 };
 
-		// A * algorithm
+		int32_t x, y, nx, ny;
+
+		// A* algorithm
 		while (!openNodes.empty())
 		{
 			currentNode = openNodes.top(); openNodes.pop();
-			uint32_t x = currentNode.Position.x;
-			uint32_t y = currentNode.Position.y;
+			x = currentNode.Position.x;
+			y = currentNode.Position.y;
 
 			// old g value
 			uint32_t oldG = gMap[y][x];
 
-			int32_t nx, ny;
-
 			if (x == _endX && y == _endY)
 			{
-				nx = _endX;
-				ny = _endY;
+				nx = x;
+				ny = y;
 
 				uint8_t	current_direction = 8;
 				while (!(nx == _startX && ny == _startY))
@@ -68,7 +68,7 @@ namespace CoreEngine
 
 					// 방향이 바뀔때만 path에 추가.
 					if (current_direction != next_direction)
-						result.push_back(D3DXVECTOR3(nx * 8, (_height - 1 - ny) * 8, 0.0f));
+						result.push_back(D3DXVECTOR3(nx, ny, 0.0f));
 
 					nx += direction_x[next_direction];
 					ny += direction_y[next_direction];
@@ -129,8 +129,10 @@ namespace CoreEngine
 		// 경로 존재 X
 		//t2 = time.time()
 		//print("No path. at: " + str(t2 - t1) + " sec")
+
 		return result;
 	}
+
 	AStar::AStarNode::AStarNode()
 	{
 		Position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);

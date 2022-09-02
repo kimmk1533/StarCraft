@@ -93,27 +93,27 @@ namespace Game
 					{ E_CursorDir::Down_Left,	E_CursorDir::Down,	E_CursorDir::Down_Right }
 				};
 
-				enum TempXY
-				{
-					x = 0,
-					y
-				};
+				int x, y;
 
 				if (rc.left + m_wCursorMoveOffset > mousePos.x)
-					m_CursorDirIndex[x] = -1;
+					x = -1;
 				else if (rc.right - m_wCursorMoveOffset < mousePos.x)
-					m_CursorDirIndex[x] = 1;
+					x = 1;
 				else
-					m_CursorDirIndex[x] = 0;
+					x = 0;
 
 				if (-rc.bottom + m_wCursorMoveOffset > mousePos.y)
-					m_CursorDirIndex[y] = 1;
+					y = 1;
 				else if (rc.top - m_wCursorMoveOffset < mousePos.y)
-					m_CursorDirIndex[y] = -1;
+					y = -1;
 				else
-					m_CursorDirIndex[y] = 0;
+					y = 0;
 
-				m_CursorDir = Dir[m_CursorDirIndex[y] + 1][m_CursorDirIndex[x] + 1];
+				m_CursorDir = Dir[y + 1][x + 1];
+
+				FLOAT speed = Camera->speed * _deltaTime;
+
+				Camera->MoveCamera(D3DXVECTOR2(x * speed, -y * speed));
 			}
 		}
 
