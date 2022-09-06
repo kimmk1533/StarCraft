@@ -123,6 +123,9 @@
     <ClInclude Include="Scripts\AStar.h">
       <Filter>Engine\Physics\AStar</Filter>
     </ClInclude>
+    <ClInclude Include="Scripts\TextureManager.h">
+      <Filter>Engine\Render\Image</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scripts\Animator.cpp">
@@ -190,6 +193,9 @@
     </ClCompile>
     <ClCompile Include="Scripts\AStar.cpp">
       <Filter>Engine\Physics\AStar</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\TextureManager.cpp">
+      <Filter>Engine\Render\Image</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

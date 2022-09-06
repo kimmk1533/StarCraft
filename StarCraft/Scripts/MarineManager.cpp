@@ -17,19 +17,6 @@ namespace Game
 		if (FAILED(C_UnitManager::Create()))
 			return E_FAIL;
 
-		m_pUnitTexture = std::make_shared<C_Texture>();
-		if (FAILED(m_pUnitTexture->Init(TEXT("Marine.png"))))
-			return E_FAIL;
-
-		if (FAILED(m_pUnitTexture->Create()))
-		{
-			m_pUnitTexture = nullptr;
-
-			MessageBox(NULL, TEXT("마린 텍스쳐 불러오기 실패"), TEXT("오류"), MB_OK);
-
-			return E_FAIL;
-		}
-
 		m_rcUnitSize = RECT{ 0, 0, 64, 64 };
 
 		m_pOffset = std::make_shared<D3DXVECTOR3>(32.0f, 32.0f, 1.0f);

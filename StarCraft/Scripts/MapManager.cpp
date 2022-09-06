@@ -84,12 +84,12 @@ namespace Game
 
 #pragma region WalkAbility
 
-		uint16_t w_low	= m_MapWidth  *	((uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::Low);
-		uint16_t h_low	= m_MapHeight *	((uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::Low);
-		uint16_t w_mid	= m_MapWidth  *	((uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::Middle);
-		uint16_t h_mid	= m_MapHeight *	((uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::Middle);
-		uint16_t w_high = m_MapWidth  *	((uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::High);
-		uint16_t h_high = m_MapHeight *	((uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::High);
+		uint16_t w_low = m_MapWidth * ((uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::Low);
+		uint16_t h_low = m_MapHeight * ((uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::Low);
+		uint16_t w_mid = m_MapWidth * ((uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::Middle);
+		uint16_t h_mid = m_MapHeight * ((uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::Middle);
+		uint16_t w_high = m_MapWidth * ((uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::High);
+		uint16_t h_high = m_MapHeight * ((uint8_t)E_WalkAbilityRes::Max / (uint8_t)E_WalkAbilityRes::High);
 
 		for (uint16_t i = 0; i < h_high; ++i)
 		{
@@ -215,8 +215,12 @@ namespace Game
 		int buffer_index = MTXM_offset + 8;
 		int megatile_length = 0;
 
+#ifdef DEBUG_MapManager_SingleTexture
 		std::shared_ptr<C_Texture> texture = (*this->m_pTileSetList)[m_TileSetName];
-		uint32_t width = texture->GetImageWidth() / 32;
+		uint32_t image_width = texture->GetImageWidth() / 32;
+#else
+		uint32_t image_width = 32;
+#endif // DEBUG_MapManager_SingleTexture
 
 		for (uint16_t y = 0; y < m_MapHeight; ++y)
 		{
@@ -245,12 +249,22 @@ namespace Game
 				// 아닌 경우 지정 위치에서 mega tile 을 읽어와 리스트에 추가
 				else
 				{
-					uint16_t real_x = real_megatile_index % width;
-					uint16_t real_y = real_megatile_index / width;
+#ifdef DEBUG_MapManager_SingleTexture
+					uint16_t real_x = real_megatile_index % image_width;
+					uint16_t real_y = real_megatile_index / image_width;
 
 					RECT rc{ real_x * 32, real_y * 32, (real_x + 1) * 32, (real_y + 1) * 32 };
 
 					m_pTileSetRect->push_back(rc);
+#else
+					std::shared_ptr<C_Texture> texture = std::make_shared<C_Texture>();
+
+					std::string filepath = Path + "TileSet/" + m_TileSetName + "/png/" +
+						m_TileSetName + " (" + std::to_string(real_megatile_index) + ").png";
+					texture->Init(filepath);
+					texture->Create();
+					m_pTileSetList->push_back(texture);
+#endif // DEBUG_MapManager_SingleTexture
 					m_pTileSetIndex->push_back(megatile_length);
 					check[real_megatile_index] = megatile_length++;
 				}
@@ -345,7 +359,7 @@ namespace Game
 	}
 	std::vector<D3DXVECTOR3> C_MapManager::GetPath(const D3DXVECTOR3& _start, const D3DXVECTOR3& _end)
 	{
-		uint32_t width	= m_MapWidth  * ((uint8_t)E_WalkAbilityRes::Max / (uint8_t)m_WalkAbility_Res);
+		uint32_t width = m_MapWidth * ((uint8_t)E_WalkAbilityRes::Max / (uint8_t)m_WalkAbility_Res);
 		uint32_t height = m_MapHeight * ((uint8_t)E_WalkAbilityRes::Max / (uint8_t)m_WalkAbility_Res);
 
 		uint8_t m = 8 * (uint8_t)m_WalkAbility_Res;
@@ -356,7 +370,7 @@ namespace Game
 		int32_t endY = (height - 1) - (int32_t)roundf(_end.y / m);
 
 		auto path = AStar::AStarFindPath(m_pWalkAbility, width, height, startX, startY, endX, endY);
-		
+
 		for (size_t i = 0; i < path.size(); ++i)
 		{
 			path[i].x *= m;
@@ -389,7 +403,9 @@ namespace Game
 		m_pTileSetNameList = nullptr;
 		m_pMegaTileNumber = nullptr;
 		m_pTileSetList = nullptr;
+#ifdef DEBUG_MapManager_SingleTexture
 		m_pTileSetRect = nullptr;
+#endif // DEBUG_MapManager_SingleTexture
 		m_pTileSetIndex = nullptr;
 
 		m_pMapBuffer = nullptr;
@@ -423,6 +439,7 @@ namespace Game
 		(*m_pMegaTileNumber)["ashworld"] = 3497;
 		(*m_pMegaTileNumber)["jungle"] = 5046;
 
+#ifdef DEBUG_MapManager_SingleTexture
 		m_pTileSetList = new std::unordered_map<std::string, std::shared_ptr<C_Texture>>();
 
 		for (size_t i = 0; i < (*m_pTileSetNameList).size(); ++i)
@@ -439,6 +456,10 @@ namespace Game
 		}
 
 		m_pTileSetRect = new std::vector<RECT>();
+#else
+		m_pTileSetList = new std::vector<std::shared_ptr<C_Texture>>();
+#endif // DEBUG_MapManager_SingleTexture
+
 		m_pTileSetIndex = new std::vector<uint16_t>();
 
 		m_pMapBuffer = new std::vector<uint8_t>();
@@ -469,7 +490,9 @@ namespace Game
 
 		SAFE_DELETE(m_pMapBuffer);
 		SAFE_DELETE(m_pTileSetIndex);
+#ifdef DEBUG_MapManager_SingleTexture
 		SAFE_DELETE(m_pTileSetRect);
+#endif // DEBUG_MapManager_SingleTexture
 		SAFE_DELETE(m_pTileSetList);
 		SAFE_DELETE(m_pMegaTileNumber);
 		SAFE_DELETE(m_pTileSetNameList);
@@ -484,7 +507,9 @@ namespace Game
 		Sprite->SetRotation(nullptr);
 		Sprite->SetScale(nullptr);
 
+#ifdef DEBUG_MapManager_SingleTexture
 		std::shared_ptr<C_Texture> texture = (*this->m_pTileSetList)[m_TileSetName];
+#endif // DEBUG_MapManager_SingleTexture
 
 		static const D3DXVECTOR3 center(0.0f, 0.0f, 0.0f);
 
@@ -495,11 +520,19 @@ namespace Game
 			for (size_t x = 0; x < m_MapWidth; ++x)
 			{
 				size_t index = y * m_MapWidth + x;
+#ifdef DEBUG_MapManager_SingleTexture
 				uint16_t rect_index = (*m_pTileSetIndex)[index];
+#else
+				std::shared_ptr<C_Texture> tile = (*m_pTileSetList)[(*m_pTileSetIndex)[index]];
+#endif // DEBUG_MapManager_SingleTexture
 
 				Sprite->SetTranslation(x * 32, (m_MapHeight - y) * 32, 0.0f);
 
+#ifdef DEBUG_MapManager_SingleTexture
 				Sprite->Draw(texture->GetTexture(), &(*m_pTileSetRect)[rect_index], &center, D3DCOLOR_XRGB(255, 255, 255));
+#else
+				Sprite->Draw(tile->GetTexture(), &m_TileSetSize, &center, D3DCOLOR_XRGB(255, 255, 255));
+#endif // DEBUG_MapManager_SingleTexture
 			}
 		}
 

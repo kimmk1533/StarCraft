@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Marine.h"
 
+#include <TextureManager.h>
 #include "MarineManager.h"
 
 namespace Game
@@ -91,7 +92,7 @@ namespace Game
 	{
 		FAILED_CHECK_RETURN(C_Unit::Render());
 
-		std::shared_ptr<C_Texture> texture = C_MarineManager::GetI()->GetTexture();
+		std::shared_ptr<C_Texture> texture = C_TextureManager::GetI()->GetTexture("Marine");
 		RECT rect = C_MarineManager::GetI()->GetTextureRect({ m_UnitState, m_Direction }, m_AnimIndex);
 
 		Sprite->SetTranslation(*m_pPosition);

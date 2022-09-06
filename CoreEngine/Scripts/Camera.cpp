@@ -44,7 +44,7 @@ namespace CoreEngine
 		D3DXMatrixMultiply(m_pViewMatrix, m_pTMatrix, m_pRMatrix);
 	}
 
-	void C_Camera::Cliping(const RECT& _rect)
+	void C_Camera::CameraCliping(const RECT& _rect)
 	{
 		if (m_pEye->x < _rect.left)		m_pEye->x = _rect.left;
 		if (m_pEye->x > _rect.right)	m_pEye->x = _rect.right;
@@ -181,7 +181,7 @@ namespace CoreEngine
 
 		//std::cout << *m_pEye << "\n";
 
-		Cliping(m_ClipingRect);
+		CameraCliping(m_ClipingRect);
 
 		Calculate_View_Matrix();
 

@@ -3,6 +3,7 @@
 
 #include <Animator.h>
 #include <Timer.h>
+#include <TextureManager.h>
 
 #include "SelectManager.h"
 
@@ -139,13 +140,9 @@ namespace Game
 	}
 	HRESULT C_Cursor::Render()
 	{
-		std::shared_ptr<C_Texture> texture = C_SelectManager::GetI()->GetTexture();
+		std::shared_ptr<C_Texture> texture = C_TextureManager::GetI()->GetTexture("Cursor");
 
-		RECT rect;
-		if (m_CursorState == E_CursorState::Move)
-			rect = C_SelectManager::GetI()->GetTextureRect(m_CursorDir, m_AnimIndex);
-		else
-			rect = C_SelectManager::GetI()->GetTextureRect(m_CursorState, m_AnimIndex);
+		RECT rect = C_SelectManager::GetI()->GetTextureRect(m_CursorState, m_CursorDir, m_AnimIndex);
 
 		Sprite->Begin();
 

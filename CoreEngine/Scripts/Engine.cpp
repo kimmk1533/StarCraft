@@ -248,7 +248,13 @@ namespace CoreEngine
 	{
 		m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 120, 160), 1.0f, 0);
 
+		// Begine Scene
+		FAILED_CHECK_RETURN(m_pd3dDevice->BeginScene());
+
 		Physics::Render();
+
+		// End Scene
+		m_pd3dDevice->EndScene();
 
 		return S_OK;
 	}

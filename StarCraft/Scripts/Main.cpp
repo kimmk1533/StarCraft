@@ -5,6 +5,7 @@
 #include "Cursor.h"
 
 #pragma region include Manager
+#include <TextureManager.h>
 #include "MapManager.h"
 #include "MarineManager.h"
 #include "SelectManager.h"
@@ -44,14 +45,16 @@ namespace Game
 		if (FAILED(C_Engine::Create()))
 			return E_FAIL;
 
+		SAFE_CREATE(C_TextureManager::GetI());
 		SAFE_CREATE(C_MapManager::GetI());
-		C_MapManager::GetI()->LoadMap("Lost Temple");
-		C_MapManager::GetI()->CreateTerrain();
-
 		SAFE_CREATE(C_SelectManager::GetI());
-
 		SAFE_CREATE(C_MarineManager::GetI());
 
+		C_TextureManager::GetI()->AddTexture("Cursor.png", "Cursor");
+		C_TextureManager::GetI()->AddTexture("Marine.png", "Marine");
+
+		C_MapManager::GetI()->LoadMap("Lost Temple");
+		C_MapManager::GetI()->CreateTerrain();
 		for (int i = 0; i < 1; ++i)
 			C_MarineManager::GetI()->SpawnUnit();
 
@@ -67,10 +70,9 @@ namespace Game
 		if (FAILED(C_Engine::Update(_deltaTime)))
 			return E_FAIL;
 
+		SAFE_UPDATE(C_TextureManager::GetI());
 		SAFE_UPDATE(C_MapManager::GetI());
-
 		SAFE_UPDATE(C_MarineManager::GetI());
-
 		SAFE_UPDATE(C_SelectManager::GetI());
 
 		return S_OK;
@@ -83,9 +85,7 @@ namespace Game
 		FAILED_CHECK_RETURN(m_pd3dDevice->BeginScene());
 
 		SAFE_RENDER(C_MapManager::GetI());
-
 		SAFE_RENDER(C_MarineManager::GetI());
-
 		SAFE_RENDER(C_SelectManager::GetI());
 
 		// End Scene

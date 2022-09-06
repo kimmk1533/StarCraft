@@ -48,7 +48,7 @@ namespace CoreEngine
 		void Calculate_T_Matrix();
 		void Calculate_View_Matrix();
 
-		void Cliping(const RECT& _rect);
+		void CameraCliping(const RECT& _rect);
 
 	public:
 		D3DXVECTOR3 WorldToScreenPoint(const D3DXVECTOR3& _pos);

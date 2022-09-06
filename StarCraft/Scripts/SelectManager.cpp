@@ -13,7 +13,6 @@ namespace Game
 {
 	C_SelectManager::C_SelectManager()
 	{
-		m_pCursorTexture = nullptr;
 		m_pCursorTextureRect = nullptr;
 		m_pCursor = nullptr;
 
@@ -29,18 +28,6 @@ namespace Game
 
 	HRESULT C_SelectManager::Create()
 	{
-		m_pCursorTexture = std::make_shared<C_Texture>();
-		if (FAILED(m_pCursorTexture->Init(TEXT("Cursor.png"))))
-			return E_FAIL;
-		if (FAILED(m_pCursorTexture->Create()))
-		{
-			m_pCursorTexture = nullptr;
-
-			MessageBox(NULL, TEXT("Error: Cursor Texture Create Failed"), TEXT("Error!"), MB_OK);
-
-			return E_FAIL;
-		}
-
 		m_pCursor = new C_Cursor();
 		SAFE_CREATE(m_pCursor);
 		m_pCursor->SetCursorState(E_CursorState::Idle);
@@ -86,8 +73,6 @@ namespace Game
 		SAFE_DELETE(m_pCursor);
 
 		SAFE_DELETE(m_pCursorTextureRect);
-
-		m_pCursorTexture.reset();
 	}
 
 	HRESULT C_SelectManager::Update(const FLOAT& _deltaTime)
@@ -97,8 +82,8 @@ namespace Game
 			(*m_pDragStartPos) = Camera->WorldToScreenPoint(Input->GetMousePos());
 
 			// ┌
-			m_DragRect.left	= 0;
-			m_DragRect.top	= 0;
+			m_DragRect.left = 0;
+			m_DragRect.top = 0;
 		}
 		else if (Input->GetMouse(E_MouseCode::Left))
 		{
@@ -191,42 +176,29 @@ namespace Game
 		(*m_pCursorTextureRect)[_state] = _condition;
 	}
 
-	std::shared_ptr<C_Texture> C_SelectManager::GetTexture()
-	{
-		return m_pCursorTexture;
-	}
-	RECT C_SelectManager::GetTextureRect(const E_CursorState& _state, WORD& _index)
+	RECT C_SelectManager::GetTextureRect(const E_CursorState& _state, const E_CursorDir& _dir, WORD& _index)
 	{
 		std::pair<WORD, RECT> index_rect = (*m_pCursorTextureRect)[_state];
 		RECT rect = index_rect.second;
 
-		if (index_rect.first <= _index)
+		LONG size = m_rcCursorSize.right - m_rcCursorSize.left;
+		WORD maxIndex = 0;
+		WORD dir = 0;
+
+		if (_state == E_CursorState::Move)
+		{
+			maxIndex = 2;
+			dir = static_cast<WORD>(_dir) * 2;
+		}
+		else
+		{
+			maxIndex = index_rect.first;
+		}
+
+		if (maxIndex <= _index)
 		{
 			_index = 0;
 		}
-
-		if (index_rect.first > 1)
-		{
-			int size = m_rcCursorSize.right - m_rcCursorSize.left;
-
-			rect.left += _index * size;
-			rect.right = rect.left + size;
-		}
-
-		return rect;
-	}
-	RECT C_SelectManager::GetTextureRect(const E_CursorDir& _state, WORD& _index)
-	{
-		std::pair<WORD, RECT> index_rect = (*m_pCursorTextureRect)[E_CursorState::Move];
-		RECT rect = index_rect.second;
-
-		if (2 <= _index)
-		{
-			_index = 0;
-		}
-
-		int size = m_rcCursorSize.right - m_rcCursorSize.left;
-		WORD dir = static_cast<WORD>(_state) * 2;
 
 		rect.left += (_index + dir) * size;
 		rect.right = rect.left + size;

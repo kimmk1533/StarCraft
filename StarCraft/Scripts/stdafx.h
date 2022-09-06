@@ -12,6 +12,7 @@ namespace Game
 #define DEBUG_Unit_Draw_MovingPath
 
 //#define DEBUG_MapManager_SaveImage_WalkAbility
+//#define DEBUG_MapManager_SingleTexture
 
 #pragma endregion
 

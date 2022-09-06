@@ -40,7 +40,6 @@ namespace Game
 		virtual HRESULT Render() override;
 
 	private: // Cursor
-		std::shared_ptr<C_Texture> m_pCursorTexture;
 		C_Cursor* m_pCursor;
 		RECT m_rcCursorSize;
 		std::unordered_map<E_CursorState, std::pair<WORD, RECT>>* m_pCursorTextureRect;
@@ -60,8 +59,7 @@ namespace Game
 		void SetTextureRect(const E_CursorState& _state, const std::pair<WORD, RECT>& _condition);
 
 	public:
-		std::shared_ptr<C_Texture> GetTexture();
-		RECT GetTextureRect(const E_CursorState& _state, WORD& _index);
-		RECT GetTextureRect(const E_CursorDir& _state, WORD& _index);
+		RECT GetTextureRect(const E_CursorState& _state, const E_CursorDir& _dir, WORD& _index);
+
 	};
 }
