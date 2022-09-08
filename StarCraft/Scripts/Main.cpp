@@ -50,8 +50,9 @@ namespace Game
 		SAFE_CREATE(C_SelectManager::GetI());
 		SAFE_CREATE(C_MarineManager::GetI());
 
-		C_TextureManager::GetI()->AddTexture("Cursor.png", "Cursor");
-		C_TextureManager::GetI()->AddTexture("Marine.png", "Marine");
+		FAILED_CHECK_RETURN(C_TextureManager::GetI()->AddTexture("Cursor.png", "Cursor"));
+
+		FAILED_CHECK_RETURN(C_TextureManager::GetI()->AddTexture("Unit/Terran/Marine.png", "Marine"));
 
 		C_MapManager::GetI()->LoadMap("Lost Temple");
 		C_MapManager::GetI()->CreateTerrain();
